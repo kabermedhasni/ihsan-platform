@@ -46,7 +46,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-quicksand), ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -86,11 +86,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-image: url("/bg-pattern.png");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
   }
 
   @keyframes toast-timer {

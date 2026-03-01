@@ -1,9 +1,15 @@
-import { Toaster } from "@/components/ui/toaster";
+import { redirect } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 
-export default function Page() {
-  return (
-    <main className="min-h-screen bg-background">
-      <Toaster />
-    </main>
-  );
+export default async function HomePage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/auth");
+const role: string = user.user_metadata?.role;
+
+  // Redirect to the role-specific page
+  redirect(`/${role}`);
 }

@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Quicksand } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
-const nunito = Nunito({
-  variable: "--font-nunito",
+const quicksand = Quicksand({
+  variable: "--font-quicksand",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "Ihsan Platform",
-  description: "Faire le bien avec excellence",
+  description: "Doing good with excellence",
   icons: {
     icon: "/images/logo.jpg",
   },
@@ -22,8 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${nunito.variable} font-sans antialiased`}>
+      <body className={`${quicksand.variable} font-sans antialiased`}>
         {children}
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );
