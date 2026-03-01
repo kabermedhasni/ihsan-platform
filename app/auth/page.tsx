@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, Suspense } from "react";
+import { useState, useCallback, Suspense, useEffect, useRef } from "react";
 import { Eye, EyeOff, ArrowLeft, Check, X, Info } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { motion, AnimatePresence, Variants } from "framer-motion";
@@ -58,8 +58,15 @@ interface FieldState {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const validateEmail = (email: string) => {
-  if (!email) return "Email is required";
+  if (!email) return null; // Don't show "required" error while typing/deleting
   if (!EMAIL_REGEX.test(email)) return "Please enter a valid email address";
+  return null;
+};
+
+const validateName = (name: string) => {
+  if (!name) return null;
+  if (name.replace(/\s/g, "").length < 8)
+    return "Full name must be at least 8 characters";
   return null;
 };
 
@@ -239,6 +246,32 @@ function PasswordField({
   validate: boolean; // whether to run full rule validation (register/new-password)
   className?: string;
 }) {
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.innerWidth >= 768) return;
+
+    if (!tooltipOpen) return;
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as Node | null;
+      if (!tooltipRef.current || !target) return;
+      if (!tooltipRef.current.contains(target)) {
+        setTooltipOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [tooltipOpen]);
+
   const getError = () => {
     if (!field.touched || !field.isDirty) return null;
     if (!field.value) return "Password is required";
@@ -275,14 +308,34 @@ function PasswordField({
           )}
           required
         />
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+        <div
+          ref={tooltipRef}
+          className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1"
+        >
           {validate && (
-            <Tooltip>
+            <Tooltip
+              open={tooltipOpen}
+              onOpenChange={(open) => {
+                if (window.innerWidth >= 768) setTooltipOpen(open);
+              }}
+            >
               <TooltipTrigger asChild>
                 <button
                   type="button"
                   tabIndex={-1}
-                  className="text-muted-foreground hover:text-primary transition-colors p-1"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (window.innerWidth < 768) {
+                      setTooltipOpen((prev) => !prev);
+                    }
+                  }}
+                  onMouseEnter={() => {
+                    if (window.innerWidth >= 768) setTooltipOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    if (window.innerWidth >= 768) setTooltipOpen(false);
+                  }}
+                  className="text-muted-foreground hover:text-primary transition-colors p-1 outline-none"
                   aria-label="Password requirements"
                 >
                   <Info className="size-4" />
@@ -441,6 +494,7 @@ function AuthContent() {
     if (
       validateEmail(regEmail.value) ||
       validatePassword(regPassword.value) ||
+      validateName(regName.value) ||
       !regName.value
     )
       return;
@@ -535,8 +589,10 @@ function AuthContent() {
   const isRegisterValid =
     !validateEmail(regEmail.value) &&
     !validatePassword(regPassword.value) &&
+    !validateName(regName.value) &&
     regName.value.length > 0;
-  const isForgotValid = !validateEmail(forgotEmail.value);
+  const isForgotValid =
+    forgotEmail.value.length > 0 && !validateEmail(forgotEmail.value);
   const isNewPassValid =
     !validatePassword(newPasswordField.value) &&
     newPasswordField.value === confirmPasswordField.value;
@@ -544,7 +600,7 @@ function AuthContent() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex min-h-screen w-full bg-background overflow-hidden relative font-sans">
+    <div className="flex min-h-dvh w-full bg-background overflow-hidden relative font-sans">
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,oklch(0.35_0.06_152),oklch(0.15_0.03_152))]" />
         <div
@@ -557,11 +613,11 @@ function AuthContent() {
         <div className="absolute top-0 left-0 w-full h-[30vh] bg-linear-to-b from-primary/5 to-transparent" />
       </div>
 
-      <div className="flex w-full relative z-10 min-h-screen">
+      <div className="flex w-full relative z-10 min-h-dvh">
         {/* Left Side */}
-        <div className="flex w-full flex-col md:w-[45%] px-8 sm:px-16 lg:px-24 pt-[22vh] items-center text-left">
+        <div className="flex w-full flex-col md:w-[45%] px-8 sm:px-16 lg:px-24 pt-8 md:pt-[22vh] items-center text-left h-dvh md:h-auto overflow-y-auto md:overflow-visible">
           <div className="w-full max-sm:max-w-full max-w-sm">
-            <div className="mb-8 flex items-center gap-2">
+            <div className="mb-4 md:mb-8 flex items-center gap-2">
               <div className="flex h-10 w-10 overflow-hidden rounded-lg">
                 <img
                   src="/images/logo.jpg"
@@ -589,7 +645,7 @@ function AuthContent() {
                     onValueChange={(v) => setView(v as AuthView)}
                     className="w-full"
                   >
-                    <div className="mb-10">
+                    <div className="mb-6 md:mb-10">
                       <AnimatedTabsList className="grid w-full grid-cols-2 bg-muted/40 p-1.5 rounded-xl border border-border/20 h-12">
                         <AnimatedTabsTrigger
                           value="login"
@@ -606,7 +662,7 @@ function AuthContent() {
                       </AnimatedTabsList>
                     </div>
 
-                    <div className="relative min-h-[500px]">
+                    <div className="relative min-h-[400px] md:min-h-[500px]">
                       <AnimatePresence mode="wait">
                         {currentView === "login" && (
                           <motion.form
@@ -713,17 +769,19 @@ function AuthContent() {
                                   onBlur={regNameActions.onBlur}
                                   onFocus={regNameActions.onFocus}
                                   aria-invalid={
-                                    regName.touched &&
-                                    regName.isDirty &&
-                                    !regName.editedSinceError &&
-                                    !regName.value
+                                    !!(
+                                      regName.touched &&
+                                      regName.isDirty &&
+                                      !regName.editedSinceError &&
+                                      validateName(regName.value)
+                                    )
                                   }
                                   className={cn(
                                     "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 text-sm transition-all duration-300",
                                     regName.touched &&
                                       regName.isDirty &&
                                       !regName.editedSinceError &&
-                                      !regName.value &&
+                                      validateName(regName.value) &&
                                       "border-destructive! ring-destructive!",
                                   )}
                                   required
@@ -732,9 +790,8 @@ function AuthContent() {
                                   message={
                                     regName.touched &&
                                     regName.isDirty &&
-                                    !regName.editedSinceError &&
-                                    !regName.value
-                                      ? "Full name is required"
+                                    !regName.editedSinceError
+                                      ? validateName(regName.value)
                                       : null
                                   }
                                 />
@@ -772,7 +829,7 @@ function AuthContent() {
                               </div>
                               <div className="space-y-2 pt-2">
                                 <Label>Join as</Label>
-                                <div className="grid grid-cols-3 gap-3">
+                                <div className="grid grid-cols-3 gap-2">
                                   <RoleCard
                                     active={role === "donor"}
                                     onClick={() => setRole("donor")}
@@ -1074,7 +1131,7 @@ function RoleCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center justify-center p-3 rounded-2xl border transition-all duration-300 gap-1 h-32 backdrop-blur-md",
+        "flex flex-col items-center justify-center p-2 rounded-2xl border transition-all duration-300 gap-1 h-24 backdrop-blur-md active:scale-97",
         active
           ? "bg-primary/10 border-primary ring-1 ring-primary/50"
           : "bg-background/20 border-border/30 hover:bg-background/30 hover:border-border/50",

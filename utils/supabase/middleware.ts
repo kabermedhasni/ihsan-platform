@@ -42,7 +42,11 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Logged in and trying to visit /auth → redirect to home
+  // UNLESS they are resetting their password
   if (user && isAuthPage) {
+    if (request.nextUrl.searchParams.get("view") === "new-password") {
+      return supabaseResponse;
+    }
     const url = request.nextUrl.clone();
     url.pathname = "/";
     url.search = "";

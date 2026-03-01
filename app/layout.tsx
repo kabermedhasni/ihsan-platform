@@ -25,7 +25,24 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${quicksand.variable} font-sans antialiased`}>
         {children}
-        <Toaster position="top-center" richColors />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            className:
+              "backdrop-blur-xl border border-white/10 shadow-2xl rounded-xl px-4 py-3 font-sans",
+            style: {
+              background: "rgba(0, 0, 0, 0.3)",
+            },
+            classNames: {
+              toast: "flex items-center gap-3",
+              error: "border-destructive! text-destructive! bg-destructive/10!",
+              success:
+                "border-emerald-500! text-emerald-400! bg-emerald-500/10!",
+              warning: "border-amber-500! text-amber-400! bg-amber-500/10!",
+              info: "border-sky-500! text-sky-400! bg-sky-500/10!",
+            },
+          }}
+        />
       </body>
     </html>
   );

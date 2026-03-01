@@ -73,8 +73,12 @@ export async function login(formData: FormData) {
 
 export async function resetPassword(email: string) {
   const supabase = await createClient();
+  const { headers } = await import("next/headers");
+  const origin = (await headers()).get("origin") || "";
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email);
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?type=recovery`,
+  });
 
   if (error) {
     return { error: error.message };
