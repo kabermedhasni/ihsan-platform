@@ -10,6 +10,20 @@ export default async function ValidatorPage() {
 
   if (!user) redirect("/auth");
 
+  // Fetch role from profiles table for reliable verification
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  const role: string = profile?.role || user.user_metadata?.role;
+
+  // Protect path: if not validator, redirect to their role-specific page
+  if (role?.toLowerCase() !== "validator") {
+    redirect(role ? `/${role.toLowerCase()}` : "/auth");
+  }
+
   const displayName =
     user.user_metadata?.display_name || user.email?.split("@")[0] || "User";
 
@@ -20,11 +34,14 @@ export default async function ValidatorPage() {
           Validator Dashboard
         </p>
         <h1 className="text-5xl font-bold text-foreground">
-          {displayName}{" "} ch7alk
+          {displayName} ch7alk
         </h1>
         <p className="text-muted-foreground">
           4e 3gabou tab3 lkm 2ntoume{" "}
-          <span className="text-primary font-semibold">4e role 2li mssejel bih w 4ak 2nou3: Validator</span>.
+          <span className="text-primary font-semibold">
+            4e role 2li mssejel bih w 4ak 2nou3: Validator
+          </span>
+          .
         </p>
       </div>
 
