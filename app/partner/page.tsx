@@ -95,9 +95,8 @@ export default function PartnerDashboard() {
         <div className="relative">
           <div className="w-16 h-16 border-4 border-white/5 rounded-full animate-ping opacity-20" />
           <div className="absolute inset-0 w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-          <UtensilsCrossed className="absolute inset-0 m-auto text-primary" size={24} />
         </div>
-        <p className="mt-6 text-foreground font-black uppercase tracking-widest text-sm animate-pulse">Syncing Kitchen...</p>
+        <p className="mt-6 text-foreground font-black uppercase tracking-widest text-sm animate-pulse">Syncing ...</p>
       </div>
     );
   }

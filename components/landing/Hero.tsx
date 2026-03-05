@@ -73,7 +73,7 @@ export default function Hero() {
                             className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
                         >
                             <Link
-                                href="/needs"
+                                href="/catalog"
                                 className="px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold text-lg transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2 group"
                             >
                                 Browse Needs
