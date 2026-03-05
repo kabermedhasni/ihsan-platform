@@ -26,15 +26,22 @@ export async function updateSession(request: NextRequest) {
   );
 
   // IMPORTANT: Do not write any logic between createServerClient and getUser()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data: { user: foundUser } } = await supabase.auth.getUser();
+    user = foundUser;
+  } catch (err) {
+    console.error("Middleware auth error:", err);
+  }
 
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname.startsWith("/auth");
 
-  // Not logged in and trying to access a protected page → redirect to /auth
-  if (!user && !isAuthPage) {
+  // Not logged in and trying to access a protected page
+  // Whitelist "/" and "/auth" (and static assets via matcher, but better to be explicit)
+  const isPublicPage = pathname === "/" || isAuthPage;
+
+  if (!user && !isPublicPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth";
     url.search = "";
