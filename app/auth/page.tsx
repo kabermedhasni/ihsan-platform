@@ -34,6 +34,8 @@ import {
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
 import { toast } from "sonner";
+import { createClient } from "@/utils/supabase/client";
+
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -211,7 +213,7 @@ function EmailField({
           "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 text-base transition-all duration-300",
           "focus-visible:ring-primary focus-visible:bg-background/50",
           isInvalid &&
-            "border-destructive! focus-visible:ring-destructive! focus-visible:border-destructive! ring-destructive!",
+          "border-destructive! focus-visible:ring-destructive! focus-visible:border-destructive! ring-destructive!",
           className,
         )}
         required
@@ -303,7 +305,7 @@ function PasswordField({
             "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 pr-20 text-base transition-all duration-300",
             "focus-visible:ring-primary focus-visible:bg-background/50",
             isInvalid &&
-              "border-destructive! focus-visible:ring-destructive! focus-visible:border-destructive! ring-destructive!",
+            "border-destructive! focus-visible:ring-destructive! focus-visible:border-destructive! ring-destructive!",
             className,
           )}
           required
@@ -434,6 +436,17 @@ function AuthContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentView = (searchParams.get("view") as AuthView) || "login";
+
+  useEffect(() => {
+    const init = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        router.push(`/${user.user_metadata?.role}`);
+      }
+    };
+    init();
+  }, [router]);
 
   const [pendingEmail, setPendingEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -779,18 +792,18 @@ function AuthContent() {
                                   className={cn(
                                     "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 text-sm transition-all duration-300",
                                     regName.touched &&
-                                      regName.isDirty &&
-                                      !regName.editedSinceError &&
-                                      validateName(regName.value) &&
-                                      "border-destructive! ring-destructive!",
+                                    regName.isDirty &&
+                                    !regName.editedSinceError &&
+                                    validateName(regName.value) &&
+                                    "border-destructive! ring-destructive!",
                                   )}
                                   required
                                 />
                                 <FieldError
                                   message={
                                     regName.touched &&
-                                    regName.isDirty &&
-                                    !regName.editedSinceError
+                                      regName.isDirty &&
+                                      !regName.editedSinceError
                                       ? validateName(regName.value)
                                       : null
                                   }
@@ -1044,25 +1057,25 @@ function AuthContent() {
                             confirmPasswordField.isDirty &&
                             !confirmPasswordField.editedSinceError &&
                             confirmPasswordField.value !==
-                              newPasswordField.value
+                            newPasswordField.value
                           }
                           className={cn(
                             "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 text-base transition-all duration-300",
                             confirmPasswordField.touched &&
-                              confirmPasswordField.isDirty &&
-                              !confirmPasswordField.editedSinceError &&
-                              confirmPasswordField.value !==
-                                newPasswordField.value &&
-                              "border-destructive! ring-destructive!",
+                            confirmPasswordField.isDirty &&
+                            !confirmPasswordField.editedSinceError &&
+                            confirmPasswordField.value !==
+                            newPasswordField.value &&
+                            "border-destructive! ring-destructive!",
                           )}
                           required
                         />
                         <FieldError
                           message={
                             confirmPasswordField.touched &&
-                            confirmPasswordField.isDirty &&
-                            !confirmPasswordField.editedSinceError &&
-                            confirmPasswordField.value !==
+                              confirmPasswordField.isDirty &&
+                              !confirmPasswordField.editedSinceError &&
+                              confirmPasswordField.value !==
                               newPasswordField.value
                               ? "Passwords do not match"
                               : null

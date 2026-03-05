@@ -26,29 +26,56 @@ export async function updateSession(request: NextRequest) {
   );
 
   // IMPORTANT: Do not write any logic between createServerClient and getUser()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data: { user: foundUser } } = await supabase.auth.getUser();
+    user = foundUser;
+  } catch (err) {
+    console.error("Middleware auth error:", err);
+  }
 
   const { pathname } = request.nextUrl;
   const isAuthPage = pathname.startsWith("/auth");
+  const isApiRoute = pathname.startsWith("/api");
 
-  // Not logged in and trying to access a protected page → redirect to /auth
-  if (!user && !isAuthPage) {
+  // Public API routes for landing page
+  const publicApiRoutes = [
+    "/api/donations/recent",
+    "/api/needs/funding",
+    "/api/stats/global"
+  ];
+  const isPublicApi = publicApiRoutes.includes(pathname);
+
+  // Not logged in and trying to access a protected page
+  // Whitelist "/", "/auth", and specific public API routes
+  const isPublicPage = pathname === "/" || isAuthPage || isPublicApi;
+
+  if (!user && !isPublicPage) {
+    if (isApiRoute) {
+      // Return 401 instead of redirecting for API routes to avoid JSON parse errors
+      return new NextResponse(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: { "content-type": "application/json" }
+        }
+      );
+    }
     const url = request.nextUrl.clone();
     url.pathname = "/auth";
     url.search = "";
     return NextResponse.redirect(url);
   }
 
-  // Logged in and trying to visit /auth → redirect to home
+  // Logged in and trying to visit /auth → redirect to dashboard
   // UNLESS they are resetting their password
   if (user && isAuthPage) {
     if (request.nextUrl.searchParams.get("view") === "new-password") {
       return supabaseResponse;
     }
+    const role = user.user_metadata?.role || '';
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = `/${role}`;
     url.search = "";
     return NextResponse.redirect(url);
   }
