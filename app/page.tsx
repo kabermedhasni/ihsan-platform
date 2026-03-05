@@ -12,7 +12,7 @@ import Footer from "@/components/landing/Footer";
 
 export default function LandingPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground overflow-x-hidden" dir="ltr">
+    <div className="flex flex-col min-h-screen bg-background text-foreground overflow-x-hidden">
       <Navbar />
       <Hero />
       <Ticker />

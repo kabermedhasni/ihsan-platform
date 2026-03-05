@@ -1,0 +1,180 @@
+{
+  "nav": {
+    "howItWorks": "How it Works",
+    "needs": "Needs",
+    "transparency": "Transparency",
+    "getStarted": "Get Started",
+    "dashboard": "Dashboard"
+  },
+  "hero": {
+    "title": "Your donation...",
+    "titleHighlight": "is traceable",
+    "titleEnd": "until delivery",
+    "description": "Ihsan platform ensures that every Ouguiya reaches its beneficiaries with full transparency through live tracking technology.",
+    "browseNeeds": "Browse Needs",
+    "totalDonations": "Total Donations",
+    "verifiedOperations": "Verified Operations",
+    "citiesCovered": "Cities Covered",
+    "verifiedBadge": "100% Verified Operations"
+  },
+  "ticker": {
+    "donationFor": "Donation for",
+    "justNow": "just now"
+  },
+  "howItWorks": {
+    "title": "How Ihsan Platform Works?",
+    "steps": {
+      "investigator": {
+        "title": "Investigator Posts a Need",
+        "description": "Our field investigators accurately document cases in need."
+      },
+      "donor": {
+        "title": "Donor Chooses Funding",
+        "description": "Browse cases and choose what you want to support directly."
+      },
+      "payment": {
+        "title": "Electronic Payment",
+        "description": "Secure and fast payment methods locally and internationally."
+      },
+      "delivery": {
+        "title": "Support is Delivered",
+        "description": "Our team ensures that help reaches the target as quickly as possible."
+      },
+      "proof": {
+        "title": "Proof of Delivery",
+        "description": "Documentation with photos and videos for every delivery process."
+      },
+      "ledger": {
+        "title": "Transparency Ledger",
+        "description": "The transaction automatically appears in the public operations ledger."
+      }
+    }
+  },
+  "trust": {
+    "title": "Transparency & Trust",
+    "targeted": {
+      "title": "Targeted Donations",
+      "description": "Ensure your donation goes directly to the case you chose without deductions."
+    },
+    "anonymity": {
+      "title": "Asymmetric Anonymity",
+      "description": "We protect your identity completely while providing full transparency on the path of your funds."
+    },
+    "impact": {
+      "title": "Proof of Impact",
+      "description": "Receive documented reports with photos and data as soon as the delivery process is complete."
+    }
+  },
+  "ledger": {
+    "title": "Public Transparency Ledger",
+    "description": "All transactions are recorded in a public, tamper-proof ledger to ensure maximum integrity.",
+    "id": "ID",
+    "need": "Need",
+    "city": "City/District",
+    "amount": "Amount",
+    "status": "Status",
+    "hash": "Hash",
+    "searchNote": "You can search using transaction number or electronic fingerprint",
+    "viewFull": "View Full Transparency Ledger"
+  },
+  "cta": {
+    "title": "Do Good with Excellence",
+    "description": "Join thousands of donors who place their trust in Ihsan to ensure their giving reaches those in need.",
+    "getStarted": "Get Started"
+  },
+  "footer": {
+    "allRights": "All rights reserved.",
+    "platform": "Ihsan Transparency Platform",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "welcome": "Welcome Back!",
+    "loginSubtitle": "Please login below",
+    "getStarted": "Get Started",
+    "joinToday": "Join IHSAN today",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full Name",
+    "forgotPassword": "Forgot password?",
+    "signingIn": "Signing in…",
+    "signIn": "Sign In",
+    "creatingAccount": "Creating account…",
+    "createAccount": "Create Account",
+    "role": "Role",
+    "donor": "Donor",
+    "donorDesc": "Give & track",
+    "validator": "Validator",
+    "validatorDesc": "Validate needs",
+    "partner": "Partner",
+    "partnerDesc": "Iftar prep",
+    "forgotPasswordTitle": "Forgot Password",
+    "forgotPasswordSubtitle": "Enter your email to receive a reset code",
+    "sendResetCode": "Send Reset Code",
+    "sendingCode": "Sending…",
+    "backToLogin": "Back to Login",
+    "verifyEmail": "Verify your Email",
+    "verifySubtitle": "Enter the 6-digit verification code",
+    "verifying": "Verifying…",
+    "verify": "Verify",
+    "resendCode": "Resend Code",
+    "newPassword": "New Password",
+    "newPasswordTitle": "Set New Password",
+    "newPasswordSubtitle": "Choose a strong password for your account",
+    "confirmPassword": "Confirm Password",
+    "updatePassword": "Update Password",
+    "updatingPassword": "Updating…",
+    "passwordRules": {
+      "title": "Password requirements",
+      "length": "At least 8 characters",
+      "uppercase": "One uppercase letter (A–Z)",
+      "lowercase": "One lowercase letter (a–z)",
+      "digit": "One number (0–9)",
+      "special": "One special character (!@#…)"
+    },
+    "error": {
+      "required": "Field is required",
+      "invalid": "Requirement not met",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Invalid email address",
+      "nameRequired": "Name is required",
+      "nameShort": "Name is too short",
+      "rateLimit": "Too many attempts. Please try again later.",
+      "signupLimit": "Too many sign-up requests. Please wait before trying again.",
+      "emailLimit": "Email limit reached. Try again in an hour.",
+      "otpLimit": "Too many attempts. Please wait 5 minutes.",
+      "mismatch": "Passwords do not match",
+      "invalidCredentials": "Invalid login credentials",
+      "userExists": "User already registered",
+      "emailNotConfirmed": "Email not confirmed",
+      "invalidOTP": "Invalid verification code",
+      "otpExpired": "Verification code has expired",
+      "linkExpired": "Confirmation link has expired",
+      "genericError": "Something went wrong. Please try again."
+    },
+    "success": {
+      "otpSent": "Check your email for the verification code!",
+      "recoverySent": "Recovery code sent!",
+      "passUpdated": "Password updated successfully!",
+      "signedIn": "Signed in successfully!",
+      "verified": "Verified successfully!"
+    }
+  },
+  "language": {
+    "label": "Language",
+    "ar": "العربية",
+    "en": "English",
+    "fr": "Français"
+  },
+  "map": {
+    "title": "Needs by Region",
+    "description": "Track urgent needs across different areas of Nouakchott and contribute directly to meeting them.",
+    "loading": "Loading Map...",
+    "location": "Location",
+    "helpType": "Help Type",
+    "funded": "funded",
+    "clickToInteract": "Click to Interact"
+  }
+}

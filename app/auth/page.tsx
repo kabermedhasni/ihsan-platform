@@ -4,6 +4,7 @@ import { useState, useCallback, Suspense, useEffect, useRef } from "react";
 import { Eye, EyeOff, ArrowLeft, Check, X, Info } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { motion, AnimatePresence, Variants } from "framer-motion";
+import { useTranslations, useLocale } from "next-intl";
 
 import {
   AnimatedTabs,
@@ -35,7 +36,7 @@ import {
 } from "@/components/ui/input-otp";
 import { toast } from "sonner";
 import { createClient } from "@/utils/supabase/client";
-
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -49,10 +50,10 @@ type AuthView =
 
 interface FieldState {
   value: string;
-  touched: boolean; // user has blurred at least once
-  focused: boolean; // currently focused
-  editedSinceError: boolean; // user typed something since the last error was shown
-  isDirty: boolean; // user has typed at least once
+  touched: boolean;
+  focused: boolean;
+  editedSinceError: boolean;
+  isDirty: boolean;
 }
 
 // ─── Validation helpers ───────────────────────────────────────────────────────
@@ -60,15 +61,14 @@ interface FieldState {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const validateEmail = (email: string) => {
-  if (!email) return null; // Don't show "required" error while typing/deleting
-  if (!EMAIL_REGEX.test(email)) return "Please enter a valid email address";
+  if (!email) return "required";
+  if (!EMAIL_REGEX.test(email)) return "invalid";
   return null;
 };
 
 const validateName = (name: string) => {
-  if (!name) return null;
-  if (name.replace(/\s/g, "").length < 8)
-    return "Full name must be at least 8 characters";
+  if (!name) return "required";
+  if (name.replace(/\s/g, "").length < 2) return "short";
   return null;
 };
 
@@ -101,9 +101,9 @@ const passwordRules = [
 ];
 
 const validatePassword = (password: string) => {
-  if (!password) return "Password is required";
+  if (!password) return "required";
   for (const rule of passwordRules) {
-    if (!rule.test(password)) return "Password does not meet all requirements";
+    if (!rule.test(password)) return "invalid";
   }
   return null;
 };
@@ -118,9 +118,9 @@ function FieldError({ message }: { message: string | null }) {
           key="error"
           initial={{ opacity: 0, height: 0, y: -4 }}
           animate={{ opacity: 1, height: "auto", y: 0 }}
-          exit={{ opacity: 0, height: 0, y: -4 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-          className="overflow-hidden text-xs text-destructive font-medium pt-1"
+          exit={{ opacity: 0, height: 0, scale: 0.95 }}
+          transition={{ duration: 0.2, ease: "easeInOut" }}
+          className="overflow-hidden text-xs text-destructive font-medium pt-1 rtl:text-right"
         >
           {message}
         </motion.p>
@@ -132,11 +132,10 @@ function FieldError({ message }: { message: string | null }) {
 // ─── Password tooltip checklist ───────────────────────────────────────────────
 
 function PasswordTooltipContent({ password }: { password: string }) {
+  const t = useTranslations("auth.passwordRules");
   return (
     <div className="space-y-1.5 p-1 min-w-[220px]">
-      <p className="text-xs font-semibold text-foreground mb-2">
-        Password requirements
-      </p>
+      <p className="text-xs font-semibold text-foreground mb-2">{t("title")}</p>
       {passwordRules.map((rule) => {
         const passed = rule.test(password);
         return (
@@ -159,7 +158,7 @@ function PasswordTooltipContent({ password }: { password: string }) {
                 passed ? "text-foreground" : "text-muted-foreground",
               )}
             >
-              {rule.label}
+              {t(rule.key as any)}
             </span>
           </div>
         );
@@ -177,6 +176,7 @@ function EmailField({
   onChange,
   onBlur,
   onFocus,
+  placeholder,
   className,
 }: {
   id: string;
@@ -185,16 +185,25 @@ function EmailField({
   onChange: (v: string) => void;
   onBlur: () => void;
   onFocus: () => void;
+  placeholder?: string;
   className?: string;
 }) {
-  // isInvalid: show red border when touched AND not yet edited since the error appeared
-  const error =
-    field.touched && field.isDirty ? validateEmail(field.value) : null;
+  const t = useTranslations("auth");
+
+  const getError = () => {
+    if (!field.touched || !field.isDirty) return null;
+    const err = validateEmail(field.value);
+    if (err === "required") return t("error.emailRequired");
+    if (err === "invalid") return t("error.emailInvalid");
+    return null;
+  };
+
+  const error = getError();
   const isInvalid = !!(
     field.touched &&
     field.isDirty &&
     !field.editedSinceError &&
-    validateEmail(field.value)
+    error
   );
 
   return (
@@ -203,7 +212,7 @@ function EmailField({
         id={id}
         name={name}
         type="email"
-        placeholder="Email"
+        placeholder={placeholder ?? "Email"}
         value={field.value}
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
@@ -213,7 +222,7 @@ function EmailField({
           "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 text-base transition-all duration-300",
           "focus-visible:ring-primary focus-visible:bg-background/50",
           isInvalid &&
-          "border-destructive! focus-visible:ring-destructive! focus-visible:border-destructive! ring-destructive!",
+            "border-destructive! focus-visible:ring-destructive! focus-visible:border-destructive! ring-destructive!",
           className,
         )}
         required
@@ -235,6 +244,7 @@ function PasswordField({
   showPassword,
   onToggleShow,
   validate,
+  placeholder,
   className,
 }: {
   id: string;
@@ -245,16 +255,18 @@ function PasswordField({
   onFocus: () => void;
   showPassword: boolean;
   onToggleShow: () => void;
-  validate: boolean; // whether to run full rule validation (register/new-password)
+  validate: boolean;
+  placeholder?: string;
   className?: string;
 }) {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const locale = useLocale();
+  const isRtl = locale === "ar";
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.innerWidth >= 768) return;
-
     if (!tooltipOpen) return;
 
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
@@ -274,10 +286,14 @@ function PasswordField({
     };
   }, [tooltipOpen]);
 
+  const t = useTranslations("auth");
+
   const getError = () => {
     if (!field.touched || !field.isDirty) return null;
-    if (!field.value) return "Password is required";
-    if (validate) return validatePassword(field.value);
+    if (!field.value) return t("error.required") || "Required";
+    const err = validate ? validatePassword(field.value) : null;
+    if (err === "required") return t("error.required") || "Required";
+    if (err === "invalid") return t("error.invalid") || "Invalid";
     return null;
   };
   const error = getError();
@@ -295,24 +311,24 @@ function PasswordField({
           id={id}
           name={name}
           type={showPassword ? "text" : "password"}
-          placeholder="Password"
+          placeholder={placeholder ?? "Password"}
           value={field.value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={onBlur}
           onFocus={onFocus}
           aria-invalid={isInvalid}
           className={cn(
-            "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 pr-20 text-base transition-all duration-300",
+            "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 pr-20 rtl:pr-4 rtl:pl-20 text-base transition-all duration-300",
             "focus-visible:ring-primary focus-visible:bg-background/50",
             isInvalid &&
-            "border-destructive! focus-visible:ring-destructive! focus-visible:border-destructive! ring-destructive!",
+              "border-destructive! focus-visible:ring-destructive! focus-visible:border-destructive! ring-destructive!",
             className,
           )}
           required
         />
         <div
           ref={tooltipRef}
-          className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1"
+          className="absolute right-3 rtl:right-auto rtl:left-3 top-1/2 -translate-y-1/2 flex items-center gap-1"
         >
           {validate && (
             <Tooltip
@@ -338,13 +354,13 @@ function PasswordField({
                     if (window.innerWidth >= 768) setTooltipOpen(false);
                   }}
                   className="text-muted-foreground hover:text-primary transition-colors p-1 outline-none"
-                  aria-label="Password requirements"
+                  aria-label={t("passwordRules.title")}
                 >
                   <Info className="size-4" />
                 </button>
               </TooltipTrigger>
               <TooltipContent
-                side="right"
+                side={isRtl ? "left" : "right"}
                 sideOffset={8}
                 className="bg-card border border-border/50 text-foreground shadow-xl px-4 py-3"
               >
@@ -390,8 +406,6 @@ function useField(initialValue = ""): [
   });
 
   const onChange = useCallback((v: string) => {
-    // Once the user starts typing, mark editedSinceError = true so the red clears
-    // and isDirty = true so validation can now show
     setState((s) => ({
       ...s,
       value: v,
@@ -401,8 +415,6 @@ function useField(initialValue = ""): [
   }, []);
 
   const onBlur = useCallback(() => {
-    // On blur: mark touched, not focused, and reset editedSinceError so
-    // the next time they focus the border remains red until they type again
     setState((s) => ({
       ...s,
       focused: false,
@@ -412,7 +424,6 @@ function useField(initialValue = ""): [
   }, []);
 
   const onFocus = useCallback(() => {
-    // Just mark focused — do NOT change editedSinceError so the border stays red
     setState((s) => ({ ...s, focused: true }));
   }, []);
 
@@ -429,9 +440,49 @@ function useField(initialValue = ""): [
   return [state, { onChange, onBlur, onFocus, reset }];
 }
 
+// ─── RoleCard ─────────────────────────────────────────────────────────────────
+
+function RoleCard({
+  active,
+  onClick,
+  label,
+  desc,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  desc: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "flex flex-col items-center justify-center p-2 rounded-lg border transition-all duration-300 gap-1 h-24 backdrop-blur-md active:scale-97",
+        active
+          ? "bg-primary/10 border-primary ring-1 ring-primary/50"
+          : "bg-background/20 border-border/30 hover:bg-background/30 hover:border-border/50",
+      )}
+    >
+      <p
+        className={cn(
+          "text-sm font-bold",
+          active ? "text-primary" : "text-foreground",
+        )}
+      >
+        {label}
+      </p>
+      <p className="text-[10px] text-muted-foreground leading-tight mt-1">
+        {desc}
+      </p>
+    </button>
+  );
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 function AuthContent() {
+  const t = useTranslations("auth");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -440,13 +491,30 @@ function AuthContent() {
   useEffect(() => {
     const init = async () => {
       const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         router.push(`/${user.user_metadata?.role}`);
       }
     };
     init();
   }, [router]);
+
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error) {
+      if (error === "auth-callback-error") {
+        toast.error(t("error.genericError"));
+      } else {
+        toast.error(getTranslatedError(error));
+      }
+      // Remove error from URL
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("error");
+      router.replace(`${pathname}?${params.toString()}`);
+    }
+  }, [searchParams, router, pathname, t]);
 
   const [pendingEmail, setPendingEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -477,6 +545,32 @@ function AuthContent() {
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
+  const getTranslatedError = (error: string) => {
+    const lowerError = error.toLowerCase();
+    if (lowerError.includes("invalid login credentials"))
+      return t("error.invalidCredentials");
+    if (lowerError.includes("user already registered"))
+      return t("error.userExists");
+    if (lowerError.includes("email not confirmed"))
+      return t("error.emailNotConfirmed");
+    if (
+      lowerError.includes("invalid otp") ||
+      lowerError.includes("token is invalid")
+    )
+      return t("error.invalidOTP");
+    if (
+      lowerError.includes("otp has expired") ||
+      lowerError.includes("token has expired")
+    )
+      return t("error.otpExpired");
+    if (
+      lowerError.includes("link-expired") ||
+      lowerError.includes("link has expired")
+    )
+      return t("error.linkExpired");
+    return error;
+  };
+
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     loginEmailActions.onBlur();
@@ -491,12 +585,15 @@ function AuthContent() {
     const result = await login(formData);
     if (result?.error) {
       if (result.error.toLowerCase().includes("rate limit")) {
-        toast.error("Too many attempts. Please try again later.");
+        toast.error(t("error.rateLimit"));
       } else {
-        toast.error(result.error);
+        toast.error(getTranslatedError(result.error));
       }
+      setLoading(false);
+    } else if (result?.success) {
+      toast.success(t("success.signedIn"));
+      router.push(`/${result.role}`);
     }
-    setLoading(false);
   };
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -521,16 +618,14 @@ function AuthContent() {
     const result = await signup(formData);
     if (result?.error) {
       if (result.error.toLowerCase().includes("rate limit")) {
-        toast.error(
-          "Too many sign-up requests. Please wait before trying again.",
-        );
+        toast.error(t("error.signupLimit"));
       } else {
-        toast.error(result.error);
+        toast.error(getTranslatedError(result.error));
       }
     } else {
       setPendingEmail(regEmail.value);
       setView("verify-otp");
-      toast.success("Check your email for the verification code!");
+      toast.success(t("success.otpSent"));
     }
     setLoading(false);
   };
@@ -544,14 +639,14 @@ function AuthContent() {
     const result = await resetPassword(forgotEmail.value);
     if (result?.error) {
       if (result.error.toLowerCase().includes("rate limit")) {
-        toast.error("Email limit reached. Try again in an hour.");
+        toast.error(t("error.emailLimit"));
       } else {
-        toast.error(result.error);
+        toast.error(getTranslatedError(result.error));
       }
     } else {
       setPendingEmail(forgotEmail.value);
       setView("verify-recovery");
-      toast.success("Recovery code sent!");
+      toast.success(t("success.recoverySent"));
     }
     setLoading(false);
   };
@@ -561,14 +656,18 @@ function AuthContent() {
     const result = await verifyOTP(pendingEmail, otp, type);
     if (result?.error) {
       if (result.error.toLowerCase().includes("rate limit")) {
-        toast.error("Too many attempts. Please wait 5 minutes.");
+        toast.error(t("error.otpLimit"));
       } else {
-        toast.error(result.error);
+        toast.error(getTranslatedError(result.error));
       }
+      setLoading(false);
     } else if (result?.type === "recovery") {
       setView("new-password");
+      setLoading(false);
+    } else if (result?.success) {
+      toast.success(t("success.verified"));
+      router.push(`/${result.role}`);
     }
-    setLoading(false);
   };
 
   const handleUpdatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -578,13 +677,13 @@ function AuthContent() {
 
     if (validatePassword(newPasswordField.value)) return;
     if (newPasswordField.value !== confirmPasswordField.value) {
-      toast.error("Passwords do not match");
+      toast.error(t("error.mismatch"));
       return;
     }
     setLoading(true);
     const result = await updatePassword(newPasswordField.value);
-    if (result?.error) toast.error(result.error);
-    else toast.success("Password updated successfully!");
+    if (result?.error) toast.error(getTranslatedError(result.error));
+    else toast.success(t("success.passUpdated"));
     setLoading(false);
   };
 
@@ -628,19 +727,23 @@ function AuthContent() {
 
       <div className="flex w-full relative z-10 min-h-dvh">
         {/* Left Side */}
-        <div className="flex w-full flex-col md:w-[45%] px-8 sm:px-16 lg:px-24 pt-8 md:pt-[22vh] items-center text-left h-dvh md:h-auto overflow-y-auto md:overflow-visible">
+        <div className="flex w-full flex-col md:w-[45%] px-8 sm:px-16 lg:px-24 pt-8 md:pt-[22vh] items-center rtl:items-end text-start rtl:text-right h-dvh md:h-auto overflow-y-auto md:overflow-visible">
           <div className="w-full max-sm:max-w-full max-w-sm">
-            <div className="mb-4 md:mb-8 flex items-center gap-2">
-              <div className="flex h-10 w-10 overflow-hidden rounded-lg">
-                <img
-                  src="/images/logo.jpg"
-                  alt="Logo"
-                  className="w-full h-full object-cover"
-                />
+            {/* Logo + Language Switcher row */}
+            <div className="mb-4 md:mb-8 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <div className="flex h-10 w-10 overflow-hidden rounded-lg">
+                  <img
+                    src="/images/logo.jpg"
+                    alt="Logo"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="text-2xl font-bold tracking-tight text-foreground lowercase">
+                  ihsan
+                </span>
               </div>
-              <span className="text-2xl font-bold tracking-tight text-foreground lowercase">
-                ihsan
-              </span>
+              <LanguageSwitcher align="end" />
             </div>
 
             <AnimatePresence mode="wait">
@@ -664,13 +767,13 @@ function AuthContent() {
                           value="login"
                           className="h-full rounded-lg text-base"
                         >
-                          Login
+                          {t("login")}
                         </AnimatedTabsTrigger>
                         <AnimatedTabsTrigger
                           value="register"
                           className="h-full rounded-lg text-base"
                         >
-                          Register
+                          {t("register")}
                         </AnimatedTabsTrigger>
                       </AnimatedTabsList>
                     </div>
@@ -687,17 +790,22 @@ function AuthContent() {
                             onSubmit={handleLogin}
                             className="space-y-5"
                           >
-                            <div className="space-y-1.5">
-                              <h1 className="text-4xl font-bold">
-                                Welcome Back!
+                            <div className="space-y-1.5" dir="auto">
+                              <h1 className="text-4xl font-bold rtl:text-right">
+                                {t("welcome")}
                               </h1>
-                              <p className="text-muted-foreground text-sm">
-                                Please login below
+                              <p className="text-muted-foreground text-sm rtl:text-right">
+                                {t("loginSubtitle")}
                               </p>
                             </div>
                             <div className="space-y-4 pt-2">
                               <div className="space-y-1.5">
-                                <Label htmlFor="login-email">Email</Label>
+                                <Label
+                                  htmlFor="login-email"
+                                  className="rtl:justify-end"
+                                >
+                                  {t("email")}
+                                </Label>
                                 <EmailField
                                   id="login-email"
                                   name="email"
@@ -705,10 +813,16 @@ function AuthContent() {
                                   onChange={loginEmailActions.onChange}
                                   onBlur={loginEmailActions.onBlur}
                                   onFocus={loginEmailActions.onFocus}
+                                  placeholder={t("email")}
                                 />
                               </div>
                               <div className="space-y-1.5">
-                                <Label htmlFor="login-password">Password</Label>
+                                <Label
+                                  htmlFor="login-password"
+                                  className="rtl:justify-end"
+                                >
+                                  {t("password")}
+                                </Label>
                                 <PasswordField
                                   id="login-password"
                                   name="password"
@@ -721,6 +835,7 @@ function AuthContent() {
                                     setShowLoginPassword(!showLoginPassword)
                                   }
                                   validate={false}
+                                  placeholder={t("password")}
                                 />
                               </div>
                             </div>
@@ -730,7 +845,7 @@ function AuthContent() {
                                 onClick={() => setView("forgot-password")}
                                 className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
                               >
-                                Forgot password?
+                                {t("forgotPassword")}
                               </button>
                             </div>
                             <Button
@@ -741,10 +856,10 @@ function AuthContent() {
                               {loading ? (
                                 <div className="flex items-center gap-2">
                                   <Spinner className="size-4" />
-                                  <span>Signing in…</span>
+                                  <span>{t("signingIn")}</span>
                                 </div>
                               ) : (
-                                "Sign In"
+                                t("signIn")
                               )}
                             </Button>
                           </motion.form>
@@ -760,21 +875,26 @@ function AuthContent() {
                             onSubmit={handleRegister}
                             className="space-y-5"
                           >
-                            <div className="space-y-1.5">
-                              <h1 className="text-4xl font-bold">
-                                Get Started
+                            <div className="space-y-1.5" dir="auto">
+                              <h1 className="text-4xl font-bold rtl:text-right">
+                                {t("getStarted")}
                               </h1>
-                              <p className="text-muted-foreground text-sm">
-                                Join IHSAN today
+                              <p className="text-muted-foreground text-sm rtl:text-right">
+                                {t("joinToday")}
                               </p>
                             </div>
                             <div className="space-y-3 pt-2">
                               <div className="space-y-1">
-                                <Label htmlFor="register-name">Full Name</Label>
+                                <Label
+                                  htmlFor="register-name"
+                                  className="rtl:justify-end"
+                                >
+                                  {t("fullName")}
+                                </Label>
                                 <Input
                                   id="register-name"
                                   name="name"
-                                  placeholder="Full Name"
+                                  placeholder={t("fullName")}
                                   value={regName.value}
                                   onChange={(e) =>
                                     regNameActions.onChange(e.target.value)
@@ -792,25 +912,39 @@ function AuthContent() {
                                   className={cn(
                                     "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 text-sm transition-all duration-300",
                                     regName.touched &&
-                                    regName.isDirty &&
-                                    !regName.editedSinceError &&
-                                    validateName(regName.value) &&
-                                    "border-destructive! ring-destructive!",
+                                      regName.isDirty &&
+                                      !regName.editedSinceError &&
+                                      validateName(regName.value) &&
+                                      "border-destructive! ring-destructive!",
                                   )}
                                   required
                                 />
                                 <FieldError
                                   message={
                                     regName.touched &&
-                                      regName.isDirty &&
-                                      !regName.editedSinceError
-                                      ? validateName(regName.value)
+                                    regName.isDirty &&
+                                    !regName.editedSinceError
+                                      ? (() => {
+                                          const err = validateName(
+                                            regName.value,
+                                          );
+                                          if (err === "required")
+                                            return t("error.nameRequired");
+                                          if (err === "short")
+                                            return t("error.nameShort");
+                                          return null;
+                                        })()
                                       : null
                                   }
                                 />
                               </div>
                               <div className="space-y-1">
-                                <Label htmlFor="register-email">Email</Label>
+                                <Label
+                                  htmlFor="register-email"
+                                  className="rtl:justify-end"
+                                >
+                                  {t("email")}
+                                </Label>
                                 <EmailField
                                   id="register-email"
                                   name="email"
@@ -818,11 +952,15 @@ function AuthContent() {
                                   onChange={regEmailActions.onChange}
                                   onBlur={regEmailActions.onBlur}
                                   onFocus={regEmailActions.onFocus}
+                                  placeholder={t("email")}
                                 />
                               </div>
                               <div className="space-y-1">
-                                <Label htmlFor="register-password">
-                                  Password
+                                <Label
+                                  htmlFor="register-password"
+                                  className="rtl:justify-end"
+                                >
+                                  {t("password")}
                                 </Label>
                                 <PasswordField
                                   id="register-password"
@@ -838,28 +976,31 @@ function AuthContent() {
                                     )
                                   }
                                   validate={true}
+                                  placeholder={t("password")}
                                 />
                               </div>
                               <div className="space-y-2 pt-2">
-                                <Label>Join as</Label>
+                                <Label className="rtl:justify-end">
+                                  {t("role")}
+                                </Label>
                                 <div className="grid grid-cols-3 gap-2">
                                   <RoleCard
                                     active={role === "donor"}
                                     onClick={() => setRole("donor")}
-                                    label="Donor"
-                                    desc="Give & track"
+                                    label={t("donor")}
+                                    desc={t("donorDesc")}
                                   />
                                   <RoleCard
                                     active={role === "validator"}
                                     onClick={() => setRole("validator")}
-                                    label="Validator"
-                                    desc="Validate needs"
+                                    label={t("validator")}
+                                    desc={t("validatorDesc")}
                                   />
                                   <RoleCard
                                     active={role === "partner"}
                                     onClick={() => setRole("partner")}
-                                    label="Partner"
-                                    desc="Iftar prep"
+                                    label={t("partner")}
+                                    desc={t("partnerDesc")}
                                   />
                                 </div>
                               </div>
@@ -872,10 +1013,10 @@ function AuthContent() {
                               {loading ? (
                                 <div className="flex items-center gap-2">
                                   <Spinner className="size-4" />
-                                  <span>Creating Account…</span>
+                                  <span>{t("creatingAccount")}</span>
                                 </div>
                               ) : (
-                                "Create Account"
+                                t("createAccount")
                               )}
                             </Button>
                           </motion.form>
@@ -899,20 +1040,25 @@ function AuthContent() {
                     onClick={() => setView("login")}
                     className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm mb-4"
                   >
-                    <ArrowLeft className="size-4" /> Back
+                    <ArrowLeft className="size-4 rtl:rotate-180" />
+                    {t("backToLogin")}
                   </button>
                   <form
                     onSubmit={handleResetRequest}
                     className="space-y-6 pt-12"
                   >
                     <div className="space-y-1.5">
-                      <h1 className="text-4xl font-bold">Reset Password</h1>
+                      <h1 className="text-4xl font-bold">
+                        {t("forgotPasswordTitle")}
+                      </h1>
                       <p className="text-muted-foreground text-sm">
-                        We'll send a code to your email
+                        {t("forgotPasswordSubtitle")}
                       </p>
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="forgot-email">Email</Label>
+                      <Label htmlFor="forgot-email" className="rtl:justify-end">
+                        {t("email")}
+                      </Label>
                       <EmailField
                         id="forgot-email"
                         name="email"
@@ -920,6 +1066,7 @@ function AuthContent() {
                         onChange={forgotEmailActions.onChange}
                         onBlur={forgotEmailActions.onBlur}
                         onFocus={forgotEmailActions.onFocus}
+                        placeholder={t("email")}
                       />
                     </div>
                     <Button
@@ -930,10 +1077,10 @@ function AuthContent() {
                       {loading ? (
                         <div className="flex items-center gap-2">
                           <Spinner className="size-4" />
-                          <span>Sending Code…</span>
+                          <span>{t("sendingCode")}</span>
                         </div>
                       ) : (
-                        "Send Reset Code"
+                        t("sendResetCode")
                       )}
                     </Button>
                   </form>
@@ -959,13 +1106,13 @@ function AuthContent() {
                     }
                     className="flex self-start items-center gap-2 text-muted-foreground hover:text-primary transition-colors text-sm mb-4"
                   >
-                    <ArrowLeft className="size-4" /> Back
+                    <ArrowLeft className="size-4" /> {t("backToLogin")}
                   </button>
                   <div className="pt-12 space-y-8 text-center">
                     <div className="space-y-2">
-                      <h1 className="text-3xl font-bold">Verify Code</h1>
+                      <h1 className="text-3xl font-bold">{t("verifyEmail")}</h1>
                       <p className="text-muted-foreground text-sm max-w-[280px]">
-                        Sent to{" "}
+                        {t("verifySubtitle")}{" "}
                         <span className="text-foreground font-medium">
                           {pendingEmail}
                         </span>
@@ -1000,7 +1147,7 @@ function AuthContent() {
                         type="button"
                         className="text-xs font-bold text-primary hover:underline"
                       >
-                        Resend Code
+                        {t("resendCode")}
                       </button>
                     </div>
                   </div>
@@ -1017,13 +1164,25 @@ function AuthContent() {
                   className="w-full"
                 >
                   <div className="pt-12 space-y-6">
-                    <h1 className="text-4xl font-bold">New Password</h1>
+                    <div className="space-y-1.5">
+                      <h1 className="text-4xl font-bold">
+                        {t("newPasswordTitle")}
+                      </h1>
+                      <p className="text-muted-foreground text-sm">
+                        {t("newPasswordSubtitle")}
+                      </p>
+                    </div>
                     <form
                       onSubmit={handleUpdatePassword}
                       className="space-y-4 pt-4"
                     >
                       <div className="space-y-1.5">
-                        <Label htmlFor="new-password">New Password</Label>
+                        <Label
+                          htmlFor="new-password"
+                          className="rtl:justify-end"
+                        >
+                          {t("newPassword")}
+                        </Label>
                         <PasswordField
                           id="new-password"
                           name="newPassword"
@@ -1036,16 +1195,20 @@ function AuthContent() {
                             setShowNewPassword(!showNewPassword)
                           }
                           validate={true}
+                          placeholder={t("newPassword")}
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <Label htmlFor="confirm-password">
-                          Confirm Password
+                        <Label
+                          htmlFor="confirm-password"
+                          title={t("confirmPassword")}
+                        >
+                          {t("confirmPassword")}
                         </Label>
                         <Input
                           id="confirm-password"
                           type="password"
-                          placeholder="••••••••"
+                          placeholder={t("password")}
                           value={confirmPasswordField.value}
                           onChange={(e) =>
                             confirmPasswordActions.onChange(e.target.value)
@@ -1057,27 +1220,27 @@ function AuthContent() {
                             confirmPasswordField.isDirty &&
                             !confirmPasswordField.editedSinceError &&
                             confirmPasswordField.value !==
-                            newPasswordField.value
+                              newPasswordField.value
                           }
                           className={cn(
                             "h-12 rounded-xl border-border bg-background/30 backdrop-blur-md px-4 text-base transition-all duration-300",
                             confirmPasswordField.touched &&
-                            confirmPasswordField.isDirty &&
-                            !confirmPasswordField.editedSinceError &&
-                            confirmPasswordField.value !==
-                            newPasswordField.value &&
-                            "border-destructive! ring-destructive!",
+                              confirmPasswordField.isDirty &&
+                              !confirmPasswordField.editedSinceError &&
+                              confirmPasswordField.value !==
+                                newPasswordField.value &&
+                              "border-destructive! ring-destructive!",
                           )}
                           required
                         />
                         <FieldError
                           message={
                             confirmPasswordField.touched &&
-                              confirmPasswordField.isDirty &&
-                              !confirmPasswordField.editedSinceError &&
-                              confirmPasswordField.value !==
+                            confirmPasswordField.isDirty &&
+                            !confirmPasswordField.editedSinceError &&
+                            confirmPasswordField.value !==
                               newPasswordField.value
-                              ? "Passwords do not match"
+                              ? t("error.mismatch")
                               : null
                           }
                         />
@@ -1090,10 +1253,10 @@ function AuthContent() {
                         {loading ? (
                           <div className="flex items-center gap-2">
                             <Spinner className="size-4" />
-                            <span>Updating…</span>
+                            <span>{t("updatingPassword")}</span>
                           </div>
                         ) : (
-                          "Update Password"
+                          t("updatePassword")
                         )}
                       </Button>
                     </form>
@@ -1106,7 +1269,7 @@ function AuthContent() {
 
         {/* Right Side */}
         <div className="hidden md:flex md:w-[55%] p-4 h-full relative z-10">
-          <div className="w-full h-full bg-zinc-950/80 backdrop-blur-sm rounded-tr-lg rounded-tl-lg rounded-br-lg rounded-bl-[6rem] relative overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center">
+          <div className="w-full h-full bg-zinc-950/80 backdrop-blur-sm rounded-tr-lg rounded-tl-lg rounded-br-lg rtl:rounded-br-[6rem] rounded-bl-[6rem] rtl:rounded-bl-lg relative overflow-hidden border border-white/5 shadow-2xl flex items-center justify-center">
             <img
               src="/images/right-side-picture.png"
               alt="Community"
@@ -1125,42 +1288,5 @@ export default function AuthPage() {
     <Suspense fallback={<div className="min-h-screen bg-background" />}>
       <AuthContent />
     </Suspense>
-  );
-}
-
-function RoleCard({
-  active,
-  onClick,
-  label,
-  desc,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-  desc: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "flex flex-col items-center justify-center p-2 rounded-2xl border transition-all duration-300 gap-1 h-24 backdrop-blur-md active:scale-97",
-        active
-          ? "bg-primary/10 border-primary ring-1 ring-primary/50"
-          : "bg-background/20 border-border/30 hover:bg-background/30 hover:border-border/50",
-      )}
-    >
-      <p
-        className={cn(
-          "text-sm font-bold",
-          active ? "text-primary" : "text-foreground",
-        )}
-      >
-        {label}
-      </p>
-      <p className="text-[10px] text-muted-foreground leading-tight mt-1">
-        {desc}
-      </p>
-    </button>
   );
 }

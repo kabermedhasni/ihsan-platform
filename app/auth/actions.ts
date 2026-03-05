@@ -50,9 +50,11 @@ export async function verifyOTP(
     return { success: true, type: "recovery" };
   }
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const role = user?.user_metadata?.role || "donor";
-  redirect(`/${role}`);
+  return { success: true, role };
 }
 
 export async function login(formData: FormData) {
@@ -71,7 +73,7 @@ export async function login(formData: FormData) {
   }
 
   const role = data.user?.user_metadata?.role || "donor";
-  redirect(`/${role}`);
+  return { success: true, role };
 }
 
 export async function resetPassword(email: string) {
