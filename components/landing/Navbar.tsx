@@ -5,16 +5,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 20);
         };
         window.addEventListener("scroll", handleScroll);
+
+        const checkAuth = async () => {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            setIsAuthenticated(!!user);
+        };
+        checkAuth();
+
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
@@ -39,12 +49,12 @@ export default function Navbar() {
 
                 {/* Desktop Links */}
                 <div className="hidden md:flex items-center gap-8">
-                    <Link href="#how-it-works" className="text-sm font-medium text-emerald-100/70 hover:text-white transition-colors">How it Works</Link>
-                    <Link href="#map" className="text-sm font-medium text-emerald-100/70 hover:text-white transition-colors">Needs</Link>
-                    <Link href="#transparency" className="text-sm font-medium text-emerald-100/70 hover:text-white transition-colors">Transparency</Link>
+                    <Link href="#how-it-works" className="text-sm font-medium text-foreground/70 hover:text-white transition-colors">How it Works</Link>
+                    <Link href="#map" className="text-sm font-medium text-foreground/70 hover:text-white transition-colors">Needs</Link>
+                    <Link href="#transparency" className="text-sm font-medium text-foreground/70 hover:text-white transition-colors">Transparency</Link>
                     <div className="w-px h-4 bg-white/10 mx-2" />
-                    <Link href="/auth" className="px-6 py-2.5 bg-white text-emerald-900 rounded-xl font-bold text-sm hover:bg-emerald-50 transition-all">
-                        Get Started
+                    <Link href="/auth" className="px-6 py-2.5 bg-primary text-primary-foreground rounded-xl font-bold text-sm hover:bg-primary/10 transition-all">
+                        {isAuthenticated ? "Dashboard" : "Get Started"}
                     </Link>
                 </div>
 
@@ -70,8 +80,8 @@ export default function Navbar() {
                             <Link href="#how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-white">How it Works</Link>
                             <Link href="#map" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-white">Needs</Link>
                             <Link href="#transparency" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-bold text-white">Transparency</Link>
-                            <Link href="/auth" className="px-6 py-4 bg-emerald-500 text-white rounded-2xl font-bold text-center">
-                                Get Started
+                            <Link href="/auth" className="px-6 py-4 bg-primary text-white rounded-2xl font-bold text-center">
+                                {isAuthenticated ? "Dashboard" : "Get Started"}
                             </Link>
                         </div>
                     </motion.div>

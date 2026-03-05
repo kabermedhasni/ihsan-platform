@@ -32,7 +32,7 @@ export default function Ticker() {
     const duplicatedTransactions = [...transactions, ...transactions];
 
     return (
-        <div className="bg-emerald-950/50 border-y border-white/5 py-4 overflow-hidden select-none">
+        <div className="bg-background/50 border-y border-white/5 py-4 overflow-hidden select-none">
             <motion.div
                 className="flex whitespace-nowrap gap-8 items-center"
                 animate={{ x: ["0%", "-50%"] }}
@@ -47,12 +47,12 @@ export default function Ticker() {
                         key={idx}
                         className="flex items-center gap-4 bg-white/5 backdrop-blur-sm border border-white/10 px-6 py-2 rounded-full text-sm shrink-0"
                     >
-                        <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                        <div className="flex items-center gap-2 text-primary font-bold">
                             <CheckCircle2 className="w-4 h-4" />
                             <span>Donation for {tx.needs?.title}</span>
                         </div>
                         <div className="w-px h-4 bg-white/10" />
-                        <div className="flex items-center gap-1.5 text-emerald-100/60">
+                        <div className="flex items-center gap-1.5 text-foreground/60">
                             <MapPin className="w-3.5 h-3.5" />
                             <span>{tx.needs?.district}</span>
                         </div>
@@ -61,7 +61,7 @@ export default function Ticker() {
                             {tx.amount} MRU
                         </div>
                         <div className="w-px h-4 bg-white/10" />
-                        <div className="flex items-center gap-1.5 text-emerald-100/40">
+                        <div className="flex items-center gap-1.5 text-foreground/40">
                             <Clock className="w-3.5 h-3.5" />
                             <span>{tx.created_at ? formatDistanceToNow(new Date(tx.created_at), { addSuffix: true }) : 'just now'}</span>
                         </div>

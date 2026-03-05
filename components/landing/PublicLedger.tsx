@@ -31,7 +31,7 @@ export default function PublicLedger() {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                         viewport={{ once: true }}
-                        className="text-3xl md:text-4xl font-bold text-white mb-4"
+                        className="text-3xl md:text-4xl font-bold text-primary mb-4"
                     >
                         Public Transparency Ledger
                     </motion.h2>
@@ -51,12 +51,12 @@ export default function PublicLedger() {
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="border-b border-white/5 bg-white/5">
-                                    <th className="px-6 py-4 text-emerald-400 font-bold text-sm">ID</th>
-                                    <th className="px-6 py-4 text-emerald-400 font-bold text-sm">Need</th>
-                                    <th className="px-6 py-4 text-emerald-400 font-bold text-sm">City/District</th>
-                                    <th className="px-6 py-4 text-emerald-400 font-bold text-sm">Amount</th>
-                                    <th className="px-6 py-4 text-emerald-400 font-bold text-sm">Status</th>
-                                    <th className="px-6 py-4 text-emerald-400 font-bold text-sm font-mono text-right">Hash</th>
+                                    <th className="px-6 py-4 text-primary font-bold text-sm">ID</th>
+                                    <th className="px-6 py-4 text-primary font-bold text-sm">Need</th>
+                                    <th className="px-6 py-4 text-primary font-bold text-sm">City/District</th>
+                                    <th className="px-6 py-4 text-primary font-bold text-sm">Amount</th>
+                                    <th className="px-6 py-4 text-primary font-bold text-sm">Status</th>
+                                    <th className="px-6 py-4 text-primary font-bold text-sm font-mono text-right">Hash</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/5">
@@ -65,9 +65,9 @@ export default function PublicLedger() {
                                         <td className="px-6 py-4 text-white font-mono text-sm">{item.id.slice(0, 8)}...</td>
                                         <td className="px-6 py-4 text-white font-medium">{item.needs?.title}</td>
                                         <td className="px-6 py-4 text-muted-foreground">{item.needs?.district}</td>
-                                        <td className="px-6 py-4 text-emerald-400 font-bold">{item.amount} MRU</td>
+                                        <td className="px-6 py-4 text-primary font-bold">{item.amount} MRU</td>
                                         <td className="px-6 py-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${item.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
+                                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${item.status === 'completed' ? 'bg-primary/20 text-primary' : 'bg-amber-500/20 text-amber-400'
                                                 }`}>
                                                 {item.status}
                                             </span>
@@ -84,7 +84,7 @@ export default function PublicLedger() {
                             <Search className="w-4 h-4" />
                             You can search using transaction number or electronic fingerprint
                         </p>
-                        <button className="flex items-center gap-2 px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold transition-all group">
+                        <button className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold transition-all group">
                             View Full Transparency Ledger
                             <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                         </button>

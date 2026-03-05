@@ -62,7 +62,7 @@ export default function HowItWorks() {
                         whileInView={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.4 }}
                         viewport={{ once: true }}
-                        className="w-20 h-1.5 bg-emerald-500 mx-auto rounded-full"
+                        className="w-20 h-1.5 bg-primary mx-auto rounded-full"
                     />
                 </div>
 
@@ -74,9 +74,9 @@ export default function HowItWorks() {
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1, duration: 0.5 }}
                             viewport={{ once: true }}
-                            className="p-8 rounded-3xl bg-secondary/30 border border-white/5 hover:border-emerald-500/30 transition-all group"
+                            className="p-8 rounded-3xl bg-secondary/30 border border-white/5 hover:border-primary/30 transition-all group"
                         >
-                            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mb-6 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all">
+                            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all">
                                 <step.icon className="w-8 h-8" />
                             </div>
                             <h3 className="text-xl font-bold text-white mb-3 text-left">

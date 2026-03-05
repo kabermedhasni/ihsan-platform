@@ -25,7 +25,7 @@ export default function TrustSection() {
     return (
         <section className="py-24 relative overflow-hidden">
             {/* Decorative Blur */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-emerald-500/5 blur-[120px] -z-10" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/5 blur-[120px] -z-10" />
 
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -36,20 +36,20 @@ export default function TrustSection() {
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.2, duration: 0.6 }}
                             viewport={{ once: true }}
-                            className="group relative p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-emerald-500/50 transition-all duration-500"
+                            className="group relative p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all duration-500"
                         >
-                            <div className="mb-6 inline-flex p-4 rounded-2xl bg-emerald-500/10 text-emerald-400 group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
+                            <div className="mb-6 inline-flex p-4 rounded-2xl bg-primary/10 text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
                                 <card.icon className="w-8 h-8" />
                             </div>
                             <h3 className="text-xl font-bold text-white mb-3 text-left">
                                 {card.title}
                             </h3>
-                            <p className="text-emerald-100/70 text-left leading-relaxed">
+                            <p className="text-foreground/70 text-left leading-relaxed">
                                 {card.description}
                             </p>
 
                             {/* Subtle accent light */}
-                            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-emerald-500/0 via-emerald-500/0 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/0 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </motion.div>
                     ))}
                 </div>

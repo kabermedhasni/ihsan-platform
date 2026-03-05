@@ -1,3 +1,5 @@
+"use client";
+
 import Hero from "@/components/landing/Hero";
 import Ticker from "@/components/landing/Ticker";
 import HowItWorks from "@/components/landing/HowItWorks";

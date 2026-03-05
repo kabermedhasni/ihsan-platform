@@ -46,12 +46,12 @@ export default function MapInner() {
                 <Marker key={district.id || idx} position={[district.lat, district.lng] as [number, number]} icon={icon}>
                     <Popup className="custom-popup">
                         <div className="p-2 text-left">
-                            <h3 className="font-bold text-emerald-900 mb-1">{district.title}</h3>
+                            <h3 className="font-bold text-primary-foreground mb-1">{district.title}</h3>
                             <p className="text-sm text-gray-700 mb-2">Location: <span className="font-semibold">{district.district}</span></p>
                             <p className="text-sm text-gray-700 mb-2">Help Type: <span className="font-semibold">{district.description}</span></p>
                             <div className="flex justify-between items-center gap-4 border-t pt-2">
-                                <span className="text-xs font-mono font-bold text-emerald-600">{district.amount_required} MRU</span>
-                                <span className="text-xs font-medium px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">{district.funding_percentage}% funded</span>
+                                <span className="text-xs font-mono font-bold text-primary">{district.amount_required} MRU</span>
+                                <span className="text-xs font-medium px-2 py-0.5 bg-primary/20 text-primary rounded-full">{district.funding_percentage}% funded</span>
                             </div>
                         </div>
                     </Popup>

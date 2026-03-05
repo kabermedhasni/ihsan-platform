@@ -33,11 +33,11 @@ export default function Hero() {
     return (
         <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden">
             {/* Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-950 to-background -z-10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-secondary/50 via-background to-background -z-10" />
 
             {/* Animated Shapes */}
-            <div className="absolute top-1/4 -left-20 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-emerald-600/5 rounded-full blur-3xl animate-pulse delay-700" />
+            <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse delay-700" />
 
             <div className="container mx-auto px-4 md:px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -54,14 +54,14 @@ export default function Hero() {
                             transition={{ delay: 0.2, duration: 0.8 }}
                             className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6"
                         >
-                            Your donation... <span className="text-emerald-400">is traceable</span> <br /> until delivery
+                            Your donation... <span className="text-primary">is traceable</span> <br /> until delivery
                         </motion.h1>
 
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4, duration: 0.8 }}
-                            className="text-lg md:text-xl text-emerald-100/80 mb-10 max-w-xl leading-relaxed"
+                            className="text-lg md:text-xl text-foreground/80 mb-10 max-w-xl leading-relaxed"
                         >
                             Ihsan platform ensures that every Ouguiya reaches its beneficiaries with full transparency through live tracking technology.
                         </motion.p>
@@ -74,16 +74,10 @@ export default function Hero() {
                         >
                             <Link
                                 href="/needs"
-                                className="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold text-lg transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 group"
+                                className="px-8 py-4 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold text-lg transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2 group"
                             >
                                 Browse Needs
                                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                            </Link>
-                            <Link
-                                href="/track"
-                                className="px-8 py-4 bg-white/5 hover:bg-white/10 text-white border border-white/20 rounded-2xl font-bold text-lg transition-all backdrop-blur-sm flex items-center justify-center"
-                            >
-                                Check Transaction
                             </Link>
                         </motion.div>
                     </motion.div>
@@ -104,14 +98,14 @@ export default function Hero() {
                                     transition={{ delay: 0.5 + index * 0.1 }}
                                     className="flex items-center gap-6 p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-colors group"
                                 >
-                                    <div className="p-4 rounded-xl bg-emerald-500/20 text-emerald-400 group-hover:scale-110 transition-transform">
+                                    <div className="p-4 rounded-xl bg-primary/20 text-primary group-hover:scale-110 transition-transform">
                                         <stat.icon className="w-8 h-8" />
                                     </div>
                                     <div className="text-left flex-1">
                                         <div className="text-3xl font-bold text-white mb-1 tracking-tight">
                                             {stat.value}
                                         </div>
-                                        <div className="text-emerald-100/60 text-sm font-medium">
+                                        <div className="text-foreground/60 text-sm font-medium">
                                             {stat.label}
                                         </div>
                                     </div>
@@ -119,7 +113,7 @@ export default function Hero() {
                             ))}
 
                             {/* Trust Badge */}
-                            <div className="absolute -bottom-6 -right-6 p-4 bg-emerald-500 rounded-2xl shadow-xl flex items-center gap-3">
+                            <div className="absolute -bottom-6 -right-6 p-4 bg-primary rounded-2xl shadow-xl flex items-center gap-3">
                                 <CheckCircle className="w-6 h-6 text-white" />
                                 <span className="text-white font-bold text-sm">100% Verified Operations</span>
                             </div>

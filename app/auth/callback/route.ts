@@ -17,6 +17,13 @@ export async function GET(request: Request) {
       if (type === "recovery") {
         return NextResponse.redirect(`${origin}/auth?view=new-password`);
       }
+
+      if (next === "/") {
+        const { data: { user } } = await supabase.auth.getUser();
+        const role = user?.user_metadata?.role || '';
+        return NextResponse.redirect(`${origin}/${role}`);
+      }
+
       return NextResponse.redirect(`${origin}${next}`);
     }
   }
