@@ -17,6 +17,7 @@ import {
 import InteractiveMap from "@/components/landing/InteractiveMap";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/utils/supabase/client";
 
 export default function CatalogPage() {
   const t = useTranslations("catalog");
@@ -27,6 +28,7 @@ export default function CatalogPage() {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [sortBy, setSortBy] = useState("Newest");
   const [selectedNeed, setSelectedNeed] = useState<Need | null>(null);
+  const [userRole, setUserRole] = useState("donor");
 
   // Fetch needs from API
   useEffect(() => {
@@ -43,6 +45,23 @@ export default function CatalogPage() {
       }
     };
     fetchNeeds();
+
+    // Fetch user role
+    const fetchRole = async () => {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        setUserRole(profile?.role || user.user_metadata?.role || "donor");
+      }
+    };
+    fetchRole();
   }, []);
 
   // Filter & Sort Logic
@@ -273,7 +292,7 @@ export default function CatalogPage() {
         )}
 
         {/* MAP SECTION */}
-        <section className="bg-card rounded-3xl p-6 sm:p-8 shadow-sm border border-border mb-12">
+        <section className="rounded-3xl p-6 sm:p-8 mb-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-1 flex items-center gap-2">
@@ -305,6 +324,7 @@ export default function CatalogPage() {
         need={selectedNeed}
         isOpen={selectedNeed !== null}
         onClose={() => setSelectedNeed(null)}
+        userRole={userRole}
       />
     </div>
   );

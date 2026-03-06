@@ -21,7 +21,18 @@ export const DonationPanel = ({ needId }: { needId: string }) => {
       } = await supabase.auth.getUser();
       setUser(user);
       if (user) {
-        setRole(user.user_metadata?.role?.toLowerCase() || "donor");
+        // Fetch role from profile as the authoritative source
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+
+        const finalRole =
+          profile?.role?.toLowerCase() ||
+          user.user_metadata?.role?.toLowerCase() ||
+          "donor";
+        setRole(finalRole);
       }
       setAuthLoading(false);
     };
@@ -39,7 +50,7 @@ export const DonationPanel = ({ needId }: { needId: string }) => {
   const isRestricted = !authLoading && user && role !== "donor";
 
   return (
-    <div className="bg-card rounded-[2rem] p-8 md:p-10 shadow-2xl border border-border sticky top-28">
+    <div className="bg-card rounded-4xl p-8 md:p-10 shadow-2xl border border-border sticky top-28">
       <div className="space-y-6">
         <button
           disabled={isRestricted || authLoading}

@@ -12,6 +12,7 @@ export async function GET() {
       .select(
         `
                 id,
+                title,
                 city,
                 category,
                 amount_required,
@@ -62,6 +63,7 @@ export async function GET() {
 
       return {
         id: need.id,
+        title: need.title,
         city: need.city,
         category: need.category,
         amount: need.amount_required,

@@ -97,7 +97,8 @@
     "status": "Statut",
     "hash": "Empreinte",
     "searchNote": "Vous pouvez rechercher par numéro de transaction ou empreinte électronique",
-    "viewFull": "Voir le registre complet de transparence"
+    "viewFull": "Voir le registre complet de transparence",
+    "noData": "Aucune transaction récente trouvée"
   },
   "cta": {
     "title": "Faites le bien avec excellence",
@@ -547,7 +548,8 @@
       "hash": "Hachage du Registre",
       "networkStatus": "État du Réseau",
       "synchronized": "Synchronisé",
-      "viewOlder": "Voir les anciens enregistrements"
+      "viewOlder": "Voir les anciens enregistrements",
+      "viewFull": "Voir le registre complet de transparence"
     },
     "verify": {
       "title": "Votre don est-il vérifié ?",
@@ -569,6 +571,7 @@
       "confirmed": "Confirmé",
       "inProgress": "En cours",
       "delivered": "Livré",
+      "pending": "En attente",
       "realTimeCoverage": "Couverture en temps réel",
       "coverageDesc": "Faites l'expérience d'une transparence radicale. Chaque marqueur sur cette carte représente une livraison physique vérifiée ou une satisfaction de besoin confirmée."
     },

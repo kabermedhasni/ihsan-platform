@@ -18,7 +18,7 @@ const NeedCard = ({
   const tCats = useTranslations("catalog.categories");
 
   const formatTimeRemaining = (dateString: string) => {
-    if (!dateString) return t("card.unknown");
+    if (!dateString) return null;
     const expiresAt = new Date(dateString);
     const now = new Date();
     if (expiresAt < now) return t("card.expired");
@@ -83,10 +83,12 @@ const NeedCard = ({
               <Heart className="w-4 h-4 fill-primary text-primary" />
               <span>{t("card.donors", { count: need.donors_count || 0 })}</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4" />
-              <span>{formatTimeRemaining(need.expires_at)}</span>
-            </div>
+            {formatTimeRemaining(need.expires_at) && (
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4" />
+                <span>{formatTimeRemaining(need.expires_at)}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

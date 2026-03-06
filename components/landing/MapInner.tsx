@@ -6,14 +6,27 @@ import { Need } from "@/types/need";
 import Link from "next/link";
 
 // Fix for default marker icons in Leaflet + Next.js
-const icon = L.icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+// Helper to create custom colored icons
+const createIcon = (color: string) =>
+  L.divIcon({
+    className: "custom-marker",
+    html: `<div style="
+    width: 20px; 
+    height: 20px; 
+    background-color: ${color}; 
+    border: 3px solid white; 
+    border-radius: 50%; 
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  "></div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+  });
+
+// Primary yellow from globals.css is oklch(0.82 0.16 88)
+// Let's use a standard hex for simplicity in Leaflet or just use a CSS variable if possible
+const confirmedIcon = createIcon("#d1a000"); // Approximating the golden yellow
+const inProgressIcon = createIcon("#3b82f6"); // blue-500
+const otherIcon = createIcon("#94a3b8"); // slate-400 for unknown/other
 
 interface MapInnerProps {
   needs?: Need[];
@@ -75,7 +88,13 @@ export default function MapInner({
             <Marker
               key={need.id || idx}
               position={[need.lat, need.lng] as [number, number]}
-              icon={icon}
+              icon={
+                need.status === "completed"
+                  ? confirmedIcon
+                  : ["active", "urgent", "inProgress"].includes(need.status)
+                    ? inProgressIcon
+                    : otherIcon
+              }
             >
               <Popup className="custom-popup">
                 <div className="p-2 text-left font-sans" dir="ltr">

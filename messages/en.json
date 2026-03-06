@@ -97,7 +97,8 @@
     "status": "Status",
     "hash": "Hash",
     "searchNote": "You can search using transaction number or electronic fingerprint",
-    "viewFull": "View Full Transparency Ledger"
+    "viewFull": "View Full Transparency Ledger",
+    "noData": "No recent transactions found"
   },
   "cta": {
     "title": "Do Good with Excellence",
@@ -547,7 +548,8 @@
       "hash": "Ledger Hash",
       "networkStatus": "Network Status",
       "synchronized": "Synchronized",
-      "viewOlder": "View Older Records"
+      "viewOlder": "View Older Records",
+      "viewFull": "View Full Transparency Ledger"
     },
     "verify": {
       "title": "Is your donation verified?",
@@ -569,6 +571,7 @@
       "confirmed": "Confirmed",
       "inProgress": "In Progress",
       "delivered": "Delivered",
+      "pending": "Pending",
       "realTimeCoverage": "Real-Time Coverage",
       "coverageDesc": "Experience radical transparency. Every marker on this map represents a verified physical delivery or confirmed need fulfillment."
     },

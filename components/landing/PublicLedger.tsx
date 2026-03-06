@@ -3,6 +3,7 @@
 import { ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -16,17 +17,23 @@ export default function PublicLedger() {
   const t = useTranslations("ledger");
   const tStatus = useTranslations("catalog.statuses");
   const [ledgerData, setLedgerData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchLedger = async () => {
       try {
         const response = await fetch("/api/donations/recent");
+        if (!response.ok) throw new Error("Failed to fetch ledger");
         const data = await response.json();
         if (Array.isArray(data)) {
           setLedgerData(data);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error fetching ledger:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
     };
     fetchLedger();
@@ -69,55 +76,93 @@ export default function PublicLedger() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {ledgerData.map((item, idx) => (
-                <TableRow
-                  key={idx}
-                  className="border-white/5 hover:bg-white/5 transition-colors group"
-                >
-                  <TableCell className="px-6 py-4 text-white font-mono text-sm">
-                    {item.id.slice(0, 8)}...
-                  </TableCell>
-                  <TableCell className="px-6 py-4 text-white font-medium">
-                    {item.needs?.title}
-                  </TableCell>
-                  <TableCell className="px-6 py-4 text-muted-foreground">
-                    {item.needs?.district}
-                  </TableCell>
-                  <TableCell className="px-6 py-4 text-primary font-bold">
-                    {item.amount} MRU
-                  </TableCell>
-                  <TableCell className="px-6 py-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        item.status === "completed"
-                          ? "bg-primary/20 text-primary"
-                          : "bg-amber-500/20 text-amber-400"
-                      }`}
-                    >
-                      {tStatus(
-                        item.status === "active"
-                          ? "open"
-                          : item.status === "urgent"
-                            ? "inProgress"
-                            : item.status,
-                      )}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-6 py-4 text-muted-foreground font-mono text-sm text-end">
-                    {item.hash
-                      ? `${item.hash.slice(0, 6)}...${item.hash.slice(-4)}`
-                      : "N/A"}
+              {loading ? (
+                <TableRow className="border-white/5 hover:bg-transparent">
+                  <TableCell
+                    colSpan={6}
+                    className="px-6 py-12 text-center"
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                       <div className="w-6 h-6 border-2 border-primary border-t-transparent animate-spin rounded-full" />
+                       <span className="text-muted-foreground text-sm">Loading ledger...</span>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : error ? (
+                <TableRow className="border-white/5 hover:bg-transparent">
+                  <TableCell
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-destructive"
+                  >
+                    {error}
+                  </TableCell>
+                </TableRow>
+              ) : ledgerData.length === 0 ? (
+                <TableRow className="border-white/5 hover:bg-transparent">
+                  <TableCell
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-muted-foreground"
+                  >
+                    {t("noData") || "No recent transactions found"}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                ledgerData.map((item, idx) => (
+                  <TableRow
+                    key={item.id || idx}
+                    className="border-white/5 hover:bg-white/5 transition-colors group"
+                  >
+                    <TableCell className="px-6 py-4 text-white font-mono text-sm">
+                      {item.id ? `${item.id.slice(0, 8)}...` : "N/A"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-white font-medium">
+                      {item.needs?.title || "Donation"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-muted-foreground">
+                      {item.needs?.district || "Unknown"}
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-primary font-bold">
+                      {item.amount} MRU
+                    </TableCell>
+                    <TableCell className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-bold ${
+                          item.status === "completed"
+                            ? "bg-primary/20 text-primary"
+                            : "bg-amber-500/20 text-amber-400"
+                        }`}
+                      >
+                        {tStatus(
+                          item.status === "active"
+                            ? "open"
+                            : item.status === "urgent"
+                              ? "inProgress"
+                              : item.status,
+                        ) ||
+                          (item.status === "completed"
+                            ? "Confirmed"
+                            : "In Progress")}
+                      </span>
+                    </TableCell>
+                    <TableCell className="px-6 py-4 text-muted-foreground font-mono text-sm text-end">
+                      {item.hash
+                        ? `${item.hash.slice(0, 6)}...${item.hash.slice(-4)}`
+                        : "N/A"}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
 
           <div className="p-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-end gap-4">
-            <button className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold transition-all group">
+            <Link
+              href="/transparency"
+              className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold transition-all group"
+            >
               {t("viewFull")}
               <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

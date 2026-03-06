@@ -11,16 +11,18 @@ const NeedDrawer = ({
   need,
   isOpen,
   onClose,
+  userRole = "donor",
 }: {
   need: Need | null;
   isOpen: boolean;
   onClose: () => void;
+  userRole?: string;
 }) => {
   const t = useTranslations("catalog");
   const tCats = useTranslations("catalog.categories");
 
   const formatTimeRemaining = (dateString: string) => {
-    if (!dateString) return t("card.unknown");
+    if (!dateString) return null;
     const expiresAt = new Date(dateString);
     const now = new Date();
     if (expiresAt < now) return t("card.expired");
@@ -150,14 +152,16 @@ const NeedDrawer = ({
                     </span>
                     <span className="font-bold">{need.donors_count || 0}</span>
                   </div>
-                  <div className="flex flex-col items-end rtl:items-start">
-                    <span className="text-xs text-muted-foreground font-medium mb-1">
-                      {t("drawer.timeRemaining")}
-                    </span>
-                    <span className="font-bold text-sm">
-                      {formatTimeRemaining(need.expires_at)}
-                    </span>
-                  </div>
+                  {formatTimeRemaining(need.expires_at) && (
+                    <div className="flex flex-col items-end rtl:items-start">
+                      <span className="text-xs text-muted-foreground font-medium mb-1">
+                        {t("drawer.timeRemaining")}
+                      </span>
+                      <span className="font-bold text-sm">
+                        {formatTimeRemaining(need.expires_at)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -171,13 +175,22 @@ const NeedDrawer = ({
                 View full details now
                 <ChevronRight className="w-4 h-4 rtl:rotate-180" />
               </Link>
-              <Link
-                href={`/donate/${need.id}`}
-                className="w-full py-3.5 px-4 rounded-xl text-primary-foreground bg-primary hover:bg-primary/90 font-bold text-lg transition-all text-center flex items-center justify-center gap-2"
-              >
-                {t("drawer.donateToThisNeed")}
-                <ChevronRight className="w-5 h-5 rtl:rotate-180" />
-              </Link>
+              {userRole === "donor" ? (
+                <Link
+                  href={`/donate/${need.id}`}
+                  className="w-full py-3.5 px-4 rounded-xl text-primary-foreground bg-primary hover:bg-primary/90 font-bold text-lg transition-all text-center flex items-center justify-center gap-2"
+                >
+                  {t("drawer.donateToThisNeed")}
+                  <ChevronRight className="w-5 h-5 rtl:rotate-180" />
+                </Link>
+              ) : (
+                <div className="w-full py-3.5 px-4 rounded-xl text-muted-foreground bg-muted font-bold text-sm text-center flex items-center justify-center gap-2 cursor-not-allowed">
+                  {t("drawer.donateToThisNeed")}
+                  <span className="text-[10px] bg-secondary px-2 py-0.5 rounded-full uppercase tracking-widest">
+                    {userRole}
+                  </span>
+                </div>
+              )}
             </div>
           </>
         )}

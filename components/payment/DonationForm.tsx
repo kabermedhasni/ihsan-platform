@@ -2,9 +2,10 @@
 
 import React, { useState } from "react";
 import { Send, Banknote, User, CreditCard, ShieldCheck } from "lucide-react";
-import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { ProofUpload } from "./ProofUpload";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 interface DonationFormProps {
   validatorBankNumber: string;
@@ -71,7 +72,7 @@ export const DonationForm = ({
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="w-full bg-card border border-border rounded-2xl px-6 py-5 text-2xl font-black text-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-muted-foreground/30"
+              className="w-full bg-card border border-border rounded-2xl px-6 py-5 text-2xl font-black text-foreground focus:outline-none focus:border-primary transition-all placeholder:text-muted-foreground/30"
             />
             <div className="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2">
               <span className="font-black text-muted-foreground group-focus-within:text-primary transition-colors">
@@ -96,7 +97,7 @@ export const DonationForm = ({
               value={donorBankNumber}
               onChange={(e) => setDonorBankNumber(e.target.value)}
               placeholder="e.g. 41 23 45 67"
-              className="w-full bg-card border border-border rounded-2xl pl-16 pr-6 py-5 text-lg font-black text-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-muted-foreground/30"
+              className="w-full bg-card border border-border rounded-2xl pl-16 pr-6 py-5 text-lg font-black text-foreground focus:outline-none focus:border-primary transition-all placeholder:text-muted-foreground/30"
             />
           </div>
         </div>
@@ -104,27 +105,24 @@ export const DonationForm = ({
         {/* Proof Upload */}
         <ProofUpload onUpload={setProofFile} />
 
-        {/* Submit Button */}
-        <motion.button
+        <Button
           type="submit"
           disabled={isSubmitting || !amount || !donorBankNumber}
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.99 }}
-          className={`w-full py-6 rounded-[2rem] font-black text-lg uppercase tracking-widest flex items-center justify-center gap-4 shadow-xl transition-all ${
+          className={`w-full py-8 rounded-4xl font-black text-lg uppercase tracking-widest flex items-center justify-center gap-4 shadow-xl transition-all h-auto active:scale-[0.98] ${
             isSubmitting
-              ? "bg-muted text-muted-foreground"
+              ? "bg-primary/50 text-primary-foreground/50 cursor-not-allowed"
               : "bg-primary text-primary-foreground shadow-primary/20 hover:shadow-primary/30"
           }`}
         >
           {isSubmitting ? (
-            <div className="w-6 h-6 border-4 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+            <Spinner className="size-4 text-primary-foreground" />
           ) : (
             <>
-              <Send className="w-6 h-6" />
+              <Send className="w-4 h-4" />
               {t("submitDonation")}
             </>
           )}
-        </motion.button>
+        </Button>
 
         <div className="flex items-center justify-center gap-2 text-muted-foreground">
           <ShieldCheck className="w-4 h-4 text-emerald-500" />

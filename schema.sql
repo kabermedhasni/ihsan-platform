@@ -254,7 +254,9 @@ ALTER TABLE ONLY "public"."transactions"
 
 
 
-CREATE POLICY "Authenticated users can insert donations" ON "public"."transactions" FOR INSERT WITH CHECK (("auth"."uid"() IS NOT NULL));
+CREATE POLICY "Authenticated users can insert donations" ON "public"."donations" FOR INSERT WITH CHECK (("auth"."uid"() IS NOT NULL));
+
+CREATE POLICY "Authenticated users can insert transactions" ON "public"."transactions" FOR INSERT WITH CHECK (("auth"."uid"() IS NOT NULL));
 
 
 

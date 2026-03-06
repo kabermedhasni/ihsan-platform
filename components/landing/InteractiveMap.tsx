@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MousePointer2 } from "lucide-react";
+import MapLegend from "@/components/ui/MapLegend";
 
 // Dynamic import for MapContainer to avoid SSR issues
 const Map = dynamic(() => import("./MapInner"), {
@@ -91,6 +92,11 @@ export default function InteractiveMap({
               {t("done")}
             </button>
           )}
+        </div>
+
+        {/* Map legend */}
+        <div className="mt-3 flex justify-end">
+          <MapLegend />
         </div>
       </div>
     </section>
