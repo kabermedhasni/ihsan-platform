@@ -477,7 +477,9 @@
       "processing": "Processing donation...",
       "success": "Thank you for your donation!",
       "verifiedNote": "Verified & Encrypted Transaction",
-      "beneficiaryNote": "100% of your donation goes directly to the beneficiary."
+      "beneficiaryNote": "100% of your donation goes directly to the beneficiary.",
+      "donorOnly": "Only donors can contribute to this need.",
+      "loginRequired": "Please login to donate."
     }
   }
 }

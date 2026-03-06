@@ -73,11 +73,28 @@ export async function updateSession(request: NextRequest) {
     if (request.nextUrl.searchParams.get("view") === "new-password") {
       return supabaseResponse;
     }
-    const role = user.user_metadata?.role || '';
+    const role = (user.user_metadata?.role || "").toLowerCase();
     const url = request.nextUrl.clone();
-    url.pathname = `/${role}`;
+    url.pathname = role ? `/${role}` : "/auth";
     url.search = "";
     return NextResponse.redirect(url);
+  }
+
+  // Role-based access control
+  const protectedRoutes = ["/validator", "/donor", "/partner"];
+  const currentProtectedRoute = protectedRoutes.find(route => pathname.startsWith(route));
+
+  if (user && currentProtectedRoute) {
+    const role = (user.user_metadata?.role || "").toLowerCase();
+    const requiredRole = currentProtectedRoute.substring(1); // e.g., "validator"
+
+    if (role !== requiredRole) {
+      // User has the wrong role for this page → redirect to their own dashboard
+      const url = request.nextUrl.clone();
+      url.pathname = role ? `/${role}` : "/auth";
+      url.search = "";
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;

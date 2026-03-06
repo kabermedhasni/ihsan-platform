@@ -1,18 +1,36 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Heart, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Heart, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { createClient } from '@/utils/supabase/client';
 
 export const DonationPanel = () => {
     const t = useTranslations("needsDetail");
     const [amount, setAmount] = useState<string>('');
     const [isDonating, setIsDonating] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [user, setUser] = useState<any>(null);
+    const [role, setRole] = useState<string | null>(null);
+    const [authLoading, setAuthLoading] = useState(true);
     const quickAmounts = [250, 500, 1000];
 
+    useEffect(() => {
+        const checkAuth = async () => {
+            const supabase = createClient();
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+            if (user) {
+                setRole(user.user_metadata?.role?.toLowerCase() || 'donor');
+            }
+            setAuthLoading(false);
+        };
+        checkAuth();
+    }, []);
+
     const handleDonate = () => {
+        if (!user || role !== 'donor') return;
         setIsDonating(true);
         // Simulate API call
         setTimeout(() => {
@@ -22,6 +40,8 @@ export const DonationPanel = () => {
             setTimeout(() => setShowSuccess(false), 5000);
         }, 2000);
     };
+
+    const isRestricted = !authLoading && (!user || role !== 'donor');
 
     return (
         <motion.div
@@ -93,11 +113,11 @@ export const DonationPanel = () => {
                             </div>
 
                             <motion.button
-                                disabled={isDonating || !amount}
+                                disabled={isDonating || !amount || isRestricted || authLoading}
                                 onClick={handleDonate}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className={`w-full font-black py-5 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 text-lg ${isDonating
+                                whileHover={isRestricted ? {} : { scale: 1.02 }}
+                                whileTap={isRestricted ? {} : { scale: 0.98 }}
+                                className={`w-full font-black py-5 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 text-lg ${isDonating || isRestricted || authLoading
                                     ? 'bg-muted text-muted-foreground cursor-not-allowed'
                                     : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-primary/20'
                                     }`}
@@ -106,11 +126,24 @@ export const DonationPanel = () => {
                                     <div className="w-6 h-6 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
                                 ) : (
                                     <>
-                                        <Heart className="w-6 h-6 fill-primary-foreground" />
+                                        <Heart className={`w-6 h-6 ${isRestricted ? '' : 'fill-primary-foreground'}`} />
                                         {t("donation.submit")}
                                     </>
                                 )}
                             </motion.button>
+
+                            {isRestricted && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="flex items-center gap-2 p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive text-xs font-bold"
+                                >
+                                    <AlertCircle className="w-4 h-4 shrink-0" />
+                                    <span>
+                                        {!user ? t("donation.loginRequired") : t("donation.donorOnly")}
+                                    </span>
+                                </motion.div>
+                            )}
 
                             <div className="flex flex-col items-center gap-4 pt-4">
                                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-black uppercase tracking-wider">

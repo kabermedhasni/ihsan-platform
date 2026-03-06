@@ -477,7 +477,9 @@
       "processing": "Traitement du don...",
       "success": "Merci pour votre don !",
       "verifiedNote": "Transaction Vérifiée & Chiffrée",
-      "beneficiaryNote": "100% de votre don va directement au bénéficiaire."
+      "beneficiaryNote": "100% de votre don va directement au bénéficiaire.",
+      "donorOnly": "Seuls les donateurs peuvent contribuer à ce besoin.",
+      "loginRequired": "Veuillez vous connecter pour faire un don."
     }
   }
 }
