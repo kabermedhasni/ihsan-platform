@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import { ChevronDown, Map as MapIcon } from "lucide-react";
+import { motion } from "framer-motion";
 import NeedCard from "@/components/catalog/NeedCard";
 import NeedDrawer from "@/components/catalog/NeedDrawer";
 import { Need } from "@/types/need";
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import InteractiveMap from "@/components/landing/InteractiveMap";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 
 export default function CatalogPage() {
   const t = useTranslations("catalog");
@@ -51,11 +53,14 @@ export default function CatalogPage() {
           selectedCity === "All" || need.city === selectedCity;
 
         // Map database categories to translation-friendly labels
-        const categoryKey = need.category.toLowerCase().replace(/\s+/g, '');
+        const categoryKey = need.category.toLowerCase().replace(/\s+/g, "");
         let normalizedCategory = "other";
-        if (["meals", "وجبات"].includes(categoryKey)) normalizedCategory = "Meals";
-        else if (["medical", "طبي"].includes(categoryKey)) normalizedCategory = "Medical";
-        else if (["housing", "إيواء"].includes(categoryKey)) normalizedCategory = "Housing";
+        if (["meals", "وجبات"].includes(categoryKey))
+          normalizedCategory = "Meals";
+        else if (["medical", "طبي"].includes(categoryKey))
+          normalizedCategory = "Medical";
+        else if (["housing", "إيواء"].includes(categoryKey))
+          normalizedCategory = "Housing";
 
         const matchesCategory =
           selectedCategory === "All" || normalizedCategory === selectedCategory;
@@ -78,7 +83,8 @@ export default function CatalogPage() {
           return b.funding_percentage - a.funding_percentage;
         if (sortBy === "Closest to Goal")
           return (
-            (a.amount_required - a.total_donated) -
+            a.amount_required -
+            a.total_donated -
             (b.amount_required - b.total_donated)
           );
         return 0;
@@ -97,18 +103,22 @@ export default function CatalogPage() {
   return (
     <div className="bg-background text-foreground font-sans">
       {/* HEADER */}
-      <section className="bg-card border-b border-border pt-24 pb-12 sm:pt-32 sm:pb-16 px-4">
-        <div className="container mx-auto max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-            <div className="max-w-xl">
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-3 tracking-tight">
-                {t("title")}
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                {t("description")}
-              </p>
-            </div>
-          </div>
+      <section className="relative pt-20 pb-20 overflow-hidden">
+        <div className="absolute inset-0 bg-primary/5 -z-10" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full -mr-64 -mt-64" />
+        <div className="container mx-auto max-w-7xl px-6 text-center md:text-left">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-2xl"
+          >
+            <h1 className="text-5xl mt-10 md:text-6xl font-black text-foreground tracking-tighter leading-tight mb-6">
+              {t("title")}
+            </h1>
+            <p className="text-lg text-muted-foreground font-medium leading-relaxed">
+              {t("description")}
+            </p>
+          </motion.div>
         </div>
       </section>
 
@@ -236,7 +246,8 @@ export default function CatalogPage() {
               {t("noNeeds")}
             </h3>
             <p className="text-muted-foreground">{t("adjustFilters")}</p>
-            <button
+            <Button
+              variant="link"
               onClick={() => {
                 setSelectedCity("All");
                 setSelectedCategory("All");
@@ -245,16 +256,19 @@ export default function CatalogPage() {
               className="mt-6 text-primary font-medium hover:text-primary/80 text-sm transition-colors"
             >
               {t("reset")}
-            </button>
+            </Button>
           </div>
         )}
 
         {/* LOAD MORE */}
         {!loading && filteredNeeds.length > 0 && (
           <div className="text-center mb-16">
-            <button className="py-3 px-8 bg-card border border-border text-foreground font-medium rounded-xl hover:bg-accent shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-ring/40">
+            <Button
+              variant="outline"
+              className="py-6 px-10 rounded-xl font-bold uppercase tracking-widest text-xs border-border"
+            >
               {t("loadMore")}
-            </button>
+            </Button>
           </div>
         )}
 

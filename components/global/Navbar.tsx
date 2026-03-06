@@ -62,6 +62,7 @@ export default function Navbar() {
         .eq("id", sessionUser.id)
         .single();
 
+      // Read role from profiles table (authoritative source)
       const role = profile?.role || sessionUser.user_metadata?.role || "donor";
 
       setIsAuthenticated(true);
@@ -174,8 +175,8 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || !isHome
-          ? "bg-background/80 backdrop-blur-lg border-b border-white/5 py-3"
+        isMobileMenuOpen || isScrolled || !isHome
+          ? "bg-background/40 backdrop-blur-2xl border-b border-white/5 py-3"
           : "bg-transparent py-5"
       }`}
     >
@@ -275,7 +276,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-b border-white/5 overflow-hidden"
+            className="md:hidden bg-transparent overflow-hidden"
           >
             <div className="container mx-auto px-4 py-8 flex flex-col gap-6">
               {navLinks.map((link) => {

@@ -399,6 +399,25 @@
       "confirmed": "Confirmed"
     }
   },
+  "partner": {
+    "welcome": "Welcome back",
+    "summary": "Manage your active orders and track your community impact in real-time.",
+    "role": "Verified Partner",
+    "activePipeline": "Active Pipeline",
+    "orders": "Orders",
+    "allCaughtUp": "All caught up!",
+    "newOrdersDesc": "New funded orders will appear here.",
+    "todaysFlow": "Today's Flow",
+    "support": {
+      "title": "Partner Support",
+      "desc": "Need help with an order or scheduling? Our team is active 24/7.",
+      "button": "Open Support"
+    },
+    "history": {
+      "title": "Order History",
+      "archive": "Full Archive"
+    }
+  },
   "transparency": {
     "title": "Transparency Ledger",
     "description": "Every confirmed donation is recorded on our public ledger, providing full traceability from donor to beneficiary.",

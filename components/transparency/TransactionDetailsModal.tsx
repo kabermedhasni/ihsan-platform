@@ -11,7 +11,7 @@ export const TransactionDetailsModal = ({ tx, onClose }: { tx: Transaction, onCl
     const tCatalog = useTranslations("catalog");
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-6">
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -94,7 +94,7 @@ export const TransactionDetailsModal = ({ tx, onClose }: { tx: Transaction, onCl
                                 className="absolute inset-0 w-full h-full object-cover"
                             />
                         )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                         <div className="absolute bottom-8 left-8 rtl:left-auto rtl:right-8 text-left rtl:text-right">
                             <p className="text-white text-lg font-black tracking-tight mb-1">{t("onSiteConfirmation")}</p>
                             <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{t("capturedBy")}</p>

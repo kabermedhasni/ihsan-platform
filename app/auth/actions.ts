@@ -53,7 +53,17 @@ export async function verifyOTP(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const role = user?.user_metadata?.role || "donor";
+
+  let role = user?.user_metadata?.role || "donor";
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    if (profile?.role) role = profile.role;
+  }
+
   return { success: true, role };
 }
 
@@ -72,7 +82,16 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
-  const role = data.user?.user_metadata?.role || "donor";
+  let role = data.user?.user_metadata?.role || "donor";
+  if (data.user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .single();
+    if (profile?.role) role = profile.role;
+  }
+
   return { success: true, role };
 }
 

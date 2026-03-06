@@ -399,6 +399,25 @@
       "confirmed": "Confirmé"
     }
   },
+  "partner": {
+    "welcome": "Bon retour",
+    "summary": "Gérez vos commandes actives et suivez votre impact communautaire en temps réel.",
+    "role": "Partenaire Vérifié",
+    "activePipeline": "Flux Actif",
+    "orders": "Commandes",
+    "allCaughtUp": "Tout est à jour !",
+    "newOrdersDesc": "Les nouvelles commandes financées apparaîtront ici.",
+    "todaysFlow": "Flux du Jour",
+    "support": {
+      "title": "Support Partenaire",
+      "desc": "Besoin d'aide avec une commande ou un planning ? Notre équipe est active 24/7.",
+      "button": "Ouvrir le Support"
+    },
+    "history": {
+      "title": "Historique des Commandes",
+      "archive": "Archive Complète"
+    }
+  },
   "transparency": {
     "title": "Registre de Transparence",
     "description": "Chaque don confirmé est enregistré dans notre registre public, offrant une traçabilité complète du donateur au bénéficiaire.",

@@ -46,7 +46,7 @@ export default function PublicLedger() {
 
         <div className="bg-secondary/20 rounded-lg border border-white/5 overflow-hidden">
           <Table>
-            <TableHeader className="bg-white/5">
+            <TableHeader className="bg-white/2">
               <TableRow className="border-white/5 hover:bg-transparent">
                 <TableHead className="px-6 py-4 text-primary font-bold text-sm">
                   {t("id")}
@@ -88,17 +88,18 @@ export default function PublicLedger() {
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${item.status === "completed"
-                        ? "bg-primary/20 text-primary"
-                        : "bg-amber-500/20 text-amber-400"
-                        }`}
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        item.status === "completed"
+                          ? "bg-primary/20 text-primary"
+                          : "bg-amber-500/20 text-amber-400"
+                      }`}
                     >
                       {tStatus(
                         item.status === "active"
                           ? "open"
                           : item.status === "urgent"
                             ? "inProgress"
-                            : item.status
+                            : item.status,
                       )}
                     </span>
                   </TableCell>
@@ -112,7 +113,7 @@ export default function PublicLedger() {
             </TableBody>
           </Table>
 
-          <div className="p-6 border-t border-white/5 bg-white/5 flex flex-col md:flex-row items-center justify-end gap-4">
+          <div className="p-6 border-t border-white/5 flex flex-col md:flex-row items-center justify-end gap-4">
             <button className="flex items-center gap-2 px-6 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold transition-all group">
               {t("viewFull")}
               <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-1" />

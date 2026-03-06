@@ -23,6 +23,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@/components/ui/spinner";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -55,20 +56,20 @@ interface DonorStats {
 // ─── STATUS CONFIG ─────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<DonationStatus, { labelKey: string; cls: string }> =
-{
-  pending: {
-    labelKey: "funding",
-    cls: "bg-primary/15 text-primary border-primary/30",
-  },
-  completed: {
-    labelKey: "delivered",
-    cls: "bg-green-500/15 text-green-400 border-green-500/30",
-  },
-  failed: {
-    labelKey: "failed",
-    cls: "bg-destructive/15 text-destructive border-destructive/30",
-  },
-};
+  {
+    pending: {
+      labelKey: "funding",
+      cls: "bg-primary/15 text-primary border-primary/30",
+    },
+    completed: {
+      labelKey: "delivered",
+      cls: "bg-green-500/15 text-green-400 border-green-500/30",
+    },
+    failed: {
+      labelKey: "failed",
+      cls: "bg-destructive/15 text-destructive border-destructive/30",
+    },
+  };
 
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
@@ -118,20 +119,20 @@ const StatCard = ({
   value: string;
   sub?: string;
 }) => (
-  <motion.div
-    whileHover={{ y: -4 }}
-    className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-sm hover:shadow-md transition-all"
-  >
-    <div className="p-3 bg-primary/10 text-primary rounded-xl shrink-0 w-fit">
+  <div className="group relative p-6 rounded-2xl bg-secondary/30 border border-white/5 hover:border-primary/50 transition-all duration-500 flex flex-col gap-4 overflow-hidden">
+    <div className="p-3 bg-primary/10 text-primary rounded-xl shrink-0 w-fit group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
       {icon}
     </div>
     <div>
-      <p className="text-3xl font-black text-foreground tracking-tighter shrink-0 truncate">{value}</p>
+      <p className="text-3xl font-black text-foreground tracking-tighter shrink-0 truncate">
+        {value}
+      </p>
       <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
         {label} {sub && <span className="text-primary/80 ml-1">({sub})</span>}
       </p>
     </div>
-  </motion.div>
+    <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-primary/0 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+  </div>
 );
 
 const DonationCard = ({ d }: { d: Donation }) => {
@@ -142,7 +143,7 @@ const DonationCard = ({ d }: { d: Donation }) => {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-card border border-border rounded-[2rem] p-6 hover:shadow-xl transition-all duration-300 group"
+      className="bg-card border border-border rounded-4xl p-6 hover:shadow-xl transition-all duration-300 group"
     >
       <div className="flex justify-between items-start mb-4 gap-3">
         <div className="flex-1 min-w-0">
@@ -188,7 +189,7 @@ const ProofCard = ({ d }: { d: Donation }) => {
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="bg-card border border-border rounded-[2rem] overflow-hidden hover:shadow-xl transition-all duration-300"
+      className="bg-card border border-border rounded-4xl overflow-hidden hover:shadow-xl transition-all duration-300"
     >
       {d.proofImage && (
         <div className="h-48 overflow-hidden">
@@ -302,9 +303,13 @@ const DonationsTable = ({ donations }: { donations: Donation[] }) => {
                     <td className="px-6 py-4 font-mono text-xs text-muted-foreground">
                       {d.id.slice(0, 12)}…
                     </td>
-                    <td className="px-6 py-4 font-black text-xs text-foreground uppercase tracking-tight">{d.city}</td>
+                    <td className="px-6 py-4 font-black text-xs text-foreground uppercase tracking-tight">
+                      {d.city}
+                    </td>
                     <td className="px-6 py-4">
-                      <span className="px-2 py-0.5 bg-secondary text-muted-foreground rounded text-[10px] font-black uppercase tracking-widest">{d.category}</span>
+                      <span className="px-2 py-0.5 bg-secondary text-muted-foreground rounded text-[10px] font-black uppercase tracking-widest">
+                        {d.category}
+                      </span>
                     </td>
                     <td className="px-6 py-4 font-black text-sm text-primary whitespace-nowrap">
                       {d.amount.toLocaleString()} {tCatalog("mru")}
@@ -353,23 +358,36 @@ export default function DonorPage() {
 
   useEffect(() => {
     const init = async () => {
-      // 1. Auth check
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        router.replace("/auth");
-        return;
-      }
-      setDisplayName(
-        user.user_metadata?.display_name ||
-        user.email?.split("@")[0] ||
-        t("defaultDisplayName"),
-      );
-
-      // 2. Load donor data from API
       try {
+        // 1. Auth check
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          router.replace("/auth");
+          return;
+        }
+        setDisplayName(
+          user.user_metadata?.display_name ||
+            user.email?.split("@")[0] ||
+            t("defaultDisplayName"),
+        );
+
+        // Read role from profiles table (authoritative source)
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        const role = profile?.role || user.user_metadata?.role;
+        // DISABLED FOR TESTING
+        // if ((role || "donor").toLowerCase() !== "donor") {
+        //   router.replace(`/${(role || "donor").toLowerCase()}`);
+        //   return;
+        // }
+
+        // 2. Load donor data from API
         const res = await fetch("/api/donations/mine");
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
@@ -392,7 +410,7 @@ export default function DonorPage() {
       }
     };
     init();
-  }, [router, t]);
+  }, [router]);
 
   if (loading) {
     return (
@@ -409,20 +427,59 @@ export default function DonorPage() {
   const lastHash = donations[0]?.hash;
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans pt-20">
-      <div className="container mx-auto max-w-7xl px-6 py-12">
-        <div className="mb-12">
-          <div className="flex items-center gap-2 mb-3">
-            <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">{t("welcome")}</p>
-            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-          </div>
-          <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter mb-4 text-left rtl:text-right">
-            {displayName} 👋
-          </h1>
-          <p className="text-muted-foreground font-medium text-lg max-w-2xl text-left rtl:text-right">{t("summary")}</p>
+    <div className="min-h-screen bg-background text-foreground font-sans">
+      <section className="relative pt-20 pb-20 overflow-hidden">
+        <div className="absolute inset-0 bg-primary/5 -z-10" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full -mr-64 -mt-64" />
+        <div className="container mx-auto max-w-7xl px-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-2xl"
+          >
+            <div className="mb-4 mt-6 md:mt-10">
+              <h2 className="text-5xl md:text-6xl font-bold text-foreground mb-2 text-left rtl:text-right">
+                {t("welcome")}
+              </h2>
+              <div className="flex items-center gap-4 overflow-hidden">
+                <h1 className="text-5xl md:text-6xl font-black text-foreground tracking-tighter text-left rtl:text-right leading-[1.1] truncate">
+                  {displayName}
+                </h1>
+                <div className="w-14 h-14 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0 animate-in fade-in zoom-in duration-700">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-10 h-10 md:w-14 md:h-14"
+                  >
+                    <path
+                      d="M8.7838 21.9999C7.0986 21.2478 5.70665 20.0758 4.79175 18.5068"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M14.8252 2.18595C16.5021 1.70882 18.2333 2.16305 19.4417 3.39724"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M4.0106 8.36655L3.63846 7.71539L4.0106 8.36655ZM6.50218 8.86743L7.15007 8.48962L6.50218 8.86743ZM3.2028 10.7531L2.55491 11.1309H2.55491L3.2028 10.7531ZM7.69685 3.37253L8.34474 2.99472V2.99472L7.69685 3.37253ZM8.53873 4.81624L7.89085 5.19405L8.53873 4.81624ZM10.4165 9.52517C10.6252 9.88299 11.0844 10.0039 11.4422 9.79524C11.8 9.58659 11.9209 9.12736 11.7123 8.76955L10.4165 9.52517ZM7.53806 12.1327C7.74672 12.4905 8.20594 12.6114 8.56376 12.4027C8.92158 12.1941 9.0425 11.7349 8.83384 11.377L7.53806 12.1327ZM4.39747 5.25817L3.74958 5.63598L4.39747 5.25817ZM11.8381 2.9306L12.486 2.55279V2.55279L11.8381 2.9306ZM14.3638 7.26172L15.0117 6.88391L14.3638 7.26172ZM16.0475 10.1491L16.4197 10.8003C16.5934 10.701 16.7202 10.5365 16.772 10.3433C16.8238 10.15 16.7962 9.94413 16.6954 9.77132L16.0475 10.1491ZM17.0153 5.75389C17.2239 6.11171 17.6831 6.23263 18.041 6.02397C18.3988 5.81531 18.5197 5.35609 18.311 4.99827L17.0153 5.75389ZM20.1888 9.7072L20.8367 9.32939V9.32939L20.1888 9.7072ZM6.99128 17.2497L7.63917 16.8719L6.99128 17.2497ZM16.9576 19.2533L16.5854 18.6021L16.9576 19.2533ZM13.784 15.3C13.9927 15.6578 14.4519 15.7787 14.8097 15.5701C15.1676 15.3614 15.2885 14.9022 15.0798 14.5444L13.784 15.3ZM20.347 8.48962C20.1383 8.1318 19.6791 8.01089 19.3213 8.21954C18.9635 8.4282 18.8426 8.88742 19.0512 9.24524L20.347 8.48962ZM8.98692 20.1803C9.35042 20.3789 9.80609 20.2452 10.0047 19.8817C10.2033 19.5182 10.0697 19.0626 9.70616 18.864L8.98692 20.1803ZM13.8888 19.5453C13.4792 19.6067 13.1969 19.9886 13.2583 20.3982C13.3197 20.8079 13.7015 21.0902 14.1112 21.0288L13.8888 19.5453ZM4.38275 9.0177C5.01642 8.65555 5.64023 8.87817 5.85429 9.24524L7.15007 8.48962C6.4342 7.26202 4.82698 7.03613 3.63846 7.71539L4.38275 9.0177ZM3.63846 7.71539C2.44761 8.39597 1.83532 9.8969 2.55491 11.1309L3.85068 10.3753C3.64035 10.0146 3.75139 9.37853 4.38275 9.0177L3.63846 7.71539ZM7.04896 3.75034L7.89085 5.19405L9.18662 4.43843L8.34474 2.99472L7.04896 3.75034ZM7.89085 5.19405L10.4165 9.52517L11.7123 8.76955L9.18662 4.43843L7.89085 5.19405ZM8.83384 11.377L7.15007 8.48962L5.85429 9.24524L7.53806 12.1327L8.83384 11.377ZM7.15007 8.48962L5.04535 4.88036L3.74958 5.63598L5.85429 9.24524L7.15007 8.48962ZM5.57742 3.5228C6.21109 3.16065 6.8349 3.38327 7.04896 3.75034L8.34474 2.99472C7.62887 1.76712 6.02165 1.54123 4.83313 2.22048L5.57742 3.5228ZM4.83313 2.22048C3.64228 2.90107 3.02999 4.40199 3.74958 5.63598L5.04535 4.88036C4.83502 4.51967 4.94606 3.88363 5.57742 3.5228L4.83313 2.22048ZM11.1902 3.30841L13.7159 7.63953L15.0117 6.88391L12.486 2.55279L11.1902 3.30841ZM13.7159 7.63953L15.3997 10.5269L16.6954 9.77132L15.0117 6.88391L13.7159 7.63953ZM9.71869 3.08087C10.3524 2.71872 10.9762 2.94134 11.1902 3.30841L12.486 2.55279C11.7701 1.32519 10.1629 1.0993 8.9744 1.77855L9.71869 3.08087ZM8.9744 1.77855C7.78355 2.45914 7.17126 3.96006 7.89085 5.19405L9.18662 4.43843C8.97629 4.07774 9.08733 3.4417 9.71869 3.08087L8.9744 1.77855ZM15.5437 5.52635C16.1774 5.1642 16.8012 5.38682 17.0153 5.75389L18.311 4.99827C17.5952 3.77068 15.988 3.54478 14.7994 4.22404L15.5437 5.52635ZM14.7994 4.22404C13.6086 4.90462 12.9963 6.40555 13.7159 7.63953L15.0117 6.88391C14.8013 6.52322 14.9124 5.88718 15.5437 5.52635L14.7994 4.22404ZM2.55491 11.1309L6.34339 17.6276L7.63917 16.8719L3.85068 10.3753L2.55491 11.1309ZM19.5409 10.085C21.1461 12.8377 19.9501 16.6792 16.5854 18.6021L17.3297 19.9045C21.2539 17.6618 22.9512 12.9554 20.8367 9.32939L19.5409 10.085ZM15.0798 14.5444C14.4045 13.3863 14.8772 11.6818 16.4197 10.8003L15.6754 9.49797C13.5735 10.6993 12.5995 13.2687 13.784 15.3L15.0798 14.5444ZM19.0512 9.24524L19.5409 10.085L20.8367 9.32939L20.347 8.48962L19.0512 9.24524ZM9.70616 18.864C8.85353 18.3981 8.13826 17.7278 7.63917 16.8719L6.34339 17.6276C6.98843 18.7337 7.90969 19.5917 8.98692 20.1803L9.70616 18.864ZM16.5854 18.6021C15.7158 19.0991 14.7983 19.409 13.8888 19.5453L14.1112 21.0288C15.2038 20.865 16.2984 20.4939 17.3297 19.9045L16.5854 18.6021Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <p className="text-muted-foreground font-medium text-lg max-w-2xl text-left rtl:text-right leading-relaxed">
+              {t("summary")}
+            </p>
+          </motion.div>
         </div>
+      </section>
 
-        {/* ERROR BANNER */}
+      <div className="container mx-auto max-w-7xl px-6 py-12">
         {error && (
           <div className="mb-10 flex items-center gap-4 px-6 py-5 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-black uppercase tracking-widest shadow-lg shadow-destructive/5">
             <AlertCircle className="w-6 h-6 shrink-0" />
@@ -519,12 +576,16 @@ export default function DonorPage() {
                 <p className="text-muted-foreground font-medium mb-10 max-w-sm mx-auto lowercase">
                   {t("noDonationsDesc")}
                 </p>
-                <Link
-                  href="/catalog"
-                  className="inline-flex items-center gap-3 px-10 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all"
+                <Button
+                  asChild
+                  variant="default"
+                  className="px-10 py-7 rounded-2xl font-black text-sm uppercase tracking-widest"
                 >
-                  {t("browseCatalog")} <ChevronRight className="w-5 h-5 rtl:rotate-180" />
-                </Link>
+                  <Link href="/catalog">
+                    {t("browseCatalog")}{" "}
+                    <ChevronRight className="w-5 h-5 rtl:rotate-180 ml-2" />
+                  </Link>
+                </Button>
               </div>
             )}
 
@@ -532,7 +593,7 @@ export default function DonorPage() {
             {donations.length > 0 && <DonationsTable donations={donations} />}
 
             {/* TRANSPARENCY */}
-            <section className="bg-card border border-border rounded-[2rem] p-10 relative overflow-hidden group">
+            <section className="bg-card border border-border rounded-4xl p-10 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full -mr-24 -mt-24 group-hover:scale-110 transition-transform" />
               <div className="flex flex-col md:flex-row items-start gap-8 relative z-10">
                 <div className="p-5 bg-primary/10 text-primary rounded-2xl shrink-0">
@@ -545,13 +606,16 @@ export default function DonorPage() {
                   <p className="text-muted-foreground font-medium text-lg leading-relaxed mb-8 max-w-2xl text-left rtl:text-right">
                     {t("transparencyNote")}
                   </p>
-                  <Link
-                    href="/transparency"
-                    className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-xl font-black text-sm uppercase tracking-widest shadow-lg shadow-primary/20 hover:opacity-90 transition-all"
+                  <Button
+                    asChild
+                    variant="default"
+                    className="px-8 py-7 rounded-xl font-black text-sm uppercase tracking-widest"
                   >
-                    {t("viewPublicLedger")}
-                    <ExternalLink className="w-5 h-5" />
-                  </Link>
+                    <Link href="/transparency">
+                      {t("viewPublicLedger")}
+                      <ExternalLink className="w-5 h-5 ml-2" />
+                    </Link>
+                  </Button>
                 </div>
               </div>
             </section>
@@ -563,27 +627,33 @@ export default function DonorPage() {
               <h3 className="font-black text-foreground text-xs uppercase tracking-widest mb-4 text-left rtl:text-right">
                 {t("quickActions")}
               </h3>
-              <Link
-                href="/catalog"
-                className="flex items-center gap-3 w-full px-5 py-4 rounded-xl bg-primary text-primary-foreground font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all"
+              <Button
+                asChild
+                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest"
               >
-                <Heart className="w-4 h-4" />
-                {t("browseCatalog")}
-              </Link>
-              <Link
-                href="/catalog?verify=1"
-                className="flex items-center gap-3 w-full px-5 py-4 rounded-xl bg-secondary border border-border text-foreground font-black text-xs uppercase tracking-widest hover:bg-white/5 transition-all"
+                <Link href="/catalog">
+                  <Heart className="w-4 h-4 mr-2" />
+                  {t("browseCatalog")}
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest border-border"
               >
-                <Shield className="w-4 h-4 text-primary" />
-                {t("verifyTransaction")}
-              </Link>
-              <button
+                <Link href="/catalog?verify=1">
+                  <Shield className="w-4 h-4 text-primary mr-2" />
+                  {t("verifyTransaction")}
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => window.print()}
-                className="flex items-center gap-3 w-full px-5 py-4 rounded-xl bg-secondary border border-border text-foreground font-black text-xs uppercase tracking-widest hover:bg-white/5 transition-all"
+                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest border-border"
               >
-                <Download className="w-4 h-4 text-primary" />
+                <Download className="w-4 h-4 text-primary mr-2" />
                 {t("downloadReceipts")}
-              </button>
+              </Button>
               {lastHash && (
                 <div className="mt-4 pt-6 border-t border-border">
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 text-left rtl:text-right">

@@ -33,28 +33,63 @@ export async function GET() {
 
   if (error) {
     console.error("[API] Supabase error fetching donations:", error);
+    // If the table is missing, return empty instead of 500 to keep UI clean
+    if (
+      error.code === "PGRST116" ||
+      error.message?.includes("could not find the table")
+    ) {
+      return NextResponse.json({
+        donations: [],
+        stats: { totalDonated: 0, confirmedCount: 0, donationCount: 0 },
+        warning: "Table 'donations' missing in schema. Please run migrations.",
+      });
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   console.log("[API] Donations found:", donations?.length);
 
-  // 3. Manually fetch needs for these donations if join is problematic
   const needIds = [
     ...new Set((donations ?? []).map((d: any) => d.need_id).filter(Boolean)),
   ];
-  const { data: needsData, error: needsError } = await supabase
-    .from("needs")
-    .select("*")
-    .in("id", needIds);
 
-  if (needsError) {
-    console.error("Error fetching needs:", needsError);
-    return NextResponse.json({ error: needsError.message }, { status: 500 });
+  let needsMap: Record<string, any> = {};
+  let fundedByNeed: Record<string, number> = {};
+
+  if (needIds.length > 0) {
+    const { data: needsData, error: needsError } = await supabase
+      .from("needs")
+      .select("*")
+      .in("id", needIds);
+
+    if (needsError) {
+      console.error("Error fetching needs:", needsError);
+      return NextResponse.json({ error: needsError.message }, { status: 500 });
+    }
+
+    (needsData ?? []).forEach((n) => {
+      needsMap[n.id] = n;
+    });
+
+    const { data: allNeedDonations, error: allDonationsError } = await supabase
+      .from("donations")
+      .select("need_id, amount, status")
+      .in("need_id", needIds);
+
+    if (allDonationsError) {
+      console.error("Error fetching allNeedDonations:", allDonationsError);
+      return NextResponse.json(
+        { error: allDonationsError.message },
+        { status: 500 },
+      );
+    }
+
+    (allNeedDonations ?? []).forEach((d: any) => {
+      if (d.status === "completed") {
+        fundedByNeed[d.need_id] =
+          (fundedByNeed[d.need_id] ?? 0) + Number(d.amount);
+      }
+    });
   }
-
-  const needsMap: Record<string, any> = {};
-  (needsData ?? []).forEach((n) => {
-    needsMap[n.id] = n;
-  });
 
   // 4. Update the donations with the need data
   const resultDonations = (donations ?? []).map((d) => ({
@@ -62,47 +97,28 @@ export async function GET() {
     needs: needsMap[d.need_id] || null,
   }));
 
-  // Re-fetch all donations for these needs to calculate total funded
-  const { data: allNeedDonations, error: allDonationsError } = await supabase
-    .from("donations")
-    .select("need_id, amount, status")
-    .in("need_id", needIds);
-
-  if (allDonationsError) {
-    console.error("Error fetching allNeedDonations:", allDonationsError);
-    return NextResponse.json(
-      { error: allDonationsError.message },
-      { status: 500 },
-    );
-  }
-
-  const fundedByNeed: Record<string, number> = {};
-  (allNeedDonations ?? []).forEach((d: any) => {
-    if (d.status === "completed") {
-      fundedByNeed[d.need_id] =
-        (fundedByNeed[d.need_id] ?? 0) + Number(d.amount);
-    }
-  });
-
   // Fetch confirmations
   const donationIds = (donations ?? []).map((d: any) => d.id);
-  const { data: confirmations, error: confirmationsError } = await supabase
-    .from("confirmations")
-    .select("*")
-    .in("donation_id", donationIds);
-
-  if (confirmationsError) {
-    console.error("Error fetching confirmations:", confirmationsError);
-    return NextResponse.json(
-      { error: confirmationsError.message },
-      { status: 500 },
-    );
-  }
-
   const confirmationByDonation: Record<string, any> = {};
-  (confirmations ?? []).forEach((c: any) => {
-    confirmationByDonation[c.donation_id] = c;
-  });
+
+  if (donationIds.length > 0) {
+    const { data: confirmations, error: confirmationsError } = await supabase
+      .from("confirmations")
+      .select("*")
+      .in("donation_id", donationIds);
+
+    if (confirmationsError) {
+      console.error("Error fetching confirmations:", confirmationsError);
+      return NextResponse.json(
+        { error: confirmationsError.message },
+        { status: 500 },
+      );
+    }
+
+    (confirmations ?? []).forEach((c: any) => {
+      confirmationByDonation[c.donation_id] = c;
+    });
+  }
 
   // 5. Build response
   const result = resultDonations.map((d: any) => {

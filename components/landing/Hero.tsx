@@ -65,14 +65,10 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[95vh] flex items-center overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-br from-secondary/50 via-background to-background -z-10" />
 
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse delay-700" />
-      <div className="absolute top-1/2 -right-15 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/2 -left-15 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse delay-700" />
-
       <div className="container mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-start rtl:text-right flex flex-col items-center lg:items-start text-white">

@@ -28,7 +28,9 @@ export async function updateSession(request: NextRequest) {
   // IMPORTANT: Do not write any logic between createServerClient and getUser()
   let user = null;
   try {
-    const { data: { user: foundUser } } = await supabase.auth.getUser();
+    const {
+      data: { user: foundUser },
+    } = await supabase.auth.getUser();
     user = foundUser;
   } catch (err) {
     console.error("Middleware auth error:", err);
@@ -43,24 +45,25 @@ export async function updateSession(request: NextRequest) {
     "/api/donations/recent",
     "/api/needs/funding",
     "/api/stats/global",
-    "/api/transparency/ledger"
+    "/api/transparency/ledger",
   ];
   const isPublicApi = publicApiRoutes.includes(pathname);
 
   // Not logged in and trying to access a protected page
   // Whitelist "/", "/auth", and specific public API routes
-  const isPublicPage = pathname === "/" || pathname === "/transparency" || isAuthPage || isPublicApi;
+  const isPublicPage =
+    pathname === "/" ||
+    pathname === "/transparency" ||
+    isAuthPage ||
+    isPublicApi;
 
   if (!user && !isPublicPage) {
     if (isApiRoute) {
       // Return 401 instead of redirecting for API routes to avoid JSON parse errors
-      return new NextResponse(
-        JSON.stringify({ error: "Unauthorized" }),
-        {
-          status: 401,
-          headers: { "content-type": "application/json" }
-        }
-      );
+      return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "content-type": "application/json" },
+      });
     }
     const url = request.nextUrl.clone();
     url.pathname = "/auth";
@@ -82,6 +85,8 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Role-based access control
+  // TEMPORARILy DISABLED FOR TESTING so the user can freely access any dashboard
+  /*
   const protectedRoutes = ["/validator", "/donor", "/partner"];
   const currentProtectedRoute = protectedRoutes.find(route => pathname.startsWith(route));
 
@@ -89,14 +94,15 @@ export async function updateSession(request: NextRequest) {
     const role = (user.user_metadata?.role || "").toLowerCase();
     const requiredRole = currentProtectedRoute.substring(1); // e.g., "validator"
 
-    if (role !== requiredRole) {
+    if (role !== requiredRole && role) {
       // User has the wrong role for this page → redirect to their own dashboard
       const url = request.nextUrl.clone();
-      url.pathname = role ? `/${role}` : "/auth";
+      url.pathname = `/${role}`;
       url.search = "";
       return NextResponse.redirect(url);
     }
   }
+  */
 
   return supabaseResponse;
 }

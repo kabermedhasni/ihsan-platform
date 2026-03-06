@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Spinner } from "@/components/ui/spinner";
 
 // Components
 import { LedgerHeader } from "@/components/transparency/LedgerHeader";
@@ -38,9 +39,10 @@ export default function TransparencyPage() {
 
   const handleVerify = async (query: string): Promise<Transaction | null> => {
     // Search in local list first for speed
-    const found = transactions.find(t =>
-      t.id.toLowerCase().includes(query.toLowerCase()) ||
-      t.hash.toLowerCase().includes(query.toLowerCase())
+    const found = transactions.find(
+      (t) =>
+        t.id.toLowerCase().includes(query.toLowerCase()) ||
+        t.hash.toLowerCase().includes(query.toLowerCase()),
     );
     return found || null;
   };
@@ -48,7 +50,7 @@ export default function TransparencyPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+        <Spinner size="lg" className="text-primary" />
       </div>
     );
   }
@@ -58,18 +60,13 @@ export default function TransparencyPage() {
       <LedgerHeader />
 
       <main className="container mx-auto max-w-7xl px-6">
-
         <LedgerStats />
 
-        <LedgerTable
-          transactions={transactions}
-          onSelectRow={setSelectedTx}
-        />
+        <LedgerTable transactions={transactions} onSelectRow={setSelectedTx} />
 
         <VerificationPanel onVerify={handleVerify} />
 
         <LedgerMap />
-
       </main>
 
       <AnimatePresence>
