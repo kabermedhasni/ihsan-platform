@@ -12,17 +12,7 @@ export async function GET() {
     try {
         const { data, error } = await supabase
             .from('needs')
-            .select(`
-                id,
-                title,
-                description,
-                amount_required,
-                district,
-                status,
-                created_at,
-                partner_id,
-                validator_id
-            `)
+            .select('*')
             .eq('partner_id', user.id)
             .order('created_at', { ascending: false });
 
@@ -32,7 +22,7 @@ export async function GET() {
         const processedOrders = data.map(order => ({
             id: order.id.slice(0, 8).toUpperCase(),
             realId: order.id,
-            city: "Nouakchott", // Hardcoded as per current scope
+            city: (order as any).city || "Nouakchott",
             district: order.district,
             type: order.title,
             count: 1, // Defaulting to 1 for now
@@ -40,7 +30,7 @@ export async function GET() {
             scheduledTime: "18:30", // Placeholder
             status: mapDbStatusToUi(order.status),
             validatorName: "Internal Validator",
-            beneficiaries: 1, // Placeholder
+            beneficiaries: (order as any).beneficiaries || 1,
             notes: order.description,
             deliveryWindow: "18:00 - 19:00", // Placeholder
             createdAt: order.created_at

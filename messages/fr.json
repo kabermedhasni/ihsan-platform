@@ -251,6 +251,72 @@
       "verify": "Vérifier"
     }
   },
+  "validator": {
+    "welcome": "Bon retour",
+    "summary": "Gérer les besoins de la communauté, suivre le financement et confirmer la livraison de l'aide.",
+    "role": "Validateur de terrain",
+    "logout": "Déconnexion",
+    "createBtn": "Créer un nouveau besoin",
+    "stats": {
+      "needsCreated": "Besoins créés",
+      "needsFunded": "Besoins financés",
+      "deliveriesConfirmed": "Livraisons confirmées",
+      "totalBeneficiaries": "Total des bénéficiaires"
+    },
+    "needs": {
+      "title": "Mes besoins",
+      "viewDetails": "Voir les détails",
+      "confirmDelivery": "Confirmer la livraison",
+      "beneficiaries": "Bénéficiaires",
+      "target": "Objectif",
+      "funded": "Financé"
+    },
+    "createNeed": {
+      "title": "Créer un nouveau besoin",
+      "formCategory": "Catégorie",
+      "formTitle": "Titre",
+      "formDesc": "Description",
+      "formCity": "Ville",
+      "formDistrict": "District",
+      "formTarget": "Montant cible (MRU)",
+      "formBeneficiaries": "Nombre de bénéficiaires",
+      "formPartner": "Partenaire (Restaurant / Magasin)",
+      "publish": "Publier le besoin",
+      "categories": {
+        "food": "Nourriture",
+        "medical": "Médical",
+        "housing": "Logement",
+        "other": "Autre"
+      }
+    },
+    "confirmModal": {
+      "title": "Confirmer la livraison",
+      "uploadProof": "Télécharger une image de preuve",
+      "message": "Message de confirmation",
+      "messagePlaceholder": "ex: Repas livrés avec succès à 5 familles.",
+      "confirm": "Confirmer la livraison"
+    },
+    "history": {
+      "title": "Historique des besoins",
+      "table": {
+        "id": "ID",
+        "city": "Ville",
+        "category": "Catégorie",
+        "amount": "Montant",
+        "status": "Statut",
+        "date": "Date",
+        "action": "Action",
+        "view": "Voir"
+      }
+    },
+    "statuses": {
+      "open": "Ouvert",
+      "partiallyFunded": "Partiellement financé",
+      "fullyFunded": "Entièrement financé",
+      "inDelivery": "En cours de livraison",
+      "confirmed": "Confirmé"
+    }
+  },
   "transparency": {
     "title": "Registre de Transparence",
     "description": "Un enregistrement détaillé de tous les dons et de leur statut de livraison apparaîtra ici."

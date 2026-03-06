@@ -251,6 +251,72 @@
       "verify": "تحقق"
     }
   },
+  "validator": {
+    "welcome": "مرحباً بعودتك",
+    "summary": "إدارة احتياجات المجتمع، تتبع التمويل، وتأكيد تسليم المساعدات.",
+    "role": "محقق ميداني",
+    "logout": "تسجيل الخروج",
+    "createBtn": "إنشاء حالة جديدة",
+    "stats": {
+      "needsCreated": "حالات تم إنشاؤها",
+      "needsFunded": "حالات تم تمويلها",
+      "deliveriesConfirmed": "عمليات تسليم مؤكدة",
+      "totalBeneficiaries": "إجمالي المستفيدين"
+    },
+    "needs": {
+      "title": "حالاتي",
+      "viewDetails": "عرض التفاصيل",
+      "confirmDelivery": "تأكيد التسليم",
+      "beneficiaries": "المستفيدين",
+      "target": "الهدف",
+      "funded": "الممول"
+    },
+    "createNeed": {
+      "title": "إنشاء حالة جديدة",
+      "formCategory": "الفئة",
+      "formTitle": "العنوان",
+      "formDesc": "الوصف",
+      "formCity": "المدينة",
+      "formDistrict": "المقاطعة",
+      "formTarget": "المبلغ المستهدف (أوقية)",
+      "formBeneficiaries": "عدد المستفيدين",
+      "formPartner": "الشريك (مطعم / محل)",
+      "publish": "نشر الحالة",
+      "categories": {
+        "food": "غذاء",
+        "medical": "طبي",
+        "housing": "إيواء",
+        "other": "أخرى"
+      }
+    },
+    "confirmModal": {
+      "title": "تأكيد التسليم",
+      "uploadProof": "رفع صورة الإثبات",
+      "message": "رسالة التأكيد",
+      "messagePlaceholder": "مثال: تم تسليم الوجبات بنجاح لـ 5 عائلات.",
+      "confirm": "تأكيد التسليم"
+    },
+    "history": {
+      "title": "سجل الحالات",
+      "table": {
+        "id": "الرقم",
+        "city": "المدينة",
+        "category": "الفئة",
+        "amount": "المبلغ",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "action": "الإجراء",
+        "view": "عرض"
+      }
+    },
+    "statuses": {
+      "open": "مفتوح",
+      "partiallyFunded": "ممولة جزئياً",
+      "fullyFunded": "ممولة بالكامل",
+      "inDelivery": "قيد التسليم",
+      "confirmed": "تم التأكيد"
+    }
+  },
   "transparency": {
     "title": "سجل الشفافية",
     "description": "سيظهر هنا سجل مفصل لجميع التبرعات وحالة تسليمها."

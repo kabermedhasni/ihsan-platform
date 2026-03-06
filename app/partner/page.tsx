@@ -6,14 +6,11 @@ import {
   Clock,
   CheckCircle2,
   BarChart3,
-  LogOut,
   ChevronRight,
-  UtensilsCrossed,
 } from "lucide-react";
-import { logout } from "@/app/auth/actions";
 import { createClient } from "@/utils/supabase/client";
-import { redirect, useRouter } from "next/navigation";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Components
 import StatCard from "@/components/partner/StatCard";
@@ -23,8 +20,10 @@ import OrdersTable from "@/components/partner/OrdersTable";
 import Timeline from "@/components/partner/Timeline";
 import { OrderStatus } from "@/components/partner/StatusBadge";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslations } from "next-intl";
 
 export default function PartnerDashboard() {
+  const t = useTranslations("partner"); // Assuming partner translations exist
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [partnerName, setPartnerName] = useState("Partner");
@@ -37,8 +36,21 @@ export default function PartnerDashboard() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (user?.user_metadata?.role !== "partner") {
+
+      if (!user) {
         router.push("/auth");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      const role = profile?.role || user.user_metadata?.role;
+      if (role?.toLowerCase() !== "partner") {
+        router.replace(role ? `/${role.toLowerCase()}` : "/auth");
         return;
       }
 
@@ -46,7 +58,7 @@ export default function PartnerDashboard() {
       await fetchOrders();
     };
     init();
-  }, []);
+  }, [router]);
 
   const fetchOrders = async () => {
     try {
@@ -129,24 +141,41 @@ export default function PartnerDashboard() {
   }
 
   return (
-    <div className="font-sans pb-20 pt-20 text-foreground">
-      <main className="max-w-7xl mx-auto px-6 pt-12 space-y-16">
+    <div className="min-h-screen bg-background text-foreground font-sans pt-20">
+      <main className="max-w-7xl mx-auto px-6 py-12 space-y-20">
+
+        {/* Welcome Section */}
+        <section className="flex flex-col md:flex-row justify-between items-end gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Official Partner</p>
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter">
+              Welcome back, {partnerName} 👋
+            </h1>
+            <p className="text-muted-foreground font-medium mt-3 max-w-xl">
+              Manage your active orders and track your community impact in real-time.
+            </p>
+          </div>
+        </section>
+
         {/* Stats Section */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, idx) => (
             <StatCard key={idx} {...stat} />
           ))}
         </section>
 
         {/* Orders Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
           {/* Active Orders List */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-10">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-black text-white">
+              <h2 className="text-2xl font-black text-foreground tracking-tighter">
                 Active Pipeline
               </h2>
-              <span className="bg-primary/20 text-primary px-3 py-1 rounded-full text-xs font-black border border-primary/20">
+              <span className="bg-primary/10 text-primary px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20">
                 {activeOrders.length} ORDERS
               </span>
             </div>
@@ -161,15 +190,15 @@ export default function PartnerDashboard() {
                 />
               ))}
               {activeOrders.length === 0 && (
-                <div className="col-span-full py-24 bg-secondary/10 backdrop-blur-sm rounded-[2.5rem] border-4 border-dashed border-white/5 flex flex-col items-center justify-center gap-6">
-                  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center">
-                    <Package size={32} className="text-muted-foreground" />
+                <div className="col-span-full py-24 bg-card rounded-[2.5rem] border-2 border-dashed border-border flex flex-col items-center justify-center gap-6">
+                  <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center">
+                    <Package size={32} className="text-primary/40" />
                   </div>
                   <div className="text-center">
-                    <p className="text-xl font-black text-white">
+                    <p className="text-xl font-black text-foreground tracking-tighter">
                       All caught up!
                     </p>
-                    <p className="text-sm font-bold text-muted-foreground">
+                    <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mt-1">
                       New funded orders will appear here.
                     </p>
                   </div>
@@ -179,8 +208,8 @@ export default function PartnerDashboard() {
           </div>
 
           {/* Daily Timeline Sidebar */}
-          <aside className="space-y-8">
-            <h2 className="text-2xl font-black text-white">Today's Flow</h2>
+          <aside className="space-y-10">
+            <h2 className="text-2xl font-black text-foreground tracking-tighter">Today's Flow</h2>
             <Timeline
               items={orders.slice(0, 5).map((o) => ({
                 time: new Date(o.createdAt).toLocaleTimeString([], {
@@ -192,15 +221,15 @@ export default function PartnerDashboard() {
               }))}
             />
 
-            <div className="bg-secondary/40 backdrop-blur-md p-8 rounded-4xl text-white border border-white/5 relative overflow-hidden group">
+            <div className="bg-card border border-border p-8 rounded-[2rem] text-foreground relative overflow-hidden group shadow-sm">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform" />
-              <h3 className="text-lg font-black mb-2 relative">
+              <h3 className="text-lg font-black mb-2 relative tracking-tight">
                 Partner Support
               </h3>
-              <p className="text-sm text-emerald-100/60 font-bold mb-6 relative">
-                Need help with an order or scheduling? Contact our team.
+              <p className="text-sm text-muted-foreground font-medium mb-8 relative">
+                Need help with an order or scheduling? Our team is active 24/7.
               </p>
-              <button className="w-full bg-primary text-primary-foreground py-3 rounded-xl font-black text-sm active:scale-95 transition-all">
+              <button className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
                 Open Support
               </button>
             </div>
@@ -208,13 +237,13 @@ export default function PartnerDashboard() {
         </div>
 
         {/* History Ledger Section */}
-        <section className="space-y-8">
+        <section className="space-y-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-black text-white">Order History</h2>
-            <button className="text-primary font-black text-sm hover:underline flex items-center gap-1 group">
-              Full Archive{" "}
+            <h2 className="text-2xl font-black text-foreground tracking-tighter">Order History</h2>
+            <button className="text-primary font-black text-[10px] uppercase tracking-widest hover:underline flex items-center gap-1 group">
+              Full Archive
               <ChevronRight
-                size={16}
+                size={14}
                 className="group-hover:translate-x-1 transition-transform"
               />
             </button>
@@ -223,11 +252,15 @@ export default function PartnerDashboard() {
         </section>
       </main>
 
-      <OrderModal
-        isOpen={!!selectedOrder}
-        onClose={() => setSelectedOrder(null)}
-        order={selectedOrder}
-      />
+      <AnimatePresence>
+        {selectedOrder && (
+          <OrderModal
+            isOpen={!!selectedOrder}
+            onClose={() => setSelectedOrder(null)}
+            order={selectedOrder}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

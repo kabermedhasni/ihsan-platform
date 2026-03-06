@@ -251,6 +251,72 @@
       "verify": "Verify"
     }
   },
+  "validator": {
+    "welcome": "Welcome back",
+    "summary": "Manage community needs, track funding, and confirm aid delivery.",
+    "role": "Field Validator",
+    "logout": "Logout",
+    "createBtn": "Create New Need",
+    "stats": {
+      "needsCreated": "Needs Created",
+      "needsFunded": "Needs Funded",
+      "deliveriesConfirmed": "Deliveries Confirmed",
+      "totalBeneficiaries": "Total Beneficiaries"
+    },
+    "needs": {
+      "title": "My Needs",
+      "viewDetails": "View Details",
+      "confirmDelivery": "Confirm Delivery",
+      "beneficiaries": "Beneficiaries",
+      "target": "Target",
+      "funded": "Funded"
+    },
+    "createNeed": {
+      "title": "Create New Need",
+      "formCategory": "Category",
+      "formTitle": "Title",
+      "formDesc": "Description",
+      "formCity": "City",
+      "formDistrict": "District",
+      "formTarget": "Target Amount (MRU)",
+      "formBeneficiaries": "Number of Beneficiaries",
+      "formPartner": "Partner (Restaurant / Store)",
+      "publish": "Publish Need",
+      "categories": {
+        "food": "Food",
+        "medical": "Medical",
+        "housing": "Housing",
+        "other": "Other"
+      }
+    },
+    "confirmModal": {
+      "title": "Confirm Delivery",
+      "uploadProof": "Upload Proof Image",
+      "message": "Confirmation Message",
+      "messagePlaceholder": "e.g., Meals delivered successfully to 5 families.",
+      "confirm": "Confirm Delivery"
+    },
+    "history": {
+      "title": "Needs History",
+      "table": {
+        "id": "ID",
+        "city": "City",
+        "category": "Category",
+        "amount": "Amount",
+        "status": "Status",
+        "date": "Date",
+        "action": "Action",
+        "view": "View"
+      }
+    },
+    "statuses": {
+      "open": "Open",
+      "partiallyFunded": "Partially Funded",
+      "fullyFunded": "Fully Funded",
+      "inDelivery": "In Delivery",
+      "confirmed": "Confirmed"
+    }
+  },
   "transparency": {
     "title": "Transparency Ledger",
     "description": "Detailed record of all donations and their delivery status will appear here."

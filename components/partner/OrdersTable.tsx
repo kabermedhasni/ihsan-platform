@@ -18,36 +18,38 @@ interface OrdersTableProps {
 
 export default function OrdersTable({ orders }: OrdersTableProps) {
     return (
-        <div className="bg-secondary/20 backdrop-blur-md rounded-3xl border border-white/5 overflow-hidden">
+        <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
                 <table className="w-full text-left">
                     <thead>
-                        <tr className="border-b border-white/5 bg-white/5">
-                            <th className="px-6 py-4 text-primary font-black text-xs uppercase tracking-widest">ID</th>
-                            <th className="px-6 py-4 text-primary font-black text-xs uppercase tracking-widest">Location</th>
-                            <th className="px-6 py-4 text-primary font-black text-xs uppercase tracking-widest">Type</th>
-                            <th className="px-6 py-4 text-primary font-black text-xs uppercase tracking-widest text-center">People</th>
-                            <th className="px-6 py-4 text-primary font-black text-xs uppercase tracking-widest">Amount</th>
-                            <th className="px-6 py-4 text-primary font-black text-xs uppercase tracking-widest">Status</th>
+                        <tr className="bg-secondary/50 border-b border-border">
+                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">ID</th>
+                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Location</th>
+                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Type</th>
+                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground text-center">People</th>
+                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Amount</th>
+                            <th className="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Status</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/5">
+                    <tbody className="divide-y divide-border/30">
                         {orders.map((row) => (
-                            <tr key={row.id} className="hover:bg-white/5 transition-colors group">
+                            <tr key={row.id} className="hover:bg-accent transition-colors group">
                                 <td className="px-6 py-4 font-mono font-bold text-muted-foreground text-xs">#{row.id}</td>
                                 <td className="px-6 py-4">
-                                    <p className="font-bold text-white text-sm">{row.district}</p>
-                                    <p className="text-xs text-muted-foreground font-bold uppercase">{row.city}</p>
+                                    <p className="font-black text-foreground text-sm tracking-tight">{row.district}</p>
+                                    <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">{row.city}</p>
                                 </td>
-                                <td className="px-6 py-4 font-bold text-emerald-100/80 text-sm">{row.type}</td>
-                                <td className="px-6 py-4 font-black text-white text-sm text-center">{row.beneficiaries}</td>
-                                <td className="px-6 py-4 font-black text-primary text-sm">{row.amount} <span className="text-[10px] text-muted-foreground font-mono">MRU</span></td>
+                                <td className="px-6 py-4 font-black text-foreground/80 text-sm whitespace-nowrap">{row.type}</td>
+                                <td className="px-6 py-4 font-black text-foreground text-sm text-center">{row.beneficiaries}</td>
+                                <td className="px-6 py-4 font-black text-primary text-sm whitespace-nowrap">
+                                    {row.amount.toLocaleString('en-US')} <span className="text-[10px] text-muted-foreground font-mono uppercase">MRU</span>
+                                </td>
                                 <td className="px-6 py-4"><StatusBadge status={row.status} /></td>
                             </tr>
                         ))}
                         {orders.length === 0 && (
                             <tr>
-                                <td colSpan={6} className="px-6 py-10 text-center text-muted-foreground font-bold italic">
+                                <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground text-sm font-bold uppercase tracking-widest">
                                     No records to display.
                                 </td>
                             </tr>
