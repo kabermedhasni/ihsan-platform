@@ -495,11 +495,18 @@ function AuthContent() {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        router.push(`/${user.user_metadata?.role}`);
+        // Read role from profiles table (authoritative source)
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+        const role = profile?.role || user.user_metadata?.role || "donor";
+        window.location.href = `/${role}`;
       }
     };
     init();
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     const error = searchParams.get("error");
@@ -592,7 +599,9 @@ function AuthContent() {
       setLoading(false);
     } else if (result?.success) {
       toast.success(t("success.signedIn"));
-      router.push(`/${result.role}`);
+      // Full page navigation so the browser re-fetches with the new session cookie
+      // and the client-side Supabase instance is properly initialized.
+      window.location.href = `/${result.role}`;
     }
   };
 
@@ -666,7 +675,7 @@ function AuthContent() {
       setLoading(false);
     } else if (result?.success) {
       toast.success(t("success.verified"));
-      router.push(`/${result.role}`);
+      window.location.href = `/${result.role}`;
     }
   };
 

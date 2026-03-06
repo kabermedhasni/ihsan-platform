@@ -1,12 +1,18 @@
+"use client";
+
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const t = useTranslations("footer");
+  const pathname = usePathname();
+
+  if (pathname.includes("/auth")) return null;
 
   return (
-    <footer className="py-12 bg-background border-t border-white/5">
+    <footer className="py-12 bg-background border-t border-white/5 mt-auto">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-3">

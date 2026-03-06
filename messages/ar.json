@@ -1,10 +1,13 @@
 {
   "nav": {
+    "home": "الرئيسية",
     "howItWorks": "كيف يعمل",
     "needs": "الاحتياجات",
     "transparency": "الشفافية",
+    "map": "الخريطة",
     "getStarted": "ابدأ الآن",
-    "dashboard": "لوحة التحكم"
+    "dashboard": "لوحة التحكم",
+    "signOut": "تسجيل الخروج"
   },
   "hero": {
     "title": "تبرعك...",
@@ -176,5 +179,80 @@
     "helpType": "نوع المساعدة",
     "funded": "ممول",
     "clickToInteract": "اضغط للتفاعل مع الخريطة"
+  },
+  "catalog": {
+    "title": "الاحتياجات المتاحة",
+    "description": "اختر حاجة حقيقية وساهم في تمويلها - اترك أثراً مباشراً في حياة الآخرين.",
+    "all": "الكل",
+    "categories": {
+      "meals": "وجبات",
+      "medical": "طبي",
+      "housing": "إيواء",
+      "other": "أخرى"
+    },
+    "statuses": {
+      "open": "مفتوح",
+      "inProgress": "قيد التنفيذ",
+      "completed": "مكتمل"
+    },
+    "sort": {
+      "newest": "الأحدث",
+      "mostFunded": "الأكثر تمويلاً",
+      "closest": "الأقرب للهدف"
+    },
+    "noNeeds": "لم يتم العثور على احتياجات",
+    "adjustFilters": "حاول تعديل الفلاتر للعثور على احتياجات متاحة.",
+    "reset": "إعادة تعيين الفلاتر",
+    "loading": "جارٍ تحميل الاحتياجات...",
+    "mru": "أوقية",
+    "loadMore": "تحميل المزيد",
+    "interactiveMap": "خريطة تفاعلية",
+    "interactiveMapDesc": "استكشف الاحتياجات في المواقع المختلفة على الخريطة التفاعلية",
+    "filters": {
+      "city": "المدينة",
+      "category": "الفئة",
+      "status": "الحالة",
+      "sortBy": "ترتيب حسب"
+    }
+  },
+  "donor": {
+    "welcome": "مرحباً بعودتك",
+    "summary": "إليك ملخص كامل لتبرعاتك وأثرها الحقيقي على أرض الواقع.",
+    "totalDonated": "إجمالي التبرعات",
+    "donations": "عدد التبرعات",
+    "confirmed": "عمليات موثقة",
+    "impact": "حالات مدعومة",
+    "activeNeeds": "احتياجات نشطة",
+    "inProgress": "قيد التنفيذ",
+    "activeDonations": "تبرعات نشطة",
+    "active": "نشط",
+    "proofOfImpact": "إثبات الأثر",
+    "historyTitle": "سجل التبرعات",
+    "searchDonations": "ابحث في تبرعاتك...",
+    "fullTransparency": "شفافية مطلقة",
+    "transparencyNote": "يتم تسجيل كل تبرع في سجل لا يمكن التلاعب به باستخدام بصمات إلكترونية مشفرة، مما يضمن الشفافية الكاملة ومنع أي تلاعب بالبيانات.",
+    "viewPublicLedger": "عرض لوحة الشفافية العامة",
+    "quickActions": "إجراءات سريعة",
+    "browseCatalog": "تصفح الاحتياجات",
+    "verifyTransaction": "التحقق من معاملة",
+    "downloadReceipts": "تحميل الفواتير",
+    "lastHash": "آخر بصمة معاملة",
+    "noDonations": "لا يوجد تبرعات بعد",
+    "noDonationsDesc": "تصفح الاحتياجات المتاحة وقم بأول تبرع لك اليوم.",
+    "viewDetails": "عرض التفاصيل",
+    "viewTransaction": "عرض المعاملة",
+    "table": {
+      "id": "الرقم",
+      "city": "المدينة",
+      "category": "الفئة",
+      "amount": "المبلغ",
+      "status": "الحالة",
+      "date": "التاريخ",
+      "verify": "تحقق"
+    }
+  },
+  "transparency": {
+    "title": "سجل الشفافية",
+    "description": "سيظهر هنا سجل مفصل لجميع التبرعات وحالة تسليمها."
   }
 }
