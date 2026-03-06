@@ -319,6 +319,37 @@
   },
   "transparency": {
     "title": "Registre de Transparence",
-    "description": "Un enregistrement détaillé de tous les dons et de leur statut de livraison apparaîtra ici."
+    "description": "Chaque don confirmé est enregistré dans notre registre public, offrant une traçabilité complète du donateur au bénéficiaire.",
+    "stats": {
+      "volume": "Volume Total",
+      "records": "Enregistrements Vérifiés",
+      "impact": "Impact Total",
+      "regions": "Régions Actives"
+    },
+    "ledger": {
+      "title": "Registre Vérifié",
+      "subtitle": "Flux en temps réel des transactions de la plateforme.",
+      "id": "ID",
+      "city": "Ville",
+      "category": "Catégorie",
+      "amount": "Montant",
+      "status": "Statut",
+      "time": "Temps",
+      "hash": "Hachage du Registre"
+    },
+    "verify": {
+      "title": "Votre don est-il vérifié ?",
+      "subtitle": "Entrez votre ID de transaction ou hachage pour obtenir la preuve cryptographique de votre impact.",
+      "placeholder": "Entrez l'ID ou le hachage...",
+      "button": "Vérifier la Transaction",
+      "verifying": "Vérification en cours...",
+      "recordFound": "Enregistrement Vérifié",
+      "notFound": "Aucun enregistrement trouvé. Veuillez vérifier et réessayer.",
+      "clear": "Effacer"
+    },
+    "map": {
+      "title": "Empreinte d'Impact",
+      "subtitle": "Distribution géographique des livraisons confirmées."
+    }
   }
 }

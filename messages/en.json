@@ -319,6 +319,37 @@
   },
   "transparency": {
     "title": "Transparency Ledger",
-    "description": "Detailed record of all donations and their delivery status will appear here."
+    "description": "Every confirmed donation is recorded on our public ledger, providing full traceability from donor to beneficiary.",
+    "stats": {
+      "volume": "Total Volume",
+      "records": "Verified Records",
+      "impact": "Total Impact",
+      "regions": "Active Regions"
+    },
+    "ledger": {
+      "title": "Verified Ledger",
+      "subtitle": "Real-time stream of platform transactions.",
+      "id": "ID",
+      "city": "City",
+      "category": "Category",
+      "amount": "Amount",
+      "status": "Status",
+      "time": "Time",
+      "hash": "Ledger Hash"
+    },
+    "verify": {
+      "title": "Is your donation verified?",
+      "subtitle": "Enter your Transaction ID or Hash to retrieve the cryptographic proof of your impact.",
+      "placeholder": "Enter Transaction ID or Hash...",
+      "button": "Verify Transaction",
+      "verifying": "Verifying Record...",
+      "recordFound": "Verified Record",
+      "notFound": "No record found matching this ID or Hash. Please check and try again.",
+      "clear": "Clear Result"
+    },
+    "map": {
+      "title": "Impact Footprint",
+      "subtitle": "Geographical distribution of confirmed deliveries."
+    }
   }
 }

@@ -1,11 +1,12 @@
 "use client";
 
-import React, { use } from 'react';
+import React, { use, useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
     ChevronLeft,
     Share2,
-    Info
+    Info,
+    AlertCircle
 } from 'lucide-react';
 import { motion, Variants } from 'framer-motion';
 
@@ -18,27 +19,10 @@ import { ValidatorCard } from '@/components/needs/ValidatorCard';
 import { LocationCard } from '@/components/needs/LocationCard';
 import { DonationPanel } from '@/components/needs/DonationPanel';
 import { TransparencySection } from '@/components/needs/TransparencySection';
+import { Spinner } from "@/components/ui/spinner";
 
 // --- TYPES ---
 import { Need } from '@/types/need';
-
-// --- MOCK DATA ---
-
-const MOCK_NEED: any = { // Using any temporarily as the global Need type might slightly differ
-    id: "need_123",
-    title: "5 Iftar Meals for Families in Need",
-    city: "Nouakchott",
-    district: "Tevragh Zeina",
-    category: "Food",
-    description: "This request funds Iftar meals for five families during Ramadan. Each meal set includes traditional staples and nutritional items to ensure families can break their fast with dignity and health. Your contribution directly supports local families who are struggling with food security during this holy month.",
-    targetAmount: 5000,
-    fundedAmount: 2350,
-    donorsCount: 12,
-    beneficiaries: 5,
-    validatorName: "Ahmed Salem",
-    status: "Open",
-    createdAt: "2024-03-01T10:00:00Z"
-};
 
 // --- ANIMATION VARIANTS ---
 
@@ -62,7 +46,58 @@ const fadeIn: Variants = {
 export default function NeedDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     // Await params for Next.js 15
     const resolvedParams = use(params);
-    const need = MOCK_NEED;
+    const [need, setNeed] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchNeedData = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch(`/api/needs/${resolvedParams.id}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch need details");
+                }
+                const data = await response.json();
+                setNeed(data);
+            } catch (err: any) {
+                console.error("Error fetching need:", err);
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (resolvedParams.id) {
+            fetchNeedData();
+        }
+    }, [resolvedParams.id]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+                <Spinner size="xl" className="text-primary" />
+                <p className="mt-6 text-foreground font-black uppercase tracking-widest text-sm animate-pulse">
+                    Loading Need Details...
+                </p>
+            </div>
+        );
+    }
+
+    if (error || !need) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+                <div className="bg-destructive/10 border border-destructive/20 p-8 rounded-3xl flex flex-col items-center gap-4 max-w-md text-center">
+                    <AlertCircle className="w-12 h-12 text-destructive" />
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Something went wrong</h2>
+                    <p className="text-muted-foreground font-medium">{error || "Need not found."}</p>
+                    <Link href="/catalog" className="mt-4 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20">
+                        Back to Catalog
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 selection:text-primary-foreground overflow-x-hidden">
