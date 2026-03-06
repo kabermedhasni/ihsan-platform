@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -124,10 +124,10 @@ const StatCard = ({
       {icon}
     </div>
     <div>
-      <p className="text-3xl font-black text-foreground tracking-tighter shrink-0 truncate">
+      <p className="text-3xl font-black text-foreground tracking-tighter shrink-0 truncate text-left rtl:text-right">
         {value}
       </p>
-      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
+      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1 text-left rtl:text-right">
         {label} {sub && <span className="text-primary/80 ml-1">({sub})</span>}
       </p>
     </div>
@@ -150,7 +150,7 @@ const DonationCard = ({ d }: { d: Donation }) => {
           <h3 className="font-black text-foreground text-xl tracking-tighter leading-tight mb-1 truncate group-hover:text-primary transition-colors text-left rtl:text-right">
             {d.needTitle}
           </h3>
-          <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
+          <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest text-left rtl:text-right">
             <MapPin className="w-3.5 h-3.5 text-primary" />
             <span>
               {d.city}, {d.district}
@@ -162,20 +162,23 @@ const DonationCard = ({ d }: { d: Donation }) => {
       <ProgressBar current={d.needFunded} max={d.needTarget} />
       <div className="flex justify-between items-center mt-6">
         <div>
-          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-0.5 text-left rtl:text-right">
             {t("yourDonation")}
           </p>
           <p className="text-xl font-black text-primary tracking-tighter">
             {d.amount.toLocaleString()} {tCatalog("mru")}
           </p>
         </div>
-        <Link
-          href={`/needs/${d.id}`}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-secondary text-foreground text-[10px] font-black uppercase tracking-widest hover:text-primary hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20"
+        <Button
+          asChild
+          variant="secondary"
+          className="flex items-center gap-2 px-5 py-2.5 h-auto rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-transparent hover:border-primary/20"
         >
-          <Eye className="w-4 h-4" />
-          {t("viewDetails")}
-        </Link>
+          <Link href={`/needs/${d.id}`}>
+            <Eye className="w-4 h-4" />
+            {t("viewDetails")}
+          </Link>
+        </Button>
       </div>
     </motion.div>
   );
@@ -222,13 +225,15 @@ const ProofCard = ({ d }: { d: Donation }) => {
             {d.amount.toLocaleString()} {tCatalog("mru")}
           </span>
         </div>
-        <Link
-          href={`/verify/${d.id}`}
-          className="flex items-center justify-center gap-3 w-full py-4 rounded-xl bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20"
+        <Button
+          asChild
+          className="flex items-center justify-center gap-3 w-full py-6 h-auto rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20"
         >
-          <ExternalLink className="w-4 h-4" />
-          {t("viewTransaction")}
-        </Link>
+          <Link href={`/verify/${d.id}`}>
+            <ExternalLink className="w-4 h-4" />
+            {t("viewTransaction")}
+          </Link>
+        </Button>
       </div>
     </motion.div>
   );
@@ -247,7 +252,7 @@ const DonationsTable = ({ donations }: { donations: Donation[] }) => {
   return (
     <section className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-2xl font-black text-foreground tracking-tighter">
+        <h2 className="text-2xl font-black text-foreground tracking-tighter text-left rtl:text-right">
           {t("historyTitle")}
         </h2>
         <div className="relative w-full md:w-80">
@@ -321,13 +326,16 @@ const DonationsTable = ({ donations }: { donations: Donation[] }) => {
                       {new Date(d.date).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
-                      <Link
-                        href={`/verify/${d.id}`}
-                        className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline flex items-center gap-1 group whitespace-nowrap"
+                      <Button
+                        asChild
+                        variant="link"
+                        className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline flex items-center gap-1 group whitespace-nowrap h-auto p-0"
                       >
-                        <Shield className="w-3.5 h-3.5" />
-                        {t("table.verify")}
-                      </Link>
+                        <Link href={`/verify/${d.id}`}>
+                          <Shield className="w-3.5 h-3.5" />
+                          {t("table.verify")}
+                        </Link>
+                      </Button>
                     </td>
                   </tr>
                 ))
@@ -356,6 +364,8 @@ export default function DonorPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const redirectingRef = useRef(false);
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -365,6 +375,7 @@ export default function DonorPage() {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) {
+          redirectingRef.current = true;
           router.replace("/auth");
           return;
         }
@@ -381,17 +392,17 @@ export default function DonorPage() {
           .eq("id", user.id)
           .single();
         const role = profile?.role || user.user_metadata?.role;
-        // DISABLED FOR TESTING
-        // if ((role || "donor").toLowerCase() !== "donor") {
-        //   router.replace(`/${(role || "donor").toLowerCase()}`);
-        //   return;
-        // }
+        if ((role || "donor").toLowerCase() !== "donor") {
+          redirectingRef.current = true;
+          router.replace(`/${(role || "donor").toLowerCase()}`);
+          return;
+        }
 
         // 2. Load donor data from API
         const res = await fetch("/api/donations/mine");
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || "Failed to load your donations.");
+          throw new Error(errData.error || t("error.loadFailed"));
         }
         const json = await res.json();
         setDonations(json.donations ?? []);
@@ -404,9 +415,9 @@ export default function DonorPage() {
         );
       } catch (err: any) {
         console.error("Donation fetch error:", err);
-        setError("Failed to load your donations.");
+        setError(t("error.loadFailed"));
       } finally {
-        setLoading(false);
+        if (!redirectingRef.current) setLoading(false);
       }
     };
     init();
@@ -523,7 +534,7 @@ export default function DonorPage() {
                   className="space-y-8"
                 >
                   <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-black text-foreground tracking-tighter">
+                    <h2 className="text-2xl font-black text-foreground tracking-tighter text-left rtl:text-right">
                       {t("activeDonations")}
                     </h2>
                     <span className="text-[10px] font-black bg-primary/10 text-primary uppercase tracking-widest px-4 py-1 rounded-full border border-primary/20">
@@ -548,7 +559,7 @@ export default function DonorPage() {
                   className="space-y-8"
                 >
                   <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-black text-foreground tracking-tighter">
+                    <h2 className="text-2xl font-black text-foreground tracking-tighter text-left rtl:text-right">
                       {t("proofOfImpact")}
                     </h2>
                     <span className="text-[10px] font-black bg-emerald-500/10 text-emerald-500 uppercase tracking-widest px-4 py-1 rounded-full border border-emerald-500/20">
@@ -570,16 +581,16 @@ export default function DonorPage() {
                 <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Heart className="w-10 h-10 text-primary" />
                 </div>
-                <h3 className="text-2xl font-black text-foreground tracking-tighter mb-2">
+                <h3 className="text-2xl font-black text-foreground tracking-tighter mb-2 text-left rtl:text-right">
                   {t("noDonations")}
                 </h3>
-                <p className="text-muted-foreground font-medium mb-10 max-w-sm mx-auto lowercase">
+                <p className="text-muted-foreground font-medium mb-10 max-w-sm mx-auto lowercase text-left rtl:text-right">
                   {t("noDonationsDesc")}
                 </p>
                 <Button
                   asChild
                   variant="default"
-                  className="px-10 py-7 rounded-2xl font-black text-sm uppercase tracking-widest"
+                  className="px-10 py-7 h-auto rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20"
                 >
                   <Link href="/catalog">
                     {t("browseCatalog")}{" "}
@@ -609,11 +620,11 @@ export default function DonorPage() {
                   <Button
                     asChild
                     variant="default"
-                    className="px-8 py-7 rounded-xl font-black text-sm uppercase tracking-widest"
+                    className="px-8 py-7 h-auto rounded-xl font-black text-xs uppercase tracking-widest"
                   >
                     <Link href="/transparency">
                       {t("viewPublicLedger")}
-                      <ExternalLink className="w-5 h-5 ml-2" />
+                      <ExternalLink className="w-4 h-4 ml-2" />
                     </Link>
                   </Button>
                 </div>
@@ -629,7 +640,7 @@ export default function DonorPage() {
               </h3>
               <Button
                 asChild
-                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest"
+                className="w-full py-6 h-auto rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-primary/20"
               >
                 <Link href="/catalog">
                   <Heart className="w-4 h-4 mr-2" />
@@ -639,7 +650,7 @@ export default function DonorPage() {
               <Button
                 asChild
                 variant="outline"
-                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest border-border"
+                className="w-full py-6 h-auto rounded-xl font-black text-[10px] uppercase tracking-widest border-border"
               >
                 <Link href="/catalog?verify=1">
                   <Shield className="w-4 h-4 text-primary mr-2" />
@@ -649,7 +660,7 @@ export default function DonorPage() {
               <Button
                 variant="outline"
                 onClick={() => window.print()}
-                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest border-border"
+                className="w-full py-6 h-auto rounded-xl font-black text-[10px] uppercase tracking-widest border-border"
               >
                 <Download className="w-4 h-4 text-primary mr-2" />
                 {t("downloadReceipts")}

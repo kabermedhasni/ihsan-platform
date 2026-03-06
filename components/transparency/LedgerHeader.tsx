@@ -15,10 +15,10 @@ export const LedgerHeader = () => {
           animate={{ opacity: 1 }}
           className="max-w-2xl"
         >
-          <h1 className="text-5xl mt-10 md:text-6xl font-black text-foreground tracking-tighter leading-tight mb-6">
+          <h1 className="text-5xl mt-10 md:text-6xl font-black text-foreground tracking-tighter leading-tight mb-6 text-left rtl:text-right">
             {t("title")}
           </h1>
-          <p className="text-lg text-muted-foreground font-medium leading-relaxed">
+          <p className="text-lg text-muted-foreground font-medium leading-relaxed text-left rtl:text-right">
             {t("description")}
           </p>
         </motion.div>

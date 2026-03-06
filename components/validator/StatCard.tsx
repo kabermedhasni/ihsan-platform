@@ -13,10 +13,10 @@ export const StatCard = ({ icon, label, value }: StatCardProps) => (
       {icon}
     </div>
     <div>
-      <p className="text-3xl font-black text-foreground tracking-tighter">
+      <p className="text-3xl font-black text-foreground tracking-tighter text-left rtl:text-right">
         {value}
       </p>
-      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
+      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1 text-left rtl:text-right">
         {label}
       </p>
     </div>

@@ -234,7 +234,7 @@ export default function Navbar() {
                         user?.email?.split("@")[0]}
                     </p>
                     <p className="text-[10px] text-white/40 uppercase tracking-tighter mt-1 font-black">
-                      {userRole}
+                      {userRole && t(userRole.toLowerCase())}
                     </p>
                   </div>
                 </Link>

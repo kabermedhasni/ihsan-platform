@@ -1,6 +1,7 @@
 "use client";
 
 import { LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface StatCardProps {
   title: string;
@@ -17,6 +18,7 @@ export default function StatCard({
   icon: Icon,
   trend,
 }: StatCardProps) {
+  const t = useTranslations("partner");
   return (
     <div className="group relative p-6 rounded-2xl bg-secondary/30 border border-white/5 hover:border-primary/50 transition-all duration-500 overflow-hidden">
       <div className="relative flex items-center gap-4">
@@ -24,7 +26,7 @@ export default function StatCard({
           <Icon size={24} />
         </div>
         <div>
-          <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider">
+          <p className="text-muted-foreground text-sm font-bold uppercase tracking-wider text-left rtl:text-right">
             {title}
           </p>
           <div className="flex items-baseline gap-1">
@@ -35,7 +37,7 @@ export default function StatCard({
           </div>
           {trend && (
             <p className="text-[10px] font-black text-primary/80 mt-1">
-              {trend} from yesterday
+              {t("stats.trend", { trend })}
             </p>
           )}
         </div>

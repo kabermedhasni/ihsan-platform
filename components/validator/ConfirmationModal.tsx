@@ -70,10 +70,10 @@ export const ConfirmationModal = ({
         <div className="p-8 pb-0 flex justify-between items-start">
           <div>
             <StatusBadge status="confirmed" />
-            <h2 className="text-2xl font-black text-foreground mt-4 tracking-tighter">
+            <h2 className="text-2xl font-black text-foreground mt-4 tracking-tighter text-left rtl:text-right">
               {t("confirmModal.title")}
             </h2>
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1 text-left rtl:text-right">
               {need.title}
             </p>
           </div>
@@ -101,10 +101,10 @@ export const ConfirmationModal = ({
               <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all font-black">
                 <Upload className="w-5 h-5 text-primary" />
               </div>
-              <p className="text-sm font-black text-foreground mb-1">
+              <p className="text-sm font-black text-foreground mb-1 text-left rtl:text-right">
                 Upload Photo or Video
               </p>
-              <p className="text-xs text-muted-foreground font-medium">
+              <p className="text-xs text-muted-foreground font-medium text-left rtl:text-right">
                 PNG, JPG or MP4 up to 10MB
               </p>
             </div>
@@ -119,7 +119,7 @@ export const ConfirmationModal = ({
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder={t("confirmModal.messagePlaceholder")}
-              className="w-full bg-secondary border-2 border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none"
+              className="w-full bg-secondary border-2 border-border rounded-xl px-4 py-3 text-sm font-medium text-foreground focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all outline-none text-left rtl:text-right"
             />
           </div>
 

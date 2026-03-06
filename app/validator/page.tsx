@@ -3,11 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TrendingUp, Users, CheckCircle, FileText } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@/components/ui/spinner";
-import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
@@ -16,6 +15,11 @@ import { NeedCard, Need } from "@/components/validator/NeedCard";
 import { CreateNeedForm } from "@/components/validator/CreateNeedForm";
 import { ConfirmationModal } from "@/components/validator/ConfirmationModal";
 import { NeedsHistoryTable } from "@/components/validator/NeedsHistoryTable";
+import {
+  AnimatedTabs,
+  AnimatedTabsList,
+  AnimatedTabsTrigger,
+} from "@/components/ui/animated-tabs";
 
 // ─── TYPES ────────────────────────────────────────────────────────────
 
@@ -36,9 +40,6 @@ export default function ValidatorDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState("");
-  const [activeTab, setActiveTab] = useState<"manage" | "create" | "payments">(
-    "manage",
-  );
   const [needs, setNeeds] = useState<Need[]>([]);
   const [pendingPayments, setPendingPayments] = useState<Transaction[]>([]);
   const [stats, setStats] = useState<ValidatorStats>({
@@ -49,6 +50,12 @@ export default function ValidatorDashboard() {
   });
   const [selectedNeed, setSelectedNeed] = useState<Need | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"manage" | "create" | "payments">(
+    "manage",
+  );
+
+  // Stays true while redirecting so no flash of dashboard content
+  const redirectingRef = React.useRef(false);
 
   useEffect(() => {
     const init = async () => {
@@ -60,6 +67,7 @@ export default function ValidatorDashboard() {
         } = await supabase.auth.getUser();
 
         if (!user) {
+          redirectingRef.current = true;
           router.replace("/auth");
           return;
         }
@@ -72,16 +80,16 @@ export default function ValidatorDashboard() {
           .single();
 
         const role = profile?.role || user.user_metadata?.role;
-        // DISABLED FOR TESTING
-        // if (role?.toLowerCase() !== "validator") {
-        //   router.replace(role ? `/${role.toLowerCase()}` : "/auth");
-        //   return;
-        // }
+        if (role?.toLowerCase() !== "validator") {
+          redirectingRef.current = true;
+          router.replace(role ? `/${role.toLowerCase()}` : "/auth");
+          return;
+        }
 
         setDisplayName(
           user.user_metadata?.display_name ||
             user.email?.split("@")[0] ||
-            "Validator",
+            t("role"),
         );
 
         // 2. Load Real Data
@@ -108,7 +116,7 @@ export default function ValidatorDashboard() {
       } catch (err) {
         console.error("Failed to load validator data:", err);
       } finally {
-        setLoading(false);
+        if (!redirectingRef.current) setLoading(false);
       }
     };
 
@@ -121,7 +129,6 @@ export default function ValidatorDashboard() {
   ) => {
     // Simulate API call
     setPendingPayments((prev) => prev.filter((p) => p.id !== id));
-    // In real app, this would trigger hash chain update the need's fundedAmount
   };
 
   const handleConfirmDelivery = (need: Need) => {
@@ -149,11 +156,11 @@ export default function ValidatorDashboard() {
             className="max-w-xl"
           >
             <div className="mb-4 mt-10">
-              <h2 className="text-2xl md:text-3xl font-bold text-muted-foreground mb-2">
+              <h2 className="text-5xl md:text-6xl font-bold text-foreground mb-2 text-left rtl:text-right">
                 {t("welcome")}
               </h2>
               <div className="flex items-center gap-4 overflow-hidden">
-                <h1 className="text-5xl md:text-6xl font-black text-foreground tracking-tighter leading-[1.1] truncate">
+                <h1 className="text-5xl md:text-6xl font-black text-foreground tracking-tighter leading-[1.1] truncate text-left rtl:text-right">
                   {displayName}
                 </h1>
                 <div className="w-14 h-14 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0 animate-in fade-in zoom-in duration-700">
@@ -183,7 +190,7 @@ export default function ValidatorDashboard() {
                 </div>
               </div>
             </div>
-            <p className="text-lg text-muted-foreground font-medium mt-3 max-w-xl leading-relaxed">
+            <p className="text-lg text-muted-foreground font-medium mt-3 max-w-xl leading-relaxed text-left rtl:text-right">
               {t("summary")}
             </p>
           </motion.div>
@@ -191,34 +198,6 @@ export default function ValidatorDashboard() {
       </section>
 
       <main className="max-w-7xl mx-auto px-6 py-12 space-y-20">
-        <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-          <div />
-
-          <div className="flex bg-card p-1.5 rounded-2xl border border-border shadow-sm">
-            <Button
-              variant={activeTab === "manage" ? "default" : "ghost"}
-              onClick={() => setActiveTab("manage")}
-              className={`rounded-xl text-xs font-black uppercase tracking-widest ${activeTab === "manage" ? "shadow-lg shadow-primary/20" : ""}`}
-            >
-              {t("needs.title")}
-            </Button>
-            <Button
-              variant={activeTab === "payments" ? "default" : "ghost"}
-              onClick={() => setActiveTab("payments")}
-              className={`rounded-xl text-xs font-black uppercase tracking-widest ${activeTab === "payments" ? "shadow-lg shadow-primary/20" : ""}`}
-            >
-              Payments
-            </Button>
-            <Button
-              variant={activeTab === "create" ? "default" : "ghost"}
-              onClick={() => setActiveTab("create")}
-              className={`rounded-xl text-xs font-black uppercase tracking-widest ${activeTab === "create" ? "shadow-lg shadow-primary/20" : ""}`}
-            >
-              {t("createNeed.title")}
-            </Button>
-          </div>
-        </section>
-
         {/* STATS OVERVIEW */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
@@ -243,57 +222,112 @@ export default function ValidatorDashboard() {
           />
         </section>
 
+        {/* TABS */}
+        <AnimatedTabs
+          value={activeTab}
+          onValueChange={(v) =>
+            setActiveTab(v as "manage" | "create" | "payments")
+          }
+          className="w-full"
+        >
+          <div className="flex justify-end mb-8">
+            <AnimatedTabsList className="bg-muted/40 p-1.5 rounded-xl border border-border/20 h-12">
+              <AnimatedTabsTrigger
+                value="manage"
+                className="h-full rounded-lg px-4 text-xs font-black uppercase tracking-widest"
+              >
+                {t("tabs.manage")}
+              </AnimatedTabsTrigger>
+              <AnimatedTabsTrigger
+                value="payments"
+                className="h-full rounded-lg px-4 text-xs font-black uppercase tracking-widest"
+              >
+                {t("tabs.payments")}
+              </AnimatedTabsTrigger>
+              <AnimatedTabsTrigger
+                value="create"
+                className="h-full rounded-lg px-4 text-xs font-black uppercase tracking-widest"
+              >
+                {t("createNeed.title")}
+              </AnimatedTabsTrigger>
+            </AnimatedTabsList>
+          </div>
+        </AnimatedTabs>
+
         <AnimatePresence mode="wait">
-          {activeTab === "manage" ? (
+          {activeTab === "manage" && (
             <motion.div
               key="manage"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
               className="space-y-20"
             >
               {/* NEEDS LISTING */}
               <div className="space-y-8">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-2xl font-black text-foreground tracking-tighter">
+                  <h2 className="text-2xl font-black text-foreground tracking-tighter text-left rtl:text-right">
                     {t("needs.title")}
                   </h2>
                   <span className="text-[10px] font-black text-primary uppercase tracking-widest px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
-                    {needs.length} Active Needs
+                    {t("needs.activeCount", { count: needs.length })}
                   </span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {needs.map((n) => (
-                    <NeedCard
-                      key={n.id}
-                      n={n}
-                      onConfirm={handleConfirmDelivery}
-                    />
-                  ))}
+                  {needs.length === 0 ? (
+                    <div className="col-span-full py-24 bg-card rounded-[2.5rem] border-2 border-dashed border-border flex flex-col items-center justify-center gap-6">
+                      <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center">
+                        <FileText size={32} className="text-primary/40" />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xl font-black text-foreground tracking-tighter text-left rtl:text-right">
+                          {t("needs.noActive")}
+                        </p>
+                        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mt-1 text-left rtl:text-right">
+                          {t("needs.noActiveDesc")}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    needs.map((n) => (
+                      <NeedCard
+                        key={n.id}
+                        n={n}
+                        onConfirm={handleConfirmDelivery}
+                      />
+                    ))
+                  )}
                 </div>
               </div>
 
               {/* HISTORY TABLE */}
               <NeedsHistoryTable needs={needs} />
             </motion.div>
-          ) : activeTab === "payments" ? (
+          )}
+
+          {activeTab === "payments" && (
             <motion.div
               key="payments"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
             >
               <PaymentVerificationList
                 transactions={pendingPayments}
                 onVerify={handleVerifyPayment}
               />
             </motion.div>
-          ) : (
+          )}
+
+          {activeTab === "create" && (
             <motion.div
               key="create"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
             >
               <CreateNeedForm />
             </motion.div>
@@ -302,15 +336,13 @@ export default function ValidatorDashboard() {
       </main>
 
       {/* MODALS */}
-      <AnimatePresence>
-        {isConfirmModalOpen && (
-          <ConfirmationModal
-            need={selectedNeed}
-            isOpen={isConfirmModalOpen}
-            onClose={() => setIsConfirmModalOpen(false)}
-          />
-        )}
-      </AnimatePresence>
+      {isConfirmModalOpen && (
+        <ConfirmationModal
+          need={selectedNeed}
+          isOpen={isConfirmModalOpen}
+          onClose={() => setIsConfirmModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

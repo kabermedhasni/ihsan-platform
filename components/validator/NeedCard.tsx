@@ -44,7 +44,7 @@ export const NeedCard = ({ n, onConfirm }: NeedCardProps) => {
             </span>
             <StatusBadge status={n.status} />
           </div>
-          <h3 className="font-black text-foreground text-lg leading-tight mb-1 truncate group-hover:text-primary transition-colors">
+          <h3 className="font-black text-foreground text-lg leading-tight mb-1 truncate group-hover:text-primary transition-colors text-left rtl:text-right">
             {n.title}
           </h3>
           <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">

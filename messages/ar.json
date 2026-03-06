@@ -1,4 +1,20 @@
 {
+  "common": {
+    "cities": {
+      "Nouakchott": "نواكشوط",
+      "Nouadhibou": "نواذيبو",
+      "Rosso": "روصو",
+      "Atar": "أطار",
+      "Kiffa": "كيفة",
+      "Kaedi": "كيهيدي",
+      "Zouerate": "ازويرات",
+      "Aioun": "العيون",
+      "Nema": "النعمة",
+      "Akjoujt": "أكجوجت",
+      "Tidjikja": "تجكجة",
+      "Selibaby": "سيلبابي"
+    }
+  },
   "nav": {
     "home": "الرئيسية",
     "howItWorks": "كيف يعمل",
@@ -7,7 +23,10 @@
     "map": "الخريطة",
     "getStarted": "ابدأ الآن",
     "dashboard": "لوحة التحكم",
-    "signOut": "تسجيل الخروج"
+    "signOut": "تسجيل الخروج",
+    "donor": "متبرع",
+    "validator": "محقق ميداني",
+    "partner": "شريك معتمد"
   },
   "hero": {
     "title": "تبرعك...",
@@ -331,6 +350,9 @@
       "status": "الحالة",
       "date": "التاريخ",
       "verify": "تحقق"
+    },
+    "error": {
+      "loadFailed": "فشل تحميل تبرعاتك."
     }
   },
   "validator": {
@@ -347,11 +369,43 @@
     },
     "needs": {
       "title": "حالاتي",
-      "viewDetails": "عرض التفاصيل",
-      "confirmDelivery": "تأكيد التسليم",
-      "beneficiaries": "المستفيدين",
-      "target": "الهدف",
-      "funded": "الممول"
+      "activeCount": "{count} احتياجات نشطة",
+      "noActive": "لا توجد احتياجات نشطة بعد",
+      "noActiveDesc": "قم بإنشاء حالة للبدء في جمع التبرعات."
+    },
+    "history": {
+      "title": "سجل الحالات",
+      "searchPlaceholder": "البحث في السجل...",
+      "noRecords": "لم يتم العثور على سجلات.",
+      "table": {
+        "id": "المعرف",
+        "city": "المدينة",
+        "category": "الفئة",
+        "amount": "المبلغ",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "action": "الإجراء",
+        "view": "عرض"
+      }
+    },
+    "payments": {
+      "title": "التحققات المعلقة",
+      "pendingCount": "{count} معلق",
+      "queueClear": "قائمة الانتظار فارغة!",
+      "noPending": "لا توجد تحويلات بنكية معلقة للتحقق منها.",
+      "donorAccount": "حساب المتبرع / المعرف",
+      "amount": "المبلغ",
+      "targetAccount": "الحساب المستهدف",
+      "date": "التاريخ",
+      "validHash": "سلسلة تجزئة صالحة",
+      "approve": "موافقة",
+      "reject": "رفض",
+      "noImage": "لا توجد صورة"
+    },
+    "tabs": {
+      "manage": "إدارة",
+      "payments": "المدفوعات",
+      "create": "إنشاء"
     },
     "createNeed": {
       "title": "إنشاء حالة جديدة",
@@ -369,7 +423,17 @@
         "medical": "طبي",
         "housing": "إيواء",
         "other": "أخرى"
-      }
+      },
+      "formSubtitle": "انشر حالة مجتمعية جديدة للبدء في جمع التبرعات.",
+      "errorSelect": "يرجى اختيار الفئة والمدينة.",
+      "success": "تم إنشاء الحالة بنجاح!",
+      "publishing": "جارٍ النشر...",
+      "placeholderTitle": "مثال: 10 سلال غذائية للعائلات",
+      "placeholderDesc": "وصف الحالة بالتفصيل...",
+      "placeholderDistrict": "تفرغ زينة",
+      "placeholderPartner": "اختياري: اسم المطعم أو المحل",
+      "selectCategory": "اختر الفئة",
+      "selectCity": "اختر المدينة"
     },
     "confirmModal": {
       "title": "تأكيد التسليم",
@@ -377,19 +441,6 @@
       "message": "رسالة التأكيد",
       "messagePlaceholder": "مثال: تم تسليم الوجبات بنجاح لـ 5 عائلات.",
       "confirm": "تأكيد التسليم"
-    },
-    "history": {
-      "title": "سجل الحالات",
-      "table": {
-        "id": "الرقم",
-        "city": "المدينة",
-        "category": "الفئة",
-        "amount": "المبلغ",
-        "status": "الحالة",
-        "date": "التاريخ",
-        "action": "الإجراء",
-        "view": "عرض"
-      }
     },
     "statuses": {
       "open": "مفتوح",
@@ -405,6 +456,50 @@
     "role": "شريك معتمد",
     "activePipeline": "الطلبات النشطة",
     "orders": "طلب",
+    "stats": {
+      "newOrders": "طلبات جديدة",
+      "preparing": "قيد التحضير",
+      "delivered": "تم التسليم",
+      "impact": "الأثر الإجمالي",
+      "mru": "أوقية",
+      "trend": "{trend} منذ الأمس"
+    },
+    "card": {
+      "orderId": "طلب رقم {id}",
+      "scheduled": "الموعد: {time}",
+      "target": "الهدف",
+      "moveTo": "نقل إلى {status}"
+    },
+    "statuses": {
+      "Funded": "ممول",
+      "Preparing": "قيد التحضير",
+      "Ready": "جاهز للتسليم",
+      "Delivered": "تم التسليم",
+      "Cancelled": "ملغي"
+    },
+    "modal": {
+      "title": "تفاصيل الطلب",
+      "locationInfo": "معلومات الموقع",
+      "district": "المقاطعة",
+      "verification": "التحقق",
+      "validator": "الموثق",
+      "preparation": "التحضير",
+      "mealType": "نوع الوجبة",
+      "quantity": "الكمية",
+      "units": "{count} وحدات",
+      "scheduled": "الموعد",
+      "internalNotes": "ملاحظات داخلية",
+      "noNotes": "لا توجد تعليمات خاصة لهذا الطلب.",
+      "close": "إغلاق التفاصيل"
+    },
+    "table": {
+      "id": "المعرف",
+      "location": "الموقع",
+      "people": "أشخاص",
+      "amount": "المبلغ",
+      "status": "الحالة",
+      "noRecords": "لا توجد سجلات لعرضها."
+    },
     "allCaughtUp": "أكملت جميع المهام!",
     "newOrdersDesc": "الطلبات الممولة الجديدة ستظهر هنا.",
     "todaysFlow": "تدفق اليوم",
@@ -415,7 +510,11 @@
     },
     "history": {
       "title": "سجل الطلبات",
-      "archive": "الأرشيف الكامل"
+      "archive": "الأرشيف الكامل",
+      "na": "غير متوفر"
+    },
+    "timeline": {
+      "emptyState": "سيظهر نشاطك اليومي هنا."
     }
   },
   "transparency": {

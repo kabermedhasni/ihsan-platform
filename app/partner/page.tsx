@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Package,
   Clock,
@@ -30,6 +30,8 @@ export default function PartnerDashboard() {
   const router = useRouter();
   const t = useTranslations("partner");
 
+  const redirectingRef = useRef(false);
+
   useEffect(() => {
     const init = async () => {
       try {
@@ -39,6 +41,7 @@ export default function PartnerDashboard() {
         } = await supabase.auth.getUser();
 
         if (!user) {
+          redirectingRef.current = true;
           router.push("/auth");
           return;
         }
@@ -50,16 +53,16 @@ export default function PartnerDashboard() {
           .single();
 
         const role = profile?.role || user.user_metadata?.role;
-        // DISABLED FOR TESTING
-        // if (role?.toLowerCase() !== "partner") {
-        //   router.replace(role ? `/${role.toLowerCase()}` : "/auth");
-        //   return;
-        // }
+        if (role?.toLowerCase() !== "partner") {
+          redirectingRef.current = true;
+          router.replace(role ? `/${role.toLowerCase()}` : "/auth");
+          return;
+        }
 
-        setPartnerName(user.user_metadata?.display_name || "Verified Partner");
+        setPartnerName(user.user_metadata?.display_name || t("role"));
         await fetchOrders();
       } finally {
-        setLoading(false);
+        if (!redirectingRef.current) setLoading(false);
       }
     };
     init();
@@ -109,38 +112,39 @@ export default function PartnerDashboard() {
 
   const stats = [
     {
-      title: "New Orders",
+      title: t("stats.newOrders"),
       value: activeOrders.filter((o) => o.status === "Funded").length,
       icon: Package,
     },
     {
-      title: "Preparing",
+      title: t("stats.preparing"),
       value: activeOrders.filter(
         (o) => o.status === "Preparing" || o.status === "Ready",
       ).length,
       icon: Clock,
     },
-    { title: "Delivered", value: historyOrders.length, icon: CheckCircle2 },
     {
-      title: "Global Impact",
+      title: t("stats.delivered"),
+      value: historyOrders.length,
+      icon: CheckCircle2,
+    },
+    {
+      title: t("stats.impact"),
       value: orders
         .reduce(
           (sum, o) => sum + (o.status === "Delivered" ? Number(o.amount) : 0),
           0,
         )
         .toLocaleString(),
-      unit: "MRU",
+      unit: t("stats.mru"),
       icon: BarChart3,
     },
   ];
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
-        <Spinner size="xl" className="text-primary" />
-        <p className="mt-6 text-foreground font-black uppercase tracking-widest text-sm animate-pulse">
-          Syncing ...
-        </p>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Spinner size="lg" className="text-primary" />
       </div>
     );
   }
@@ -158,11 +162,11 @@ export default function PartnerDashboard() {
           >
             {/* Welcome Section */}
             <div className="mb-4 mt-6 md:mt-10">
-              <h2 className="text-2xl md:text-3xl font-bold text-muted-foreground mb-2 text-left rtl:text-right">
+              <h2 className="text-5xl md:text-6xl font-bold text-foreground mb-2 text-left rtl:text-right">
                 {t("welcome")}
               </h2>
               <div className="flex items-center gap-4 overflow-hidden">
-                <h1 className="text-5xl md:text-6xl font-black text-foreground tracking-tighter leading-[1.1] truncate">
+                <h1 className="text-5xl md:text-6xl font-black text-foreground tracking-tighter leading-[1.1] truncate text-left rtl:text-right">
                   {partnerName}
                 </h1>
                 <div className="w-14 h-14 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shrink-0 animate-in fade-in zoom-in duration-700">
@@ -192,7 +196,7 @@ export default function PartnerDashboard() {
                 </div>
               </div>
             </div>
-            <p className="text-lg text-muted-foreground font-medium mt-3 max-w-xl leading-relaxed">
+            <p className="text-lg text-muted-foreground font-medium mt-3 max-w-xl leading-relaxed text-left rtl:text-right">
               {t("summary")}
             </p>
           </motion.div>
@@ -212,7 +216,7 @@ export default function PartnerDashboard() {
           {/* Active Orders List */}
           <div className="lg:col-span-2 space-y-10">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-black text-foreground tracking-tighter">
+              <h2 className="text-2xl font-black text-foreground tracking-tighter text-left rtl:text-right">
                 {t("activePipeline")}
               </h2>
               <span className="bg-primary/10 text-primary px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-primary/20">
@@ -236,10 +240,10 @@ export default function PartnerDashboard() {
                   </div>
                   <div className="text-center">
                     <p className="text-xl font-black text-foreground tracking-tighter">
-                      All caught up!
+                      {t("allCaughtUp")}
                     </p>
                     <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mt-1">
-                      New funded orders will appear here.
+                      {t("newOrdersDesc")}
                     </p>
                   </div>
                 </div>
@@ -249,7 +253,7 @@ export default function PartnerDashboard() {
 
           {/* Daily Timeline Sidebar */}
           <aside className="space-y-10">
-            <h2 className="text-2xl font-black text-foreground tracking-tighter">
+            <h2 className="text-2xl font-black text-foreground tracking-tighter text-left rtl:text-right">
               {t("todaysFlow")}
             </h2>
             <Timeline
@@ -259,7 +263,7 @@ export default function PartnerDashboard() {
                       hour: "2-digit",
                       minute: "2-digit",
                     })
-                  : "N/A",
+                  : t("history.na"),
                 title: o.type,
                 status: o.status,
               }))}
@@ -267,15 +271,15 @@ export default function PartnerDashboard() {
 
             <div className="bg-card border border-border p-8 rounded-4xl text-foreground relative overflow-hidden group shadow-sm">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform" />
-              <h3 className="text-lg font-black mb-2 relative tracking-tight">
+              <h3 className="text-lg font-black mb-2 relative tracking-tight text-left rtl:text-right">
                 {t("support.title")}
               </h3>
-              <p className="text-sm text-muted-foreground font-medium mb-8 relative">
+              <p className="text-sm text-muted-foreground font-medium mb-8 relative text-left rtl:text-right">
                 {t("support.desc")}
               </p>
               <Button
                 variant="default"
-                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20"
+                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest"
               >
                 {t("support.button")}
               </Button>
@@ -286,7 +290,7 @@ export default function PartnerDashboard() {
         {/* History Ledger Section */}
         <section className="space-y-10">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-black text-foreground tracking-tighter">
+            <h2 className="text-2xl font-black text-foreground tracking-tighter text-left rtl:text-right">
               {t("history.title")}
             </h2>
             <Button

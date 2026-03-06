@@ -1,4 +1,20 @@
 {
+  "common": {
+    "cities": {
+      "Nouakchott": "Nouakchott",
+      "Nouadhibou": "Nouadhibou",
+      "Rosso": "Rosso",
+      "Atar": "Atar",
+      "Kiffa": "Kiffa",
+      "Kaedi": "Kaedi",
+      "Zouerate": "Zouerate",
+      "Aioun": "Aioun",
+      "Nema": "Nema",
+      "Akjoujt": "Akjoujt",
+      "Tidjikja": "Tidjikja",
+      "Selibaby": "Selibaby"
+    }
+  },
   "nav": {
     "home": "Home",
     "howItWorks": "How it Works",
@@ -7,7 +23,10 @@
     "map": "Map",
     "getStarted": "Get Started",
     "dashboard": "Dashboard",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "donor": "Donor",
+    "validator": "Field Validator",
+    "partner": "Verified Partner"
   },
   "hero": {
     "title": "Your donation...",
@@ -331,6 +350,9 @@
       "status": "Status",
       "date": "Date",
       "verify": "Verify"
+    },
+    "error": {
+      "loadFailed": "Failed to load your donations."
     }
   },
   "validator": {
@@ -347,11 +369,43 @@
     },
     "needs": {
       "title": "My Needs",
-      "viewDetails": "View Details",
-      "confirmDelivery": "Confirm Delivery",
-      "beneficiaries": "Beneficiaries",
-      "target": "Target",
-      "funded": "Funded"
+      "activeCount": "{count} Active Needs",
+      "noActive": "No active needs yet",
+      "noActiveDesc": "Create a need to start collecting donations."
+    },
+    "history": {
+      "title": "Needs History",
+      "searchPlaceholder": "Search history...",
+      "noRecords": "No history found.",
+      "table": {
+        "id": "ID",
+        "city": "City",
+        "category": "Category",
+        "amount": "Amount",
+        "status": "Status",
+        "date": "Date",
+        "action": "Action",
+        "view": "View"
+      }
+    },
+    "payments": {
+      "title": "Pending Verifications",
+      "pendingCount": "{count} Pending",
+      "queueClear": "Queue Clear!",
+      "noPending": "No pending bank transfers to verify.",
+      "donorAccount": "Donor Account / ID",
+      "amount": "Amount",
+      "targetAccount": "Target Account",
+      "date": "Date",
+      "validHash": "Valid Hash Chain",
+      "approve": "Approve",
+      "reject": "Reject",
+      "noImage": "No Image"
+    },
+    "tabs": {
+      "manage": "Manage",
+      "payments": "Payments",
+      "create": "Create"
     },
     "createNeed": {
       "title": "Create New Need",
@@ -369,7 +423,17 @@
         "medical": "Medical",
         "housing": "Housing",
         "other": "Other"
-      }
+      },
+      "formSubtitle": "Post a new community need to start collecting donations.",
+      "errorSelect": "Please select a category and city.",
+      "success": "Need created successfully!",
+      "publishing": "Publishing...",
+      "placeholderTitle": "e.g., 10 Food Kits for Families",
+      "placeholderDesc": "Describe the need in detail...",
+      "placeholderDistrict": "Tevragh Zeina",
+      "placeholderPartner": "Optional: Restaurant or Store Name",
+      "selectCategory": "Select Category",
+      "selectCity": "Select City"
     },
     "confirmModal": {
       "title": "Confirm Delivery",
@@ -377,19 +441,6 @@
       "message": "Confirmation Message",
       "messagePlaceholder": "e.g., Meals delivered successfully to 5 families.",
       "confirm": "Confirm Delivery"
-    },
-    "history": {
-      "title": "Needs History",
-      "table": {
-        "id": "ID",
-        "city": "City",
-        "category": "Category",
-        "amount": "Amount",
-        "status": "Status",
-        "date": "Date",
-        "action": "Action",
-        "view": "View"
-      }
     },
     "statuses": {
       "open": "Open",
@@ -405,6 +456,50 @@
     "role": "Verified Partner",
     "activePipeline": "Active Pipeline",
     "orders": "Orders",
+    "stats": {
+      "newOrders": "New Orders",
+      "preparing": "Preparing",
+      "delivered": "Delivered",
+      "impact": "Global Impact",
+      "mru": "MRU",
+      "trend": "{trend} from yesterday"
+    },
+    "card": {
+      "orderId": "Order #{id}",
+      "scheduled": "Scheduled: {time}",
+      "target": "Target",
+      "moveTo": "Move to {status}"
+    },
+    "statuses": {
+      "Funded": "Funded",
+      "Preparing": "Preparing",
+      "Ready": "Ready to Deliver",
+      "Delivered": "Delivered",
+      "Cancelled": "Cancelled"
+    },
+    "modal": {
+      "title": "Order Details",
+      "locationInfo": "Location Info",
+      "district": "District",
+      "verification": "Verification",
+      "validator": "Validator",
+      "preparation": "Preparation",
+      "mealType": "Meal Type",
+      "quantity": "Quantity",
+      "units": "{count} Units",
+      "scheduled": "Scheduled",
+      "internalNotes": "Internal Notes",
+      "noNotes": "No special instructions provided for this order.",
+      "close": "Close Details"
+    },
+    "table": {
+      "id": "ID",
+      "location": "Location",
+      "people": "People",
+      "amount": "Amount",
+      "status": "Status",
+      "noRecords": "No records to display."
+    },
     "allCaughtUp": "All caught up!",
     "newOrdersDesc": "New funded orders will appear here.",
     "todaysFlow": "Today's Flow",
@@ -415,7 +510,11 @@
     },
     "history": {
       "title": "Order History",
-      "archive": "Full Archive"
+      "archive": "Full Archive",
+      "na": "N/A"
+    },
+    "timeline": {
+      "emptyState": "Your daily activity will appear here."
     }
   },
   "transparency": {
