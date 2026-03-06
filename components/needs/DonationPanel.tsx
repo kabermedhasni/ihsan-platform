@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Heart, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 
-export const DonationPanel = () => {
+export const DonationPanel = ({ needId }: { needId: string }) => {
     const t = useTranslations("needsDetail");
+    const router = useRouter();
     const [amount, setAmount] = useState<string>('');
     const [isDonating, setIsDonating] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -31,14 +33,8 @@ export const DonationPanel = () => {
 
     const handleDonate = () => {
         if (!user || role !== 'donor') return;
-        setIsDonating(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsDonating(false);
-            setShowSuccess(true);
-            setAmount('');
-            setTimeout(() => setShowSuccess(false), 5000);
-        }, 2000);
+        // Redirect to new manual payment system
+        router.push(`/donate/${needId}`);
     };
 
     const isRestricted = !authLoading && (!user || role !== 'donor');

@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export type NeedStatus = 'Open' | 'Fully Funded' | 'In Delivery' | 'Confirmed' | 'active' | 'completed' | 'urgent';
+export type NeedStatus = 'Open' | 'Fully Funded' | 'In Delivery' | 'Confirmed' | 'active' | 'completed' | 'urgent' | 'PENDING_VALIDATION' | 'REJECTED' | 'CONFIRMED';
 
 interface StatusBadgeProps {
     status: NeedStatus;
@@ -18,10 +18,20 @@ export const StatusBadge = ({ status }: StatusBadgeProps) => {
         'urgent': 'bg-destructive/15 text-destructive border-destructive/30',
         'Confirmed': 'bg-green-500/15 text-green-400 border-green-500/30',
         'completed': 'bg-green-500/15 text-green-400 border-green-500/30',
+        'CONFIRMED': 'bg-green-500/15 text-green-400 border-green-500/30',
+        'PENDING_VALIDATION': 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+        'REJECTED': 'bg-destructive/15 text-destructive border-destructive/30',
     };
 
-    const normalizedStatus = status.charAt(0).toUpperCase() + status.slice(1);
-    const displayLabel = status === 'active' ? 'Open' : status === 'urgent' ? 'Urgent' : normalizedStatus;
+    const getDisplayLabel = (s: string) => {
+        if (s === 'active' || s === 'Open') return 'Open';
+        if (s === 'urgent') return 'Urgent';
+        if (s === 'PENDING_VALIDATION') return 'Pending Verification';
+        if (s === 'REJECTED') return 'Rejected';
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    };
+
+    const displayLabel = getDisplayLabel(status);
 
     return (
         <motion.span

@@ -165,7 +165,7 @@ export default function NeedDetailsPage({ params }: { params: Promise<{ id: stri
 
                     {/* Right Column: Donation Panel */}
                     <div className="w-full lg:w-[460px] flex-shrink-0">
-                        <DonationPanel />
+                        <DonationPanel needId={need.id} />
 
                         <div className="lg:hidden mt-12">
                             <TransparencySection />

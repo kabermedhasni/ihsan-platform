@@ -30,6 +30,9 @@ interface ValidatorStats {
   totalBeneficiaries: number;
 }
 
+import { PaymentVerificationList } from "@/components/validator/PaymentVerificationList";
+import { Transaction } from "@/types/payment";
+
 // ─── MAIN PAGE COMPONENT ────────────────────────────────────────────────────────
 
 export default function ValidatorDashboard() {
@@ -37,8 +40,9 @@ export default function ValidatorDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState("");
-  const [activeTab, setActiveTab] = useState<"manage" | "create">("manage");
+  const [activeTab, setActiveTab] = useState<"manage" | "create" | "payments">("manage");
   const [needs, setNeeds] = useState<Need[]>([]);
+  const [pendingPayments, setPendingPayments] = useState<Transaction[]>([]);
   const [stats, setStats] = useState<ValidatorStats>({
     needsCreated: 0,
     needsFunded: 0,
@@ -76,9 +80,10 @@ export default function ValidatorDashboard() {
 
       // 2. Load Real Data
       try {
-        const [needsRes, statsRes] = await Promise.all([
+        const [needsRes, statsRes, paymentsRes] = await Promise.all([
           fetch('/api/validator/needs'),
-          fetch('/api/validator/stats')
+          fetch('/api/validator/stats'),
+          fetch('/api/validator/pending-payments')
         ]);
 
         if (needsRes.ok) {
@@ -90,6 +95,11 @@ export default function ValidatorDashboard() {
           const statsData = await statsRes.json();
           setStats(statsData);
         }
+
+        if (paymentsRes.ok) {
+          const paymentsData = await paymentsRes.json();
+          setPendingPayments(paymentsData);
+        }
       } catch (err) {
         console.error("Failed to load validator data:", err);
       } finally {
@@ -99,6 +109,12 @@ export default function ValidatorDashboard() {
 
     init();
   }, [router]);
+
+  const handleVerifyPayment = async (id: string, status: 'CONFIRMED' | 'REJECTED') => {
+    // Simulate API call
+    setPendingPayments(prev => prev.filter(p => p.id !== id));
+    // In real app, this would trigger hash chain update the need's fundedAmount
+  };
 
   const handleConfirmDelivery = (need: Need) => {
     setSelectedNeed(need);
@@ -139,6 +155,12 @@ export default function ValidatorDashboard() {
               className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'manage' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-white/5'}`}
             >
               {t('needs.title')}
+            </button>
+            <button
+              onClick={() => setActiveTab("payments")}
+              className={`px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'payments' ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground hover:bg-white/5'}`}
+            >
+              Payments
             </button>
             <button
               onClick={() => setActiveTab("create")}
@@ -183,6 +205,18 @@ export default function ValidatorDashboard() {
 
               {/* HISTORY TABLE */}
               <NeedsHistoryTable needs={needs} />
+            </motion.div>
+          ) : activeTab === "payments" ? (
+            <motion.div
+              key="payments"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+            >
+              <PaymentVerificationList
+                transactions={pendingPayments}
+                onVerify={handleVerifyPayment}
+              />
             </motion.div>
           ) : (
             <motion.div

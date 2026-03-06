@@ -5,15 +5,15 @@ export async function GET() {
     const supabase = await createClient();
 
     try {
-        // 1. Total Donations
-        const { data: donations, error: donationError } = await supabase
-            .from('donations')
-            .select('amount')
-            .eq('status', 'completed');
+        // 1. Total Donations & Cities Covered from needs table
+        const { data: needs, error: needError } = await supabase
+            .from('needs')
+            .select('total_donated, district');
 
-        if (donationError) throw donationError;
+        if (needError) throw needError;
 
-        const totalDonated = donations?.reduce((sum, d) => sum + Number(d.amount), 0) || 0;
+        const totalDonated = needs?.reduce((sum, n) => sum + Number(n.total_donated || 0), 0) || 0;
+        const uniqueDistricts = new Set(needs?.map(n => n.district).filter(Boolean)).size;
 
         // 2. Verified Operations (Confirmations)
         const { count: verifiedCount, error: confirmationError } = await supabase
@@ -21,15 +21,6 @@ export async function GET() {
             .select('*', { count: 'exact', head: true });
 
         if (confirmationError) throw confirmationError;
-
-        // 3. Cities Covered
-        const { data: needs, error: needError } = await supabase
-            .from('needs')
-            .select('district');
-
-        if (needError) throw needError;
-
-        const uniqueDistricts = new Set(needs?.map(n => n.district)).size;
 
         return NextResponse.json({
             totalDonated,

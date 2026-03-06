@@ -417,7 +417,10 @@
       "amount": "Montant",
       "status": "Statut",
       "time": "Temps",
-      "hash": "Hachage du Registre"
+      "hash": "Hachage du Registre",
+      "networkStatus": "État du Réseau",
+      "synchronized": "Synchronisé",
+      "viewOlder": "Voir les anciens enregistrements"
     },
     "verify": {
       "title": "Votre don est-il vérifié ?",
@@ -427,11 +430,26 @@
       "verifying": "Vérification en cours...",
       "recordFound": "Enregistrement Vérifié",
       "notFound": "Aucun enregistrement trouvé. Veuillez vérifier et réessayer.",
-      "clear": "Effacer"
+      "clear": "Effacer",
+      "directVerification": "Vérification Directe",
+      "beneficiaries": "Bénéficiaires",
+      "people": "Personnes",
+      "waiting": "Prêt pour la vérification\nEntrez un ID d'enregistrement ou un hachage de registre ci-dessus pour commencer le processus d'audit."
     },
     "map": {
       "title": "Empreinte d'Impact",
-      "subtitle": "Distribution géographique des livraisons confirmées."
+      "subtitle": "Distribution géographique des livraisons confirmées.",
+      "confirmed": "Confirmé",
+      "inProgress": "En cours",
+      "delivered": "Livré",
+      "realTimeCoverage": "Couverture en temps réel",
+      "coverageDesc": "Faites l'expérience d'une transparence radicale. Chaque marqueur sur cette carte représente une livraison physique vérifiée ou une satisfaction de besoin confirmée."
+    },
+    "cta": {
+      "title": "Des briques pour une confiance radicale.",
+      "description": "Notre registre de transparence est ouvert à l'audit public. Nous pensons que la clarté est le fondement d'une charité efficace.",
+      "validator": "Devenir Validateur",
+      "api": "API Développeur"
     }
   },
   "needsDetail": {

@@ -15,10 +15,7 @@ export async function GET() {
             .from("needs")
             .select(`
                 *,
-                donations (
-                    amount,
-                    status
-                )
+                validator_id
             `)
             .eq("validator_id", user.id)
             .order("created_at", { ascending: false });
@@ -27,18 +24,14 @@ export async function GET() {
 
         // Process needs to calculate funded amount
         const processedNeeds = data.map(need => {
-            const totalDonated = need.donations
-                ?.filter((d: any) => d.status === 'completed')
-                .reduce((sum: number, d: any) => sum + Number(d.amount), 0) || 0;
-
             return {
                 id: need.id,
                 title: need.title,
                 city: need.city,
                 district: need.district,
                 category: need.category,
-                targetAmount: need.amount_required,
-                fundedAmount: totalDonated,
+                targetAmount: Number(need.amount_required),
+                fundedAmount: Number(need.total_donated || 0),
                 beneficiaries: need.beneficiaries,
                 status: mapDbStatusToUi(need.status),
                 createdAt: need.created_at,
@@ -57,8 +50,7 @@ export async function GET() {
 function mapDbStatusToUi(status: string) {
     const s = status?.toLowerCase();
     if (s === 'active') return 'open';
-    if (s === 'funded') return 'fullyFunded';
-    if (s === 'partially_funded') return 'partiallyFunded'; // Guessing
-    if (s === 'delivered') return 'delivered'; // For history
+    if (s === 'completed') return 'fullyFunded';
+    if (s === 'delivered') return 'delivered';
     return 'open';
 }

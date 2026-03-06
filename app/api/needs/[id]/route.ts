@@ -9,18 +9,12 @@ export async function GET(
     const supabase = await createClient();
 
     try {
-        // 1. Fetch the need details along with validator info
+        // 1. Fetch the need details
         const { data: need, error: needError } = await supabase
             .from('needs')
             .select(`
                 *,
-                validator:profiles!validator_id (
-                    display_name
-                ),
-                donations (
-                    amount,
-                    status
-                )
+                validator_id
             `)
             .eq('id', id)
             .single();
@@ -30,29 +24,19 @@ export async function GET(
             return NextResponse.json({ error: "Need not found" }, { status: 404 });
         }
 
-        // 2. Calculate funding stats
-        const totalDonated = need.donations
-            ?.filter((d: any) => d.status === 'completed')
-            .reduce((sum: number, d: any) => sum + Number(d.amount), 0) || 0;
-
-        const donorsCount = new Set(
-            need.donations
-                ?.filter((d: any) => d.status === 'completed')
-                .map((d: any) => d.donor_id)
-        ).size;
-
+        // 2. Format the response using aggregated columns
         const processedNeed = {
             ...need,
-            fundedAmount: totalDonated,
-            donorsCount: donorsCount,
+            fundedAmount: Number(need.total_donated || 0),
+            donorsCount: Number(need.donors_count || 0),
             targetAmount: Number(need.amount_required),
-            validatorName: need.validator?.display_name || "Official Validator",
-            fundingPercentage: Math.min(Math.round((totalDonated / Number(need.amount_required)) * 100), 100)
+            validatorName: "Official Validator",
+            fundingPercentage: Number(need.funding_percentage || 0)
         };
 
-        // Remove the raw donations from the response to keep it clean
-        delete processedNeed.donations;
+        // Remove unused fields
         delete processedNeed.validator;
+        delete processedNeed.transactions;
 
         return NextResponse.json(processedNeed);
     } catch (err: any) {

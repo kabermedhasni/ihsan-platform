@@ -6,53 +6,70 @@ export async function GET() {
         const supabase = await createClient();
 
         // Fetch needs that are either funded or delivered
-        // We join with confirmations to get proof details
-        const { data: needs, error } = await supabase
+        const { data: needs, error: needsError } = await supabase
             .from("needs")
             .select(`
-        id,
-        city,
-        category,
-        target_amount,
-        status,
-        created_at,
-        validator:profiles!needs_validator_id_fkey(full_name),
-        confirmations (
-          image_url,
-          message,
-          created_at
-        )
-      `)
-            .in("status", ["funded", "delivered", "confirmed"])
+                id,
+                city,
+                category,
+                amount_required,
+                status,
+                created_at,
+                beneficiaries,
+                validator_id
+            `)
+            .in("status", ["active", "completed", "urgent"])
             .order("created_at", { ascending: false });
 
-        if (error) throw error;
+        if (needsError) {
+            console.error("Needs fetch error:", needsError);
+            return NextResponse.json({ error: needsError.message }, { status: 500 });
+        }
+
+        if (!needs || needs.length === 0) {
+            return NextResponse.json([]);
+        }
+
+        // Fetch confirmations for these needs
+        const needIds = needs.map(n => n.id);
+        const { data: confirmations, error: confirmationsError } = await supabase
+            .from("confirmations")
+            .select("need_id, proof_image, message, created_at")
+            .in("need_id", needIds);
+
+        if (confirmationsError) {
+            console.error("Confirmations fetch error:", confirmationsError);
+        }
+
+        const confirmationsMap = (confirmations || []).reduce((acc: any, curr: any) => {
+            acc[curr.need_id] = curr;
+            return acc;
+        }, {});
 
         // Transform data to match the UI Transaction interface
         const transactions = needs.map((need: any) => {
-            const confirmation = need.confirmations?.[0];
+            const confirmation = confirmationsMap[need.id];
 
-            // Generate a deterministic-looking hash based on ID and timestamp for the "simulated blockchain" feel
-            // In a real app, this might be a real hash from a blockchain table
+            // Generate a deterministic-looking hash based on ID and timestamp
             const hash = `0x${Buffer.from(`${need.id}-${need.created_at}`).toString('hex').slice(0, 48)}`;
 
             return {
                 id: need.id,
                 city: need.city,
                 category: need.category,
-                amount: need.target_amount,
+                amount: need.amount_required,
                 status: need.status,
                 timestamp: new Date(need.created_at).toLocaleString(),
                 hash: hash,
-                validator: need.validator?.full_name || "Anonymous Validator",
-                proofImage: confirmation?.image_url || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop",
-                beneficiaries: 0 // We'd need to add this column to the table or calculate it
+                validator: "Official Validator",
+                proofImage: confirmation?.proof_image || "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop",
+                beneficiaries: need.beneficiaries || 0
             };
         });
 
         return NextResponse.json(transactions);
     } catch (error: any) {
-        console.error("Ledger API Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error("Ledger API error:", error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

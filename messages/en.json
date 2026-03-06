@@ -417,7 +417,10 @@
       "amount": "Amount",
       "status": "Status",
       "time": "Time",
-      "hash": "Ledger Hash"
+      "hash": "Ledger Hash",
+      "networkStatus": "Network Status",
+      "synchronized": "Synchronized",
+      "viewOlder": "View Older Records"
     },
     "verify": {
       "title": "Is your donation verified?",
@@ -427,11 +430,26 @@
       "verifying": "Verifying Record...",
       "recordFound": "Verified Record",
       "notFound": "No record found matching this ID or Hash. Please check and try again.",
-      "clear": "Clear Result"
+      "clear": "Clear Result",
+      "directVerification": "Direct Verification",
+      "beneficiaries": "Beneficiaries",
+      "people": "People",
+      "waiting": "Ready for Verification\nEnter a record ID or ledger hash above to begin the audit process."
     },
     "map": {
       "title": "Impact Footprint",
-      "subtitle": "Geographical distribution of confirmed deliveries."
+      "subtitle": "Geographical distribution of confirmed deliveries.",
+      "confirmed": "Confirmed",
+      "inProgress": "In Progress",
+      "delivered": "Delivered",
+      "realTimeCoverage": "Real-Time Coverage",
+      "coverageDesc": "Experience radical transparency. Every marker on this map represents a verified physical delivery or confirmed need fulfillment."
+    },
+    "cta": {
+      "title": "Building blocks for radical trust.",
+      "description": "Our transparency ledger is open for public audit. We believe that clarity is the foundation of effective charity.",
+      "validator": "Become a Validator",
+      "api": "Developer API"
     }
   },
   "needsDetail": {

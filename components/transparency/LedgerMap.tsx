@@ -1,13 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Map as MapIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import InteractiveMap from "../landing/InteractiveMap";
 
 export const LedgerMap = () => {
     const t = useTranslations("transparency.map");
-    const tCatalog = useTranslations("catalog");
-    const tCats = useTranslations("catalog.categories");
 
     return (
         <section className="container mx-auto max-w-7xl px-6 mb-32">
@@ -26,47 +23,12 @@ export const LedgerMap = () => {
                 </div>
             </div>
 
-            <div className="bg-muted/20 rounded-[2.5rem] h-[500px] relative overflow-hidden group border border-border shadow-inner">
-                {/* Map Placeholder */}
-                <div className="absolute inset-0 bg-background opacity-40 mix-blend-multiply" />
-                <div className="absolute inset-0 flex items-center justify-center opacity-10 blur-sm pointer-events-none">
-                    <MapIcon className="w-96 h-96 text-foreground" />
-                </div>
-
-                {/* Simulated Markers */}
-                <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ repeat: Infinity, duration: 3 }}
-                    className="absolute top-1/4 left-1/3 w-6 h-6 bg-primary/30 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer group/marker"
-                >
-                    <div className="w-3 h-3 bg-primary rounded-full border-2 border-background shadow-lg" />
-                    <div className="absolute bottom-full mb-3 hidden group-hover/marker:block z-20">
-                        <div className="bg-card p-4 rounded-xl shadow-2xl border border-border min-w-[200px]">
-                            <p className="text-[10px] font-black text-primary uppercase mb-1">{tCats("meals")}</p>
-                            <p className="text-sm font-black text-foreground tracking-tight text-left rtl:text-right">Nouakchott Central</p>
-                            <div className="flex justify-between mt-3 pt-3 border-t border-border items-center">
-                                <span className="text-[10px] font-bold text-muted-foreground uppercase">1,500 {tCatalog("mru")}</span>
-                                <span className="text-[10px] font-black text-primary">{t("delivered")}</span>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-
-                <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ repeat: Infinity, duration: 3, delay: 0.5 }}
-                    className="absolute bottom-1/3 right-1/4 w-6 h-6 bg-blue-500/30 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer group/marker"
-                >
-                    <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-background shadow-lg" />
-                </motion.div>
-
-                <div className="absolute bottom-8 right-8 rtl:right-auto rtl:left-8 bg-card/90 backdrop-blur-md p-6 rounded-2xl shadow-2xl border border-border max-w-xs transition-all hover:scale-105">
-                    <p className="text-xs font-black text-foreground mb-2 text-left rtl:text-right">{t("realTimeCoverage")}</p>
-                    <p className="text-[10px] text-muted-foreground font-medium leading-relaxed text-left rtl:text-right">
-                        {t("coverageDesc")}
-                    </p>
-                </div>
-            </div>
+            <InteractiveMap
+                showTitle={false}
+                zoom={13}
+                center={[18.0858, -15.9485]}
+                height="500px"
+            />
         </section>
     );
 };

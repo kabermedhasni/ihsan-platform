@@ -42,13 +42,14 @@ export async function updateSession(request: NextRequest) {
   const publicApiRoutes = [
     "/api/donations/recent",
     "/api/needs/funding",
-    "/api/stats/global"
+    "/api/stats/global",
+    "/api/transparency/ledger"
   ];
   const isPublicApi = publicApiRoutes.includes(pathname);
 
   // Not logged in and trying to access a protected page
   // Whitelist "/", "/auth", and specific public API routes
-  const isPublicPage = pathname === "/" || isAuthPage || isPublicApi;
+  const isPublicPage = pathname === "/" || pathname === "/transparency" || isAuthPage || isPublicApi;
 
   if (!user && !isPublicPage) {
     if (isApiRoute) {

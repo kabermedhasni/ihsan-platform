@@ -20,10 +20,7 @@ import OrdersTable from "@/components/partner/OrdersTable";
 import Timeline from "@/components/partner/Timeline";
 import { OrderStatus } from "@/components/partner/StatusBadge";
 import { Spinner } from "@/components/ui/spinner";
-import { useTranslations } from "next-intl";
-
 export default function PartnerDashboard() {
-  const t = useTranslations("partner"); // Assuming partner translations exist
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [partnerName, setPartnerName] = useState("Partner");
@@ -212,10 +209,10 @@ export default function PartnerDashboard() {
             <h2 className="text-2xl font-black text-foreground tracking-tighter">Today's Flow</h2>
             <Timeline
               items={orders.slice(0, 5).map((o) => ({
-                time: new Date(o.createdAt).toLocaleTimeString([], {
+                time: o.createdAt ? new Date(o.createdAt).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
-                }),
+                }) : "N/A",
                 title: o.type,
                 status: o.status,
               }))}

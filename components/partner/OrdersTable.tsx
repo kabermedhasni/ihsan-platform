@@ -42,7 +42,7 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
                                 <td className="px-6 py-4 font-black text-foreground/80 text-sm whitespace-nowrap">{row.type}</td>
                                 <td className="px-6 py-4 font-black text-foreground text-sm text-center">{row.beneficiaries}</td>
                                 <td className="px-6 py-4 font-black text-primary text-sm whitespace-nowrap">
-                                    {row.amount.toLocaleString('en-US')} <span className="text-[10px] text-muted-foreground font-mono uppercase">MRU</span>
+                                    {(row.amount || 0).toLocaleString('en-US')} <span className="text-[10px] text-muted-foreground font-mono uppercase">MRU</span>
                                 </td>
                                 <td className="px-6 py-4"><StatusBadge status={row.status} /></td>
                             </tr>

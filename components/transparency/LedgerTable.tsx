@@ -3,14 +3,7 @@
 import { CheckCircle2, ChevronRight, Calendar } from "lucide-react";
 import { Transaction } from "./types";
 import { useTranslations } from "next-intl";
-
-const HashBadge = ({ hash }: { hash: string }) => (
-    <div className="inline-flex items-center gap-2 bg-muted px-3 py-1.5 rounded-lg border border-border group-hover:border-primary/30 transition-colors">
-        <span className="text-[10px] font-mono text-muted-foreground font-black tracking-widest uppercase">
-            {hash.slice(0, 6)}...{hash.slice(-4)}
-        </span>
-    </div>
-);
+import { HashBadge } from "@/components/payment/HashBadge";
 
 const TableRow = ({ tx, onClick }: { tx: Transaction, onClick: () => void }) => {
     const tCatalog = useTranslations("catalog");

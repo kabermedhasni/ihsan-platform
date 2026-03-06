@@ -6,13 +6,7 @@ export async function GET() {
 
     const { data: needs, error } = await supabase
         .from('needs')
-        .select(`
-      *,
-      donations (
-        amount,
-        status
-      )
-    `)
+        .select('*')
         .eq('status', 'active');
 
     if (error) {
@@ -20,14 +14,14 @@ export async function GET() {
     }
 
     const processedNeeds = needs.map(need => {
-        const totalDonated = need.donations
-            ?.filter((d: any) => d.status === 'completed')
-            .reduce((sum: number, d: any) => sum + Number(d.amount), 0) || 0;
+        const totalDonated = Number(need.total_donated || 0);
 
         return {
             ...need,
-            total_donated: totalDonated,
-            funding_percentage: Math.min(Math.round((totalDonated / Number(need.amount_required)) * 100), 100)
+            fundedAmount: totalDonated,
+            donorsCount: Number(need.donors_count || 0),
+            targetAmount: Number(need.amount_required),
+            fundingPercentage: Number(need.funding_percentage || 0)
         };
     });
 

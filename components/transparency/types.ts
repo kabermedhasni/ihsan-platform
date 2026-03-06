@@ -6,6 +6,7 @@ export interface Transaction {
     status: "confirmed" | "delivered" | "funded" | string;
     timestamp: string;
     hash: string;
+    previousHash?: string;
     validator: string;
     proofImage: string;
     beneficiaries: number;

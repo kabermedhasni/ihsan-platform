@@ -18,10 +18,8 @@ export async function GET() {
                 id,
                 status,
                 beneficiaries,
-                donations (
-                    amount,
-                    status
-                )
+                total_donated,
+                amount_required
             `)
             .eq("validator_id", user.id);
 
@@ -33,10 +31,13 @@ export async function GET() {
         let totalBeneficiaries = 0;
 
         needs.forEach(need => {
-            if (need.status === 'funded' || need.status === 'delivered') {
+            const fundedAmount = Number(need.total_donated || 0);
+            const targetAmount = Number(need.amount_required || 0);
+
+            if (fundedAmount >= targetAmount && targetAmount > 0) {
                 needsFunded++;
             }
-            if (need.status === 'delivered') {
+            if (need.status === 'completed') {
                 deliveriesConfirmed++;
             }
             totalBeneficiaries += (need.beneficiaries || 0);
