@@ -28,9 +28,9 @@ export const NeedsHistoryTable = ({ needs }: NeedsHistoryTableProps) => {
 
   const filtered = needs.filter(
     (n) =>
-      n.title.toLowerCase().includes(query.toLowerCase()) ||
-      n.city.toLowerCase().includes(query.toLowerCase()) ||
-      n.id.toLowerCase().includes(query.toLowerCase()),
+      n.title?.toLowerCase().includes(query.toLowerCase()) ||
+      n.city?.toLowerCase().includes(query.toLowerCase()) ||
+      n.id?.toLowerCase().includes(query.replace(/^#/, "").toLowerCase()),
   );
 
   return (
@@ -114,7 +114,7 @@ export const NeedsHistoryTable = ({ needs }: NeedsHistoryTableProps) => {
                     <Button
                       asChild
                       variant="link"
-                      className="text-[10px] font-black text-primary uppercase tracking-widest hover:underline inline-flex items-center gap-1 group whitespace-nowrap h-auto p-0"
+                      className="text-[10px] font-black w-full justify-end text-primary uppercase tracking-widest hover:underline inline-flex items-center gap-1 group whitespace-nowrap h-auto p-0"
                     >
                       <Link href={`/needs/${n.id}`}>
                         {t("history.table.view")}

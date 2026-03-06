@@ -1,7 +1,6 @@
 "use client";
 
 import { MapPin, Users, CheckCircle, Eye } from "lucide-react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -31,11 +30,7 @@ interface NeedCardProps {
 export const NeedCard = ({ n, onConfirm }: NeedCardProps) => {
   const t = useTranslations("validator");
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-card border border-border rounded-2xl p-6 hover:shadow-xl transition-all duration-300 group"
-    >
+    <div className="bg-card border border-border rounded-2xl p-6 hover:shadow-xl transition-all duration-300 group">
       <div className="flex justify-between items-start mb-4 gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -96,6 +91,6 @@ export const NeedCard = ({ n, onConfirm }: NeedCardProps) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };

@@ -6,7 +6,6 @@ import { TrendingUp, Users, CheckCircle, FileText } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
 
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
@@ -150,11 +149,7 @@ export default function ValidatorDashboard() {
         <div className="absolute inset-0 bg-primary/5 -z-10" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full -mr-64 -mt-64" />
         <div className="container mx-auto max-w-7xl px-6 text-center md:text-left">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="max-w-xl"
-          >
+          <div className="max-w-xl">
             <div className="mb-4 mt-10">
               <h2 className="text-5xl md:text-6xl font-bold text-foreground mb-2 text-left rtl:text-right">
                 {t("welcome")}
@@ -193,7 +188,7 @@ export default function ValidatorDashboard() {
             <p className="text-lg text-muted-foreground font-medium mt-3 max-w-xl leading-relaxed text-left rtl:text-right">
               {t("summary")}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -254,16 +249,9 @@ export default function ValidatorDashboard() {
           </div>
         </AnimatedTabs>
 
-        <AnimatePresence mode="wait">
+        <div className="mt-8">
           {activeTab === "manage" && (
-            <motion.div
-              key="manage"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="space-y-20"
-            >
+            <div key="manage" className="space-y-20">
               {/* NEEDS LISTING */}
               <div className="space-y-8">
                 <div className="flex justify-between items-center">
@@ -303,36 +291,24 @@ export default function ValidatorDashboard() {
 
               {/* HISTORY TABLE */}
               <NeedsHistoryTable needs={needs} />
-            </motion.div>
+            </div>
           )}
 
           {activeTab === "payments" && (
-            <motion.div
-              key="payments"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
+            <div key="payments">
               <PaymentVerificationList
                 transactions={pendingPayments}
                 onVerify={handleVerifyPayment}
               />
-            </motion.div>
+            </div>
           )}
 
           {activeTab === "create" && (
-            <motion.div
-              key="create"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
+            <div key="create">
               <CreateNeedForm />
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </main>
 
       {/* MODALS */}

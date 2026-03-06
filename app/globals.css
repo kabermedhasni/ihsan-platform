@@ -112,18 +112,16 @@
     scroll-behavior: smooth;
   }
 
-  /* Leaflet Fix for Next.js/Turbopack assets */
-  @import "leaflet/dist/leaflet.css";
-
-  .leaflet-default-icon-path {
-    background-image: url(https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png);
+  /* Remove number input spinners */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
   }
 
-  .leaflet-retina .leaflet-control-layers-toggle {
-    background-image: url(https://unpkg.com/leaflet@1.9.4/dist/images/layers-2x.png) !important;
-  }
-
-  .leaflet-control-layers-toggle {
-    background-image: url(https://unpkg.com/leaflet@1.9.4/dist/images/layers.png) !important;
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
   }
 }

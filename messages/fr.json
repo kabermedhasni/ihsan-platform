@@ -577,6 +577,26 @@
       "description": "Notre registre de transparence est ouvert à l'audit public. Nous pensons que la clarté est le fondement d'une charité efficace.",
       "validator": "Devenir Validateur",
       "api": "API Développeur"
+    },
+    "publicAuditSystem": "Système d'Audit Public",
+    "radicalTransparency": "Transparence Radicale",
+    "traceabilityNote": "Chaque don sur Ihsan est enchaîné cryptographiquement. Cela signifie qu'une fois qu'une transaction est confirmée, elle devient immuable et vérifiable par n'importe qui, à tout moment.",
+    "exploreFullLedger": "Explorer le Registre Complet",
+    "status": "Statut",
+    "amountFunded": "Montant Financé",
+    "pending": "En attente",
+    "ledgerId": "ID du Registre",
+    "returnToCatalog": "Retour au Catalogue",
+    "modal": {
+      "verified": "Transaction Vérifiée",
+      "impactDetails": "Détails de l'Impact",
+      "location": "Emplacement",
+      "dateVerified": "Date de Vérification",
+      "fieldValidator": "Validateur de Terrain",
+      "ledgerHash": "Hachage du Registre",
+      "viewProof": "Voir la Preuve Cryptographique",
+      "onSiteConfirmation": "Confirmation de Livraison sur Place",
+      "capturedBy": "Capturé par le Validateur"
     }
   },
   "needsDetail": {
@@ -624,7 +644,14 @@
       "verifiedNote": "Transaction Vérifiée & Chiffrée",
       "beneficiaryNote": "100% de votre don va directement au bénéficiaire.",
       "donorOnly": "Seuls les donateurs peuvent contribuer à ce besoin.",
-      "loginRequired": "Veuillez vous connecter pour faire un don."
-    }
+      "loginRequired": "Veuillez vous connecter pour faire un don.",
+      "targetAccount": "Compte Bancaire Cible",
+      "transferNote": "Veuillez transférer le montant du don sur le compte ci-dessus avant de soumettre le formulaire.",
+      "bankNumberLabel": "Votre Numéro de Banque / Téléphone",
+      "submitDonation": "Soumettre le Don",
+      "secureNote": "Sécurisé et Vérifié Cryptographiquement"
+    },
+    "supporting": "Soutenir :",
+    "loadingPlaceholder": "Chargement..."
   }
 }

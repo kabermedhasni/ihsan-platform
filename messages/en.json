@@ -577,6 +577,26 @@
       "description": "Our transparency ledger is open for public audit. We believe that clarity is the foundation of effective charity.",
       "validator": "Become a Validator",
       "api": "Developer API"
+    },
+    "publicAuditSystem": "Public Audit System",
+    "radicalTransparency": "Radical Transparency",
+    "traceabilityNote": "Every donation on Ihsan is cryptographically chained. This means that once a transaction is confirmed, it becomes immutable and verifiable by anyone, at any time.",
+    "exploreFullLedger": "Explore Full Ledger",
+    "status": "Status",
+    "amountFunded": "Amount Funded",
+    "pending": "Pending",
+    "ledgerId": "Ledger ID",
+    "returnToCatalog": "Return to Catalog",
+    "modal": {
+      "verified": "Transaction Verified",
+      "impactDetails": "Impact Details",
+      "location": "Location",
+      "dateVerified": "Date Verified",
+      "fieldValidator": "Field Validator",
+      "ledgerHash": "Ledger Hash",
+      "viewProof": "View Cryptographic Proof",
+      "onSiteConfirmation": "On-site Delivery Confirmation",
+      "capturedBy": "Captured by Validator"
     }
   },
   "needsDetail": {
@@ -624,7 +644,14 @@
       "verifiedNote": "Verified & Encrypted Transaction",
       "beneficiaryNote": "100% of your donation goes directly to the beneficiary.",
       "donorOnly": "Only donors can contribute to this need.",
-      "loginRequired": "Please login to donate."
-    }
+      "loginRequired": "Please login to donate.",
+      "targetAccount": "Target Bank Account",
+      "transferNote": "Please transfer the donation amount to the account above before submitting the form.",
+      "bankNumberLabel": "Your Bank Number / Phone",
+      "submitDonation": "Submit Donation",
+      "secureNote": "Secure & Cryptographically Verified"
+    },
+    "supporting": "Supporting:",
+    "loadingPlaceholder": "Loading..."
   }
 }

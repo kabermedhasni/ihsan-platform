@@ -581,10 +581,10 @@ export default function DonorPage() {
                 <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                   <Heart className="w-10 h-10 text-primary" />
                 </div>
-                <h3 className="text-2xl font-black text-foreground tracking-tighter mb-2 text-left rtl:text-right">
+                <h3 className="text-2xl font-black text-foreground tracking-tighter mb-2">
                   {t("noDonations")}
                 </h3>
-                <p className="text-muted-foreground font-medium mb-10 max-w-sm mx-auto lowercase text-left rtl:text-right">
+                <p className="text-muted-foreground font-medium mb-10 max-w-sm mx-auto lowercase">
                   {t("noDonationsDesc")}
                 </p>
                 <Button
