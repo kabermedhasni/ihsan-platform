@@ -5,6 +5,8 @@ import { Toaster } from "sonner";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import PageTransition from "@/components/PageTransition";
+import Navbar from "@/components/global/Navbar";
+import Footer from "@/components/global/Footer";
 
 const quicksand = Quicksand({
   variable: "--font-quicksand",
@@ -40,7 +42,11 @@ export default async function RootLayout({
       </head>
       <body className={`${quicksand.variable} font-sans antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <PageTransition>{children}</PageTransition>
+          <Navbar />
+          <PageTransition>
+            <main className="min-h-screen flex flex-col">{children}</main>
+          </PageTransition>
+          <Footer />
           <Toaster
             position="top-center"
             toastOptions={{

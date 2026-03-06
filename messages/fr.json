@@ -1,10 +1,13 @@
 {
   "nav": {
+    "home": "Accueil",
     "howItWorks": "Comment ça marche",
     "needs": "Besoins",
     "transparency": "Transparence",
+    "map": "Carte",
     "getStarted": "Commencer",
-    "dashboard": "Tableau de bord"
+    "dashboard": "Tableau de bord",
+    "signOut": "Déconnexion"
   },
   "hero": {
     "title": "Votre don...",
@@ -42,7 +45,7 @@
       },
       "proof": {
         "title": "Preuve de livraison",
-        "description": "Documentation avec photos et vidéos pour chaque processus de livraison."
+        "description": "Documentation with photos and videos for every processus de livraison."
       },
       "ledger": {
         "title": "Registre de transparence",
@@ -176,5 +179,80 @@
     "helpType": "Type d'aide",
     "funded": "financé",
     "clickToInteract": "Cliquer pour interagir"
+  },
+  "catalog": {
+    "title": "Besoins Disponibles",
+    "description": "Choisissez un besoin réel et contribuez à son financement — ayez un impact direct sur la vie des autres.",
+    "all": "Tout",
+    "categories": {
+      "meals": "Repas",
+      "medical": "Médical",
+      "housing": "Logement",
+      "other": "Autre"
+    },
+    "statuses": {
+      "open": "Ouvert",
+      "inProgress": "En cours",
+      "completed": "Terminé"
+    },
+    "sort": {
+      "newest": "Plus récents",
+      "mostFunded": "Plus financés",
+      "closest": "Proches de l'objectif"
+    },
+    "noNeeds": "Aucun besoin trouvé",
+    "adjustFilters": "Essayez d'ajuster vos filtres pour trouver des besoins disponibles.",
+    "reset": "Réinitialiser les filtres",
+    "loading": "Chargement des besoins...",
+    "mru": "MRU",
+    "loadMore": "Charger plus",
+    "interactiveMap": "Carte Interactive",
+    "interactiveMapDesc": "Explorez les besoins dans différents endroits sur la carte interactive",
+    "filters": {
+      "city": "Ville",
+      "category": "Catégorie",
+      "status": "Statut",
+      "sortBy": "Trier par"
+    }
+  },
+  "donor": {
+    "welcome": "Bon retour",
+    "summary": "Voici un résumé complet de vos dons et de leur impact réel sur le terrain.",
+    "totalDonated": "Total donné",
+    "donations": "Nombre de dons",
+    "confirmed": "Opérations vérifiées",
+    "impact": "Cas soutenus",
+    "activeNeeds": "Besoins Actifs",
+    "inProgress": "En cours",
+    "activeDonations": "Dons Actifs",
+    "active": "actif",
+    "proofOfImpact": "Preuve d'Impact",
+    "historyTitle": "Historique des dons",
+    "searchDonations": "Rechercher vos dons...",
+    "fullTransparency": "Transparence Totale",
+    "transparencyNote": "Chaque don est enregistré dans un registre inviolable à l'aide de hachages cryptés, garantissant une transparence totale et empêchant toute manipulation de données.",
+    "viewPublicLedger": "Voir le tableau public de transparence",
+    "quickActions": "Actions Rapides",
+    "browseCatalog": "Parcourir le catalogue",
+    "verifyTransaction": "Vérifier une transaction",
+    "downloadReceipts": "Télécharger les reçus",
+    "lastHash": "Dernier hachage de transaction",
+    "noDonations": "Pas encore de dons",
+    "noDonationsDesc": "Parcourez les besoins disponibles et faites votre premier don aujourd'hui.",
+    "viewDetails": "Voir les Détails",
+    "viewTransaction": "Voir la Transaction",
+    "table": {
+      "id": "ID",
+      "city": "Ville",
+      "category": "Catégorie",
+      "amount": "Montant",
+      "status": "Statut",
+      "date": "Date",
+      "verify": "Vérifier"
+    }
+  },
+  "transparency": {
+    "title": "Registre de Transparence",
+    "description": "Un enregistrement détaillé de tous les dons et de leur statut de livraison apparaîtra ici."
   }
 }

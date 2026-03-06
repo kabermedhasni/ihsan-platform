@@ -9,35 +9,61 @@ import { MousePointer2 } from "lucide-react";
 // Dynamic import for MapContainer to avoid SSR issues
 const Map = dynamic(() => import("./MapInner"), {
   ssr: false,
-  loading: () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const t = useTranslations("map");
-    return (
-      <div className="w-full h-[500px] bg-secondary/20 animate-pulse rounded-3xl flex items-center justify-center">
-        <span className="text-foreground/40 font-medium">{t("loading")}</span>
+  loading: () => (
+    <div className="w-full h-full bg-secondary/20 animate-pulse rounded-2xl flex items-center justify-center">
+      <div className="flex flex-col items-center gap-2">
+        <div className="w-8 h-8 rounded-full border-4 border-primary border-t-transparent animate-spin" />
       </div>
-    );
-  },
+    </div>
+  ),
 });
 
-export default function InteractiveMap() {
+interface InteractiveMapProps {
+  needs?: any[];
+  center?: [number, number];
+  zoom?: number;
+  height?: string;
+  title?: string;
+  description?: string;
+  showTitle?: boolean;
+}
+
+export default function InteractiveMap({
+  needs,
+  center,
+  zoom,
+  height = "500px",
+  title,
+  description,
+  showTitle = true,
+}: InteractiveMapProps) {
   const t = useTranslations("map");
   const [isInteracting, setIsInteracting] = useState(false);
 
   return (
-    <section className="py-24 bg-background" id="map">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            {t("title")}
-          </h2>
-          <p className="text-foreground/60 max-w-2xl mx-auto">
-            {t("description")}
-          </p>
-        </div>
+    <section className={showTitle ? "py-24 bg-background" : ""} id="map">
+      <div className={showTitle ? "container mx-auto px-4" : ""}>
+        {showTitle && (
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+              {title || t("title")}
+            </h2>
+            <p className="text-foreground/60 max-w-2xl mx-auto">
+              {description || t("description")}
+            </p>
+          </div>
+        )}
 
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl h-[500px] group">
-          <Map />
+        <div
+          className="relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl group"
+          style={{ height }}
+        >
+          <Map
+            needs={needs}
+            center={center}
+            zoom={zoom}
+            isInteractive={isInteracting}
+          />
 
           <AnimatePresence>
             {!isInteracting && (

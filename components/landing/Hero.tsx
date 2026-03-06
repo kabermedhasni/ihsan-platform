@@ -65,7 +65,7 @@ export default function Hero() {
   ];
 
   return (
-    <section className="relative min-h-[90vh] flex items-center mt-20 overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-br from-secondary/50 via-background to-background -z-10" />
 
       <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
@@ -88,7 +88,7 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <Link
-                href="/needs"
+                href="/catalog"
                 className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-bold text-lg transition-all flex items-center justify-center gap-2 group"
               >
                 {t("browseNeeds")}

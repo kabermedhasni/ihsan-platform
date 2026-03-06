@@ -1,10 +1,13 @@
 {
   "nav": {
+    "home": "Home",
     "howItWorks": "How it Works",
     "needs": "Needs",
     "transparency": "Transparency",
+    "map": "Map",
     "getStarted": "Get Started",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "signOut": "Sign Out"
   },
   "hero": {
     "title": "Your donation...",
@@ -176,5 +179,80 @@
     "helpType": "Help Type",
     "funded": "funded",
     "clickToInteract": "Click to Interact"
+  },
+  "catalog": {
+    "title": "Available Needs",
+    "description": "Choose a real need and contribute to funding it — make a direct impact on others' lives.",
+    "all": "All",
+    "categories": {
+      "meals": "Meals",
+      "medical": "Medical",
+      "housing": "Housing",
+      "other": "Other"
+    },
+    "statuses": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "completed": "Completed"
+    },
+    "sort": {
+      "newest": "Newest",
+      "mostFunded": "Most Funded",
+      "closest": "Closest to Goal"
+    },
+    "noNeeds": "No needs found",
+    "adjustFilters": "Try adjusting your filters to find available needs.",
+    "reset": "Reset Filters",
+    "loading": "Loading Needs...",
+    "mru": "MRU",
+    "loadMore": "Load More",
+    "interactiveMap": "Interactive Map",
+    "interactiveMapDesc": "Explore needs across locations on the interactive map",
+    "filters": {
+      "city": "City",
+      "category": "Category",
+      "status": "Status",
+      "sortBy": "Sort by"
+    }
+  },
+  "donor": {
+    "welcome": "Welcome back",
+    "summary": "Here's a full summary of your donations and their real-world impact.",
+    "totalDonated": "Total Donated",
+    "donations": "Donations Made",
+    "confirmed": "Confirmed",
+    "impact": "Cases Impacted",
+    "activeNeeds": "Active Needs",
+    "inProgress": "In Progress",
+    "activeDonations": "Active Donations",
+    "active": "active",
+    "proofOfImpact": "Proof of Impact",
+    "historyTitle": "Donation History",
+    "searchDonations": "Search your donations...",
+    "fullTransparency": "Full Transparency",
+    "transparencyNote": "Every donation is recorded in a tamper-proof ledger using encrypted hashes, ensuring complete transparency and preventing any manipulation of data.",
+    "viewPublicLedger": "View Public Transparency Board",
+    "quickActions": "Quick Actions",
+    "browseCatalog": "Browse Catalog",
+    "verifyTransaction": "Verify a Transaction",
+    "downloadReceipts": "Download Receipts",
+    "lastHash": "Last Transaction Hash",
+    "noDonations": "No donations yet",
+    "noDonationsDesc": "Browse available needs and make your first donation today.",
+    "viewDetails": "View Details",
+    "viewTransaction": "View Transaction",
+    "table": {
+      "id": "ID",
+      "city": "City",
+      "category": "Category",
+      "amount": "Amount",
+      "status": "Status",
+      "date": "Date",
+      "verify": "Verify"
+    }
+  },
+  "transparency": {
+    "title": "Transparency Ledger",
+    "description": "Detailed record of all donations and their delivery status will appear here."
   }
 }
