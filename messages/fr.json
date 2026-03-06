@@ -371,7 +371,9 @@
       "title": "Mes besoins",
       "activeCount": "{count} Besoins Actifs",
       "noActive": "Pas encore de besoins actifs",
-      "noActiveDesc": "Créez un besoin pour commencer à collecter des dons."
+      "noActiveDesc": "Créez un besoin pour commencer à collecter des dons.",
+      "beneficiaries": "Bénéficiaires",
+      "confirmDelivery": "Confirmer la livraison"
     },
     "history": {
       "title": "Historique des besoins",
@@ -425,7 +427,7 @@
         "other": "Autre"
       },
       "formSubtitle": "Publiez un nouveau besoin communautaire pour commencer à collecter des dons.",
-      "errorSelect": "Veuillez sélectionner une catégorie et une ville.",
+      "errorSelect": "Veuillez sélectionner une catégorie et épingler un emplacement sur la carte.",
       "success": "Besoin créé avec succès !",
       "publishing": "Publication en cours...",
       "placeholderTitle": "ex: 10 kits alimentaires pour familles",
@@ -433,7 +435,11 @@
       "placeholderDistrict": "Tevragh Zeina",
       "placeholderPartner": "Optionnel : Nom du restaurant ou du magasin",
       "selectCategory": "Sélectionner une catégorie",
-      "selectCity": "Sélectionner une ville"
+      "selectCity": "Cliquez sur la carte pour détecter",
+      "formLocation": "Épingler l'emplacement sur la carte",
+      "formLocationHint": "Cliquez n'importe où sur la carte pour définir l'emplacement exact. La ville et le district seront détectés automatiquement.",
+      "locationPinned": "Emplacement épinglé",
+      "locationRequired": "Veuillez d'abord épingler un emplacement sur la carte."
     },
     "confirmModal": {
       "title": "Confirmer la livraison",
@@ -448,6 +454,9 @@
       "fullyFunded": "Entièrement financé",
       "inDelivery": "En cours de livraison",
       "confirmed": "Confirmé"
+    },
+    "error": {
+      "genericError": "Une erreur est survenue. Veuillez réessayer."
     }
   },
   "partner": {

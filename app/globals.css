@@ -112,11 +112,18 @@
     scroll-behavior: smooth;
   }
 
-  /* RTL Support for Leaflet */
-  .leaflet-popup-content-wrapper {
-    @apply rounded-2xl shadow-xl border border-white/5;
+  /* Leaflet Fix for Next.js/Turbopack assets */
+  @import "leaflet/dist/leaflet.css";
+
+  .leaflet-default-icon-path {
+    background-image: url(https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png);
   }
-  .dir-rtl {
-    direction: rtl;
+
+  .leaflet-retina .leaflet-control-layers-toggle {
+    background-image: url(https://unpkg.com/leaflet@1.9.4/dist/images/layers-2x.png) !important;
+  }
+
+  .leaflet-control-layers-toggle {
+    background-image: url(https://unpkg.com/leaflet@1.9.4/dist/images/layers.png) !important;
   }
 }

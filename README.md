@@ -1,46 +1,66 @@
-# Ihsan Platform
+# IHSAN - Plateforme de Charité & Traçabilité 🕊️
 
-A modern platform for social impact and transparency.
+> **Le Concept** : L'infrastructure de confiance entre donneurs et bénéficiaires avec la communauté comme garant.
 
-## Tech Stack
+Pendant le Ramadan et tout au long de l'année, IHSAN résout le problème de traçabilité des dons (Zakat/Sadaqa) tout en respectant l'anonymat asymétrique (le bénéficiaire ne demande rien publiquement).
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Components**: Radix UI
-- **Database/Auth**: Supabase
+---
 
-## Getting Started
+## 🌟 Fonctionnalités Clés (Le Parcours d'un Don)
 
-### 1. Prerequsites
+1. **Dons Fléchés** : Chaque don finance un besoin précis (pas de fonds opaque).
+2. **Anonymat Asymétrique** : Le donneur voit l'impact, le bénéficiaire garde sa dignité.
+3. **Preuve d'Impact** : Validation de la livraison avec photo anonymisée.
+4. **Transparence Absolue** : Hachage (SHA-256) immutable de chaque confirmation de livraison.
 
-- Node.js (Latest LTS recommended)
-- Supabase account (or local emulator)
+## 🛠️ Choix Techniques & Architecture
 
-### 2. Local Setup
+- **Frontend** : Next.js 15 (React), TailwindCSS, Framer Motion (UI Mobile-First fluide).
+- **Backend** : Next.js API Routes (Serverless).
+- **Base de Données & Auth** : Supabase (PostgreSQL + RLS Policies + JWT).
+- **Stockage** : Supabase Storage (Pour les preuves photos).
+- **Transparence** : Algorithme SHA-256 intégré via `crypto` de Node.js pour simuler l'ancrage Blockchain des transactions validées.
+
+## 🚀 Installation & Déploiement Local
+
+### Prérequis
+
+- Node.js 18+
+- Un compte Supabase
+
+### 1. Configuration Supabase
+
+1. Créez un projet sur [Supabase](https://supabase.com/).
+2. Copiez le contenu du fichier `schema.sql` et exécutez-le dans le **SQL Editor** de Supabase. Cela va initialiser les tables, les RLS, et les buckets de stockage.
+
+### 2. Configuration Environnement Locale
 
 ```bash
-# Clone the repository
-git clone [repository-url]
+git clone https://github.com/kabermedhasni/ihsan-platform
 cd ihsan-platform
-
-# Install dependencies
 npm install
+```
 
-# Setup environment variables
-cp .env.example .env
+Créez un fichier `.env.local` à la racine :
 
-# Run development server
+```env
+NEXT_PUBLIC_SUPABASE_URL=votre_url_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_cle_anon_supabase
+```
+
+### 3. Démarrage
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez [http://localhost:3000](http://localhost:3000). Vous pouvez vous inscrire via l'interface `/auth` en choisissant différents rôles (Donor, Validator, Partner).
 
-## Documentation
+## 🎥 Démo & Présentation
 
-- [CONTRIBUTING.md](./CONTRIBUTING.md) - Team workflows and coding standards.
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- **Lien Déployé** : [Ici le lien de votre déploiement Vercel]
+- **Vidéo de Démo** : [Ici le lien de votre vidéo de 3 minutes]
 
-## Deploy
+---
 
-This project is optimized for deployment on the [Vercel Platform](https://vercel.com/new).
+_Ce projet a été réalisé dans le cadre du Hackathon IHSAN._

@@ -268,22 +268,6 @@ export default function PartnerDashboard() {
                 status: o.status,
               }))}
             />
-
-            <div className="bg-card border border-border p-8 rounded-4xl text-foreground relative overflow-hidden group shadow-sm">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform" />
-              <h3 className="text-lg font-black mb-2 relative tracking-tight text-left rtl:text-right">
-                {t("support.title")}
-              </h3>
-              <p className="text-sm text-muted-foreground font-medium mb-8 relative text-left rtl:text-right">
-                {t("support.desc")}
-              </p>
-              <Button
-                variant="default"
-                className="w-full py-7 rounded-xl font-black text-xs uppercase tracking-widest"
-              >
-                {t("support.button")}
-              </Button>
-            </div>
           </aside>
         </div>
 

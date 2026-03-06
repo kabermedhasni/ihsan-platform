@@ -15,28 +15,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import dynamic from "next/dynamic";
 
-const MAURITANIA_CITIES = [
-  "Nouakchott",
-  "Nouadhibou",
-  "Rosso",
-  "Atar",
-  "Kiffa",
-  "Kaedi",
-  "Zouerate",
-  "Aioun",
-  "Nema",
-  "Akjoujt",
-  "Tidjikja",
-  "Selibaby",
-];
+// Import MapPicker dynamically to prevent SSR issues with Leaflet
+const MapPicker = dynamic(
+  () => import("./MapPicker").then((mod) => mod.MapPicker),
+  { ssr: false },
+);
 
 export const CreateNeedForm = () => {
   const t = useTranslations("validator");
-  const t_common = useTranslations("common");
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState("");
   const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
+  const [lat, setLat] = useState<number | null>(null);
+  const [lng, setLng] = useState<number | null>(null);
+
   const [status, setStatus] = useState<{
     type: "success" | "error";
     message: string;
@@ -44,7 +39,7 @@ export const CreateNeedForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!category || !city) {
+    if (!category || !city || lat === null || lng === null) {
       setStatus({
         type: "error",
         message: t("createNeed.errorSelect"),
@@ -60,7 +55,9 @@ export const CreateNeedForm = () => {
       title: formData.get("title"),
       description: formData.get("description"),
       city,
-      district: formData.get("district"),
+      district,
+      lat,
+      lng,
       amount_required: Number(formData.get("target")),
       beneficiaries: Number(formData.get("beneficiaries")),
       partner_name: formData.get("partner"),
@@ -175,30 +172,35 @@ export const CreateNeedForm = () => {
           />
         </div>
 
+        {/* Map Picker */}
+        <div className="w-full">
+          <MapPicker
+            onLocationSelect={(loc) => {
+              setLat(loc.lat);
+              setLng(loc.lng);
+              if (loc.city) setCity(loc.city);
+              if (loc.district) setDistrict(loc.district);
+            }}
+          />
+        </div>
+
         {/* Row 2: City + District */}
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1 text-left rtl:text-right">
               {t("createNeed.formCity")}
             </label>
-            <Select value={city} onValueChange={setCity} required>
-              <SelectTrigger className="w-full h-[2.9rem]! rounded-xl border border-border bg-secondary/50 text-sm font-bold data-placeholder:text-muted-foreground text-left rtl:text-right">
-                <SelectValue placeholder={t("createNeed.selectCity")} />
-              </SelectTrigger>
-              <SelectContent className="max-h-60 rounded-xl border-border bg-popover shadow-2xl backdrop-blur-xl">
-                <SelectGroup>
-                  {MAURITANIA_CITIES.map((c) => (
-                    <SelectItem
-                      key={c}
-                      value={c}
-                      className="text-left rtl:text-right"
-                    >
-                      {t_common(`cities.${c}`)}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <MapPin className="absolute left-4 rtl:left-auto rtl:right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary pointer-events-none" />
+              <Input
+                name="city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                required
+                placeholder={t("createNeed.selectCity")}
+                className="h-12 border border-border pl-12 rtl:pl-4 rtl:pr-12 text-sm font-bold rounded-xl bg-secondary/50 text-left rtl:text-right"
+              />
+            </div>
           </div>
           <div className="space-y-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1 text-left rtl:text-right">
@@ -208,6 +210,8 @@ export const CreateNeedForm = () => {
               <MapPin className="absolute left-4 rtl:left-auto rtl:right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-primary pointer-events-none" />
               <Input
                 name="district"
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
                 required
                 placeholder={t("createNeed.placeholderDistrict")}
                 className="h-12 border border-border pl-12 rtl:pl-4 rtl:pr-12 text-sm font-bold rounded-xl bg-secondary/50 text-left rtl:text-right"

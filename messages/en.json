@@ -371,7 +371,9 @@
       "title": "My Needs",
       "activeCount": "{count} Active Needs",
       "noActive": "No active needs yet",
-      "noActiveDesc": "Create a need to start collecting donations."
+      "noActiveDesc": "Create a need to start collecting donations.",
+      "beneficiaries": "Beneficiaries",
+      "confirmDelivery": "Confirm Delivery"
     },
     "history": {
       "title": "Needs History",
@@ -425,7 +427,7 @@
         "other": "Other"
       },
       "formSubtitle": "Post a new community need to start collecting donations.",
-      "errorSelect": "Please select a category and city.",
+      "errorSelect": "Please select a category and pin a location on the map.",
       "success": "Need created successfully!",
       "publishing": "Publishing...",
       "placeholderTitle": "e.g., 10 Food Kits for Families",
@@ -433,7 +435,11 @@
       "placeholderDistrict": "Tevragh Zeina",
       "placeholderPartner": "Optional: Restaurant or Store Name",
       "selectCategory": "Select Category",
-      "selectCity": "Select City"
+      "selectCity": "Click on map to detect",
+      "formLocation": "Pin Location on Map",
+      "formLocationHint": "Click anywhere on the map to set the exact location. City and district will be auto-detected.",
+      "locationPinned": "Location pinned",
+      "locationRequired": "Please pin a location on the map first."
     },
     "confirmModal": {
       "title": "Confirm Delivery",
@@ -448,6 +454,9 @@
       "fullyFunded": "Fully Funded",
       "inDelivery": "In Delivery",
       "confirmed": "Confirmed"
+    },
+    "error": {
+      "genericError": "Something went wrong. Please try again."
     }
   },
   "partner": {
