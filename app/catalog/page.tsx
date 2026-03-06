@@ -49,18 +49,16 @@ export default function CatalogPage() {
       .filter((need) => {
         const matchesCity =
           selectedCity === "All" || need.city === selectedCity;
+
+        // Map database categories to translation-friendly labels
+        const categoryKey = need.category.toLowerCase().replace(/\s+/g, '');
+        let normalizedCategory = "other";
+        if (["meals", "وجبات"].includes(categoryKey)) normalizedCategory = "Meals";
+        else if (["medical", "طبي"].includes(categoryKey)) normalizedCategory = "Medical";
+        else if (["housing", "إيواء"].includes(categoryKey)) normalizedCategory = "Housing";
+
         const matchesCategory =
-          selectedCategory === "All" ||
-          (selectedCategory === "Meals" &&
-            (need.category === "meals" || need.category === "وجبات")) ||
-          (selectedCategory === "Medical" &&
-            (need.category === "medical" || need.category === "طبي")) ||
-          (selectedCategory === "Housing" &&
-            (need.category === "housing" || need.category === "إيواء")) ||
-          (selectedCategory === "Other" &&
-            !["meals", "وجبات", "medical", "طبي", "housing", "إيواء"].includes(
-              need.category,
-            ));
+          selectedCategory === "All" || normalizedCategory === selectedCategory;
 
         const normalizedStatus =
           need.status === "active"
@@ -80,8 +78,7 @@ export default function CatalogPage() {
           return b.funding_percentage - a.funding_percentage;
         if (sortBy === "Closest to Goal")
           return (
-            a.amount_required -
-            a.total_donated -
+            (a.amount_required - a.total_donated) -
             (b.amount_required - b.total_donated)
           );
         return 0;
@@ -92,6 +89,7 @@ export default function CatalogPage() {
     "All",
     ...Array.from(new Set(needs.map((n) => n.city))),
   ];
+
   const categories = ["All", "Meals", "Medical", "Housing", "Other"];
   const statuses = ["All", "Open", "In Progress", "Completed"];
   const sortOptions = ["Newest", "Most Funded", "Closest to Goal"];
@@ -120,7 +118,7 @@ export default function CatalogPage() {
           <div className="flex flex-nowrap md:flex-wrap items-center gap-3 md:gap-4 min-w-max md:min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-muted-foreground whitespace-nowrap hidden sm:inline-block pr-2">
-                {t("filters.city") || "Filters"}:
+                {t("filters.title") || "Filters"}:
               </span>
 
               {/* City */}

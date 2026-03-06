@@ -9,6 +9,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { motion, Variants } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 // Import refactored components
 import { NeedHeader } from '@/components/needs/NeedHeader';
@@ -49,6 +50,7 @@ export default function NeedDetailsPage({ params }: { params: Promise<{ id: stri
     const [need, setNeed] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const t = useTranslations("needsDetail");
 
     useEffect(() => {
         const fetchNeedData = async () => {
@@ -56,7 +58,7 @@ export default function NeedDetailsPage({ params }: { params: Promise<{ id: stri
                 setLoading(true);
                 const response = await fetch(`/api/needs/${resolvedParams.id}`);
                 if (!response.ok) {
-                    throw new Error("Failed to fetch need details");
+                    throw new Error(t("error") || "Failed to fetch need details");
                 }
                 const data = await response.json();
                 setNeed(data);
@@ -71,14 +73,14 @@ export default function NeedDetailsPage({ params }: { params: Promise<{ id: stri
         if (resolvedParams.id) {
             fetchNeedData();
         }
-    }, [resolvedParams.id]);
+    }, [resolvedParams.id, t]);
 
     if (loading) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
                 <Spinner size="xl" className="text-primary" />
                 <p className="mt-6 text-foreground font-black uppercase tracking-widest text-sm animate-pulse">
-                    Loading Need Details...
+                    {t("loading")}
                 </p>
             </div>
         );
@@ -89,10 +91,10 @@ export default function NeedDetailsPage({ params }: { params: Promise<{ id: stri
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
                 <div className="bg-destructive/10 border border-destructive/20 p-8 rounded-3xl flex flex-col items-center gap-4 max-w-md text-center">
                     <AlertCircle className="w-12 h-12 text-destructive" />
-                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Something went wrong</h2>
-                    <p className="text-muted-foreground font-medium">{error || "Need not found."}</p>
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">{t("error")}</h2>
+                    <p className="text-muted-foreground font-medium">{error || t("notFound")}</p>
                     <Link href="/catalog" className="mt-4 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20">
-                        Back to Catalog
+                        {t("backToCatalog")}
                     </Link>
                 </div>
             </div>
@@ -109,7 +111,7 @@ export default function NeedDetailsPage({ params }: { params: Promise<{ id: stri
                         <div className="w-10 h-10 rounded-xl bg-secondary/50 flex items-center justify-center border border-border group-hover:bg-primary/10 group-hover:border-primary/30">
                             <ChevronLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
                         </div>
-                        <span className="text-sm uppercase tracking-widest hidden sm:block">Back to Catalog</span>
+                        <span className="text-sm uppercase tracking-widest hidden sm:block">{t("backToCatalog")}</span>
                     </Link>
 
                     <Link href="/" className="flex items-center gap-2 scale-110">
@@ -176,9 +178,9 @@ export default function NeedDetailsPage({ params }: { params: Promise<{ id: stri
                             <div className="absolute top-0 right-0 p-4 opacity-10 bg-primary rounded-bl-3xl">
                                 <Info className="w-12 h-12 text-primary-foreground" />
                             </div>
-                            <h4 className="font-black text-foreground mb-2 uppercase tracking-widest text-[10px]">Tax Information</h4>
+                            <h4 className="font-black text-foreground mb-2 uppercase tracking-widest text-[10px]">{t("taxInfo.title")}</h4>
                             <p className="text-muted-foreground text-sm font-medium leading-relaxed">
-                                As a registered non-profit platform, your donations may be eligible for tax deductions. An automated receipt will be sent to your email after successful completion.
+                                {t("taxInfo.description")}
                             </p>
                         </motion.div>
                     </div>

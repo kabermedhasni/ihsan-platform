@@ -1,8 +1,11 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 
 type NeedStatus = 'active' | 'completed' | 'urgent';
 
 const StatusBadge = ({ status }: { status: NeedStatus }) => {
+    const t = useTranslations("catalog.statuses");
+
     const getStyles = () => {
         switch (status) {
             case 'active':
@@ -16,18 +19,11 @@ const StatusBadge = ({ status }: { status: NeedStatus }) => {
         }
     };
 
-    const getLabel = () => {
-        switch (status) {
-            case 'active': return 'Active';
-            case 'completed': return 'Completed';
-            case 'urgent': return 'Urgent';
-            default: return 'Unknown';
-        }
-    };
+    const labelKey = status === 'active' ? 'open' : status;
 
     return (
         <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getStyles()}`}>
-            {getLabel()}
+            {t(labelKey as any) || t('unknown')}
         </span>
     );
 };

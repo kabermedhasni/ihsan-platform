@@ -3,6 +3,7 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 interface FundingProgressProps {
     current: number;
@@ -11,6 +12,7 @@ interface FundingProgressProps {
 }
 
 export const FundingProgress = ({ current, target, donors }: FundingProgressProps) => {
+    const t = useTranslations("needsDetail");
     const percentage = Math.min(Math.round((current / target) * 100), 100);
 
     return (
@@ -26,15 +28,15 @@ export const FundingProgress = ({ current, target, donors }: FundingProgressProp
 
             <div className="flex justify-between items-end mb-5">
                 <div>
-                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-2">Funding Progress</p>
+                    <p className="text-muted-foreground text-[10px] font-black uppercase tracking-widest mb-2">{t("fundingTitle")}</p>
                     <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-foreground">{current.toLocaleString('en-US')}</span>
-                        <span className="text-muted-foreground font-bold text-lg">/ {target.toLocaleString('en-US')} MRU</span>
+                        <span className="text-3xl font-black text-foreground">{current.toLocaleString()}</span>
+                        <span className="text-muted-foreground font-bold text-lg">/ {target.toLocaleString()} MRU</span>
                     </div>
                 </div>
                 <div className="text-right">
                     <span className="text-primary font-black text-3xl">{percentage}%</span>
-                    <p className="text-[10px] font-bold text-primary/60 uppercase tracking-tighter">Completed</p>
+                    <p className="text-[10px] font-bold text-primary/60 uppercase tracking-tighter">{t("completed")}</p>
                 </div>
             </div>
 
@@ -58,7 +60,7 @@ export const FundingProgress = ({ current, target, donors }: FundingProgressProp
                         +{Math.max(0, donors - 3)}
                     </div>
                 </div>
-                <span><strong className="text-foreground font-black">{donors}</strong> Donors have supported this need</span>
+                <span><strong className="text-foreground font-black">{t("donorsCount", { count: donors })}</strong></span>
             </div>
         </motion.div>
     );

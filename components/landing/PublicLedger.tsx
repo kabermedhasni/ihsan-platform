@@ -14,6 +14,7 @@ import {
 
 export default function PublicLedger() {
   const t = useTranslations("ledger");
+  const tStatus = useTranslations("catalog.statuses");
   const [ledgerData, setLedgerData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -87,13 +88,18 @@ export default function PublicLedger() {
                   </TableCell>
                   <TableCell className="px-6 py-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold ${
-                        item.status === "completed"
-                          ? "bg-primary/20 text-primary"
-                          : "bg-amber-500/20 text-amber-400"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs font-bold ${item.status === "completed"
+                        ? "bg-primary/20 text-primary"
+                        : "bg-amber-500/20 text-amber-400"
+                        }`}
                     >
-                      {item.status}
+                      {tStatus(
+                        item.status === "active"
+                          ? "open"
+                          : item.status === "urgent"
+                            ? "inProgress"
+                            : item.status
+                      )}
                     </span>
                   </TableCell>
                   <TableCell className="px-6 py-4 text-muted-foreground font-mono text-sm text-end">

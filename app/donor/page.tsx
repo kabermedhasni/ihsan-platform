@@ -85,12 +85,13 @@ const StatusBadge = ({ status }: { status: DonationStatus }) => {
 };
 
 const ProgressBar = ({ current, max }: { current: number; max: number }) => {
+  const tCatalog = useTranslations("catalog");
   const pct = max > 0 ? Math.min(Math.round((current / max) * 100), 100) : 0;
   return (
     <div className="w-full">
       <div className="flex justify-between text-[10px] font-black uppercase tracking-tighter mb-1.5 text-muted-foreground">
         <span>
-          {current.toLocaleString('en-US')} / {max.toLocaleString('en-US')} MRU
+          {current.toLocaleString()} / {max.toLocaleString()} {tCatalog("mru")}
         </span>
         <span className="text-primary font-bold">{pct}%</span>
       </div>
@@ -125,7 +126,7 @@ const StatCard = ({
       {icon}
     </div>
     <div>
-      <p className="text-3xl font-black text-foreground tracking-tighter">{value}</p>
+      <p className="text-3xl font-black text-foreground tracking-tighter shrink-0 truncate">{value}</p>
       <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">
         {label} {sub && <span className="text-primary/80 ml-1">({sub})</span>}
       </p>
@@ -135,6 +136,8 @@ const StatCard = ({
 
 const DonationCard = ({ d }: { d: Donation }) => {
   const t = useTranslations("donor");
+  const tCatalog = useTranslations("catalog");
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -143,7 +146,7 @@ const DonationCard = ({ d }: { d: Donation }) => {
     >
       <div className="flex justify-between items-start mb-4 gap-3">
         <div className="flex-1 min-w-0">
-          <h3 className="font-black text-foreground text-xl tracking-tighter leading-tight mb-1 truncate group-hover:text-primary transition-colors">
+          <h3 className="font-black text-foreground text-xl tracking-tighter leading-tight mb-1 truncate group-hover:text-primary transition-colors text-left rtl:text-right">
             {d.needTitle}
           </h3>
           <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
@@ -162,7 +165,7 @@ const DonationCard = ({ d }: { d: Donation }) => {
             {t("yourDonation")}
           </p>
           <p className="text-xl font-black text-primary tracking-tighter">
-            {d.amount.toLocaleString('en-US')} MRU
+            {d.amount.toLocaleString()} {tCatalog("mru")}
           </p>
         </div>
         <Link
@@ -179,6 +182,8 @@ const DonationCard = ({ d }: { d: Donation }) => {
 
 const ProofCard = ({ d }: { d: Donation }) => {
   const t = useTranslations("donor");
+  const tCatalog = useTranslations("catalog");
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -198,7 +203,7 @@ const ProofCard = ({ d }: { d: Donation }) => {
         {d.validatorMessage && (
           <div className="flex items-start gap-3 mb-4">
             <CheckCircle className="w-5 h-5 text-emerald-500 mt-0.5 shrink-0" />
-            <p className="text-sm text-foreground font-medium leading-relaxed">
+            <p className="text-sm text-foreground font-medium leading-relaxed text-left rtl:text-right">
               {d.validatorMessage}
             </p>
           </div>
@@ -208,12 +213,12 @@ const ProofCard = ({ d }: { d: Donation }) => {
             <Calendar className="w-4 h-4 text-primary" />
             <span>
               {d.confirmedAt
-                ? new Date(d.confirmedAt).toLocaleDateString("en-GB")
+                ? new Date(d.confirmedAt).toLocaleDateString()
                 : "--"}
             </span>
           </div>
           <span className="text-primary text-sm tracking-tighter">
-            {d.amount.toLocaleString('en-US')} MRU
+            {d.amount.toLocaleString()} {tCatalog("mru")}
           </span>
         </div>
         <Link
@@ -230,6 +235,7 @@ const ProofCard = ({ d }: { d: Donation }) => {
 
 const DonationsTable = ({ donations }: { donations: Donation[] }) => {
   const t = useTranslations("donor");
+  const tCatalog = useTranslations("catalog");
   const [query, setQuery] = useState("");
   const filtered = donations.filter(
     (d) =>
@@ -244,19 +250,19 @@ const DonationsTable = ({ donations }: { donations: Donation[] }) => {
           {t("historyTitle")}
         </h2>
         <div className="relative w-full md:w-80">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+          <Search className="absolute left-4 rtl:left-auto rtl:right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           <Input
             type="text"
             placeholder={t("searchDonations")}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="pl-12 h-12 border-2 rounded-xl text-sm font-bold bg-card border-border"
+            className="pl-12 rtl:pl-4 rtl:pr-12 h-12 border-2 rounded-xl text-sm font-bold bg-card border-border"
           />
         </div>
       </div>
       <div className="bg-card border border-border rounded-3xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="w-full text-left rtl:text-right">
             <thead>
               <tr className="bg-secondary/50 border-b border-border">
                 {[
@@ -301,13 +307,13 @@ const DonationsTable = ({ donations }: { donations: Donation[] }) => {
                       <span className="px-2 py-0.5 bg-secondary text-muted-foreground rounded text-[10px] font-black uppercase tracking-widest">{d.category}</span>
                     </td>
                     <td className="px-6 py-4 font-black text-sm text-primary whitespace-nowrap">
-                      {d.amount.toLocaleString('en-US')} MRU
+                      {d.amount.toLocaleString()} {tCatalog("mru")}
                     </td>
                     <td className="px-6 py-4">
                       <StatusBadge status={d.status} />
                     </td>
                     <td className="px-6 py-4 font-bold text-[10px] text-muted-foreground uppercase whitespace-nowrap">
-                      {new Date(d.date).toLocaleDateString("en-GB")}
+                      {new Date(d.date).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
                       <Link
@@ -333,6 +339,7 @@ const DonationsTable = ({ donations }: { donations: Donation[] }) => {
 
 export default function DonorPage() {
   const t = useTranslations("donor");
+  const tCatalog = useTranslations("catalog");
   const router = useRouter();
   const [displayName, setDisplayName] = useState("");
   const [donations, setDonations] = useState<Donation[]>([]);
@@ -358,7 +365,7 @@ export default function DonorPage() {
       setDisplayName(
         user.user_metadata?.display_name ||
         user.email?.split("@")[0] ||
-        "Donor",
+        t("defaultDisplayName"),
       );
 
       // 2. Load donor data from API
@@ -385,7 +392,7 @@ export default function DonorPage() {
       }
     };
     init();
-  }, [router]);
+  }, [router, t]);
 
   if (loading) {
     return (
@@ -409,10 +416,10 @@ export default function DonorPage() {
             <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">{t("welcome")}</p>
             <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter mb-4">
+          <h1 className="text-4xl md:text-5xl font-black text-foreground tracking-tighter mb-4 text-left rtl:text-right">
             {displayName} 👋
           </h1>
-          <p className="text-muted-foreground font-medium text-lg max-w-2xl">{t("summary")}</p>
+          <p className="text-muted-foreground font-medium text-lg max-w-2xl text-left rtl:text-right">{t("summary")}</p>
         </div>
 
         {/* ERROR BANNER */}
@@ -430,8 +437,8 @@ export default function DonorPage() {
               <StatCard
                 icon={<TrendingUp className="w-5 h-5" />}
                 label={t("totalDonated")}
-                value={stats.totalDonated.toLocaleString('en-US')}
-                sub="MRU"
+                value={stats.totalDonated.toLocaleString()}
+                sub={tCatalog("mru")}
               />
               <StatCard
                 icon={<Heart className="w-5 h-5" />}
@@ -516,7 +523,7 @@ export default function DonorPage() {
                   href="/catalog"
                   className="inline-flex items-center gap-3 px-10 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all"
                 >
-                  {t("browseCatalog")} <ChevronRight className="w-5 h-5" />
+                  {t("browseCatalog")} <ChevronRight className="w-5 h-5 rtl:rotate-180" />
                 </Link>
               </div>
             )}
@@ -532,10 +539,10 @@ export default function DonorPage() {
                   <Shield className="w-8 h-8" />
                 </div>
                 <div>
-                  <h3 className="font-black text-foreground text-2xl tracking-tighter mb-4">
+                  <h3 className="font-black text-foreground text-2xl tracking-tighter mb-4 text-left rtl:text-right">
                     {t("fullTransparency")}
                   </h3>
-                  <p className="text-muted-foreground font-medium text-lg leading-relaxed mb-8 max-w-2xl">
+                  <p className="text-muted-foreground font-medium text-lg leading-relaxed mb-8 max-w-2xl text-left rtl:text-right">
                     {t("transparencyNote")}
                   </p>
                   <Link
@@ -553,7 +560,7 @@ export default function DonorPage() {
           {/* QUICK ACTIONS SIDEBAR */}
           <aside className="w-full xl:w-72 shrink-0">
             <div className="bg-card border border-border rounded-3xl p-6 sticky top-28 space-y-4 shadow-sm">
-              <h3 className="font-black text-foreground text-xs uppercase tracking-widest mb-4">
+              <h3 className="font-black text-foreground text-xs uppercase tracking-widest mb-4 text-left rtl:text-right">
                 {t("quickActions")}
               </h3>
               <Link
@@ -579,7 +586,7 @@ export default function DonorPage() {
               </button>
               {lastHash && (
                 <div className="mt-4 pt-6 border-t border-border">
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3">
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 text-left rtl:text-right">
                     {t("lastHash")}
                   </p>
                   <div className="p-4 bg-secondary/50 rounded-xl border border-border">

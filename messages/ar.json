@@ -178,7 +178,9 @@
     "location": "الموقع",
     "helpType": "نوع المساعدة",
     "funded": "ممول",
-    "clickToInteract": "اضغط للتفاعل مع الخريطة"
+    "clickToInteract": "اضغط للتفاعل مع الخريطة",
+    "done": "تم",
+    "viewDetails": "عرض التفاصيل"
   },
   "catalog": {
     "title": "الاحتياجات المتاحة",
@@ -192,8 +194,11 @@
     },
     "statuses": {
       "open": "مفتوح",
+      "active": "نشط",
       "inProgress": "قيد التنفيذ",
-      "completed": "مكتمل"
+      "urgent": "عاجل",
+      "completed": "مكتمل",
+      "unknown": "غير معروف"
     },
     "sort": {
       "newest": "الأحدث",
@@ -208,11 +213,82 @@
     "loadMore": "تحميل المزيد",
     "interactiveMap": "خريطة تفاعلية",
     "interactiveMapDesc": "استكشف الاحتياجات في المواقع المختلفة على الخريطة التفاعلية",
+    "trustNetwork": "شبكة الثقة",
+    "map": {
+      "title": "خريطة الأثر",
+      "subtitle": "تتبع ميداني فوري للعمليات",
+      "confirmed": "مؤكد",
+      "inProgress": "قيد التنفيذ",
+      "realTimeCoverage": "تغطية فورية",
+      "coverageDesc": "تظهر الخريطة مواقع التسليم النشطة. اضغط على العلامات لعرض بيانات التحقق الميداني.",
+      "delivered": "تم التسليم"
+    },
+    "ledger": {
+      "id": "المعرف",
+      "city": "المدينة",
+      "category": "الفئة",
+      "amount": "المبلغ",
+      "status": "الحالة",
+      "time": "الوقت",
+      "hash": "البصمة (Hash)",
+      "networkStatus": "حالة الشبكة",
+      "synchronized": "متزامن",
+      "viewOlder": "عرض السجلات الأقدم"
+    },
+    "modal": {
+      "verified": "معاملة موثقة",
+      "impactDetails": "تفاصيل الأثر",
+      "location": "الموقع",
+      "dateVerified": "تاريخ التوثيق",
+      "fieldValidator": "الموثق الميداني",
+      "ledgerHash": "بصمة السجل",
+      "viewProof": "عرض الدليل التشفيري",
+      "onSiteConfirmation": "تأكيد التسليم الميداني",
+      "capturedBy": "تم الالتقاط بواسطة الموثق"
+    },
+    "verify": {
+      "title": "تحقق من المعاملة",
+      "subtitle": "أدخل بصمة المعاملة أو المعرف الخاص بها لعرض بيانات التحقق المستقلة.",
+      "placeholder": "أدخل البصمة أو المعرف...",
+      "button": "تحقق من السجل",
+      "verifying": "جاري التحقق...",
+      "notFound": "لم يتم العثور على سجل لهذا المعرف.",
+      "directVerification": "تحقق مباشر",
+      "recordFound": "تم العثور على السجل",
+      "beneficiaries": "المستفيدين",
+      "clear": "مسح",
+      "waiting": "في انتظار مدخلات التحقق",
+      "people": "شخص"
+    },
     "filters": {
+      "title": "الفلاتر",
       "city": "المدينة",
       "category": "الفئة",
       "status": "الحالة",
       "sortBy": "ترتيب حسب"
+    },
+    "drawer": {
+      "needDetails": "تفاصيل الحالة",
+      "location": "الموقع",
+      "verifiedBy": "موثق من طرف",
+      "beneficiaries": "المستفيدين",
+      "beneficiariesCount": "{count} شخص",
+      "description": "الوصف",
+      "fundingStatus": "حالة التمويل",
+      "donors": "المتبرعون",
+      "timeRemaining": "الوقت المتبقي",
+      "donateToThisNeed": "تبرع لهذه الحالة"
+    },
+    "card": {
+      "verifiedBy": "موثق من طرف:",
+      "donors": "{count} متبرع",
+      "viewDetails": "عرض التفاصيل",
+      "donateNow": "تبرع الآن",
+      "endsTomorrow": "ينتهي غداً",
+      "endsInDays": "ينتهي خلال {days} أيام",
+      "endsOn": "ينتهي في {date}",
+      "expired": "منتهي",
+      "unknown": "غير معروف"
     }
   },
   "donor": {
@@ -225,6 +301,12 @@
     "activeNeeds": "احتياجات نشطة",
     "inProgress": "قيد التنفيذ",
     "activeDonations": "تبرعات نشطة",
+    "yourDonation": "تبرعك",
+    "funding": "تمويل",
+    "delivered": "تم التسليم",
+    "failed": "فشل",
+    "noDonationsFound": "لم يتم العثور على تبرعات تطابق بحثك.",
+    "defaultDisplayName": "متبرع",
     "active": "نشط",
     "proofOfImpact": "إثبات الأثر",
     "historyTitle": "سجل التبرعات",
@@ -350,6 +432,52 @@
     "map": {
       "title": "بصمة الأثر",
       "subtitle": "التوزيع الجغرافي لعمليات التسليم المؤكدة."
+    }
+  },
+  "needsDetail": {
+    "backToCatalog": "العودة إلى الحالات",
+    "share": "مشاركة",
+    "taxInfo": {
+      "title": "معلومات ضريبية",
+      "description": "بصفتنا منصة غير ربحية مسجلة، قد تكون تبرعاتك مؤهلة لخصومات ضريبية. سيتم إرسال إيصال تلقائي إلى بريدك الإلكتروني بعد اكتمال العملية بنجاح."
+    },
+    "loading": "جارٍ تحميل تفاصيل الحالة...",
+    "error": "حدث خطأ ما",
+    "notFound": "الحالة غير موجودة.",
+    "donorsCount": "دعم هذه الحالة {count} متبرع",
+    "fundedOf": "ممول من",
+    "target": "الهدف",
+    "completed": "مكتمل",
+    "fundingTitle": "تقدم التمويل",
+    "impactHeader": "الأثر",
+    "families": "{count} عائلات",
+    "directImpactNote": "تستفيد مباشرة من دعمك",
+    "storyHeader": "القصة والمهمة",
+    "verificationHeader": "التحقق",
+    "validatorSub": "محقق ميداني",
+    "verificationNote": "تم التحقق من هذه الحالة من قبل متطوع محلي موثوق به شخصياً لضمان الدقة والشرعية. تم فحص كل التفاصيل ومقارنتها بالسجلات المحلية.",
+    "locationHeader": "تفاصيل الموقع",
+    "openInMaps": "فتح في الخرائط",
+    "beneficiaries": "المستفيدين",
+    "verifiedValidator": "محقق معتمد",
+    "location": "الموقع",
+    "transparency": {
+      "title": "شفافية مطلقة",
+      "description": "يتم تتبع كل أوقية في سجلنا العام. نحن نضمن وصول دعمك إلى مكانه الصحيح من خلال التحقق الميداني المستمر.",
+      "badge": "تتبع كامل",
+      "button": "تحقق من السجل"
+    },
+    "donation": {
+      "title": "اترك أثراً",
+      "description": "يتم معالجة تبرعك فوراً وتسجيله في السجل لضمان التتبع الكامل.",
+      "amountLabel": "مبلغ التبرع (أوقية)",
+      "customAmount": "مبلغ مخصص",
+      "submit": "تبرع الآن",
+      "anonymous": "تبرع بهوية مجهولة",
+      "processing": "جارٍ معالجة التبرع...",
+      "success": "شكراً لك على تبرعك!",
+      "verifiedNote": "معاملة موثقة ومشفرة",
+      "beneficiaryNote": "يذهب 100% من تبرعك مباشرة إلى المستفيد."
     }
   }
 }

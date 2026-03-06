@@ -77,7 +77,7 @@ export default function InteractiveMap({
                   <MousePointer2 className="w-8 h-8" />
                 </div>
                 <p className="text-white font-bold text-lg bg-black/40 px-6 py-2 rounded-full backdrop-blur-sm border border-white/10">
-                  {t("clickToInteract") || "Click to Interact"}
+                  {t("clickToInteract")}
                 </p>
               </motion.div>
             )}
@@ -88,7 +88,7 @@ export default function InteractiveMap({
               onClick={() => setIsInteracting(false)}
               className="absolute top-4 right-4 z-20 px-4 py-2 bg-background/80 backdrop-blur-md border border-white/10 rounded-xl text-sm font-bold text-white hover:bg-primary hover:border-primary transition-all"
             >
-              Done
+              {t("done")}
             </button>
           )}
         </div>

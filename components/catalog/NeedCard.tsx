@@ -1,23 +1,33 @@
 import React from 'react';
 import Link from 'next/link';
 import { MapPin, User, Clock, Heart } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import StatusBadge from './StatusBadge';
 import ProgressBar from './ProgressBar';
-import CategoryIcon, { getCategoryLabel } from './CategoryIcon';
+import CategoryIcon from './CategoryIcon';
 import { Need } from '@/types/need';
 
-const formatTimeRemaining = (dateString: string) => {
-    if (!dateString) return 'Unknown';
-    const expiresAt = new Date(dateString);
-    const now = new Date();
-    if (expiresAt < now) return 'Expired';
-    const diffDays = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-    if (diffDays === 1) return 'Ends tomorrow';
-    if (diffDays <= 7) return `Ends in ${diffDays} days`;
-    return `Ends on ${expiresAt.toLocaleDateString()}`;
-};
-
 const NeedCard = ({ need, onViewDetails }: { need: Need; onViewDetails: (n: Need) => void }) => {
+    const t = useTranslations("catalog");
+    const tCats = useTranslations("catalog.categories");
+
+    const formatTimeRemaining = (dateString: string) => {
+        if (!dateString) return t("card.unknown");
+        const expiresAt = new Date(dateString);
+        const now = new Date();
+        if (expiresAt < now) return t("card.expired");
+
+        const diffDays = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) return t("card.endsTomorrow");
+        if (diffDays <= 7) return t("card.endsInDays", { days: diffDays });
+
+        return t("card.endsOn", { date: expiresAt.toLocaleDateString() });
+    };
+
+    // Map database categories to translation keys
+    const categoryKey = need.category.toLowerCase().replace(/\s+/g, '');
+    const displayCategory = tCats(categoryKey as any) || need.category;
+
     return (
         <div className="bg-card text-card-foreground rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 border border-border overflow-hidden flex flex-col h-full group">
             {/* Card Header */}
@@ -26,7 +36,7 @@ const NeedCard = ({ need, onViewDetails }: { need: Need; onViewDetails: (n: Need
                     <div className="p-2 bg-primary/10 text-primary rounded-lg">
                         <CategoryIcon category={need.category} className="w-5 h-5" />
                     </div>
-                    <span className="text-sm font-medium text-muted-foreground">{getCategoryLabel(need.category)}</span>
+                    <span className="text-sm font-medium text-muted-foreground">{displayCategory}</span>
                 </div>
                 <StatusBadge status={need.status} />
             </div>
@@ -44,7 +54,7 @@ const NeedCard = ({ need, onViewDetails }: { need: Need; onViewDetails: (n: Need
                     </div>
                     <div className="flex items-center text-sm text-muted-foreground gap-2">
                         <User className="w-4 h-4 text-muted-foreground/60" />
-                        <span>Verified by: {need.validator}</span>
+                        <span>{t("card.verifiedBy")} {need.validator}</span>
                     </div>
                 </div>
 
@@ -54,7 +64,7 @@ const NeedCard = ({ need, onViewDetails }: { need: Need; onViewDetails: (n: Need
                     <div className="flex justify-between items-center mt-3 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                             <Heart className="w-4 h-4 fill-primary text-primary" />
-                            <span>{need.donors_count || 0} Donors</span>
+                            <span>{t("card.donors", { count: need.donors_count || 0 })}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <Clock className="w-4 h-4" />
@@ -70,13 +80,13 @@ const NeedCard = ({ need, onViewDetails }: { need: Need; onViewDetails: (n: Need
                     onClick={() => onViewDetails(need)}
                     className="flex-1 py-2.5 px-4 rounded-xl text-primary bg-primary/10 hover:bg-primary/20 font-medium text-sm transition-colors text-center"
                 >
-                    View Details
+                    {t("card.viewDetails")}
                 </button>
                 <Link
-                    href={`/donate/${need.id}`}
+                    href={`/needs/${need.id}`}
                     className="flex-1 py-2.5 px-4 rounded-xl text-primary-foreground bg-primary hover:bg-primary/90 font-medium text-sm transition-colors text-center flex items-center justify-center gap-2"
                 >
-                    Donate Now
+                    {t("card.donateNow")}
                 </Link>
             </div>
         </div>

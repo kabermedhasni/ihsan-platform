@@ -178,7 +178,9 @@
     "location": "Location",
     "helpType": "Help Type",
     "funded": "funded",
-    "clickToInteract": "Click to Interact"
+    "clickToInteract": "Click to Interact",
+    "done": "Done",
+    "viewDetails": "View Details"
   },
   "catalog": {
     "title": "Available Needs",
@@ -192,8 +194,11 @@
     },
     "statuses": {
       "open": "Open",
+      "active": "Active",
       "inProgress": "In Progress",
-      "completed": "Completed"
+      "urgent": "Urgent",
+      "completed": "Completed",
+      "unknown": "Unknown"
     },
     "sort": {
       "newest": "Newest",
@@ -208,11 +213,82 @@
     "loadMore": "Load More",
     "interactiveMap": "Interactive Map",
     "interactiveMapDesc": "Explore needs across locations on the interactive map",
+    "trustNetwork": "Trust Network",
+    "map": {
+      "title": "Impact Map",
+      "subtitle": "Real-time verification of field operations",
+      "confirmed": "Confirmed",
+      "inProgress": "In Progress",
+      "realTimeCoverage": "Real-time Coverage",
+      "coverageDesc": "Map shows active delivery sites. Click markers to view on-site verification data.",
+      "delivered": "Delivered"
+    },
+    "ledger": {
+      "id": "ID",
+      "city": "City",
+      "category": "Category",
+      "amount": "Amount",
+      "status": "Status",
+      "time": "Time",
+      "hash": "Hash",
+      "networkStatus": "Network Status",
+      "synchronized": "Synchronized",
+      "viewOlder": "View Older Records"
+    },
+    "modal": {
+      "verified": "Transaction Verified",
+      "impactDetails": "Impact Details",
+      "location": "Location",
+      "dateVerified": "Date Verified",
+      "fieldValidator": "Field Validator",
+      "ledgerHash": "Ledger Hash",
+      "viewProof": "View Cryptographic Proof",
+      "onSiteConfirmation": "On-site Delivery Confirmation",
+      "capturedBy": "Captured by Validator"
+    },
+    "verify": {
+      "title": "Verify Transaction",
+      "subtitle": "Enter a transaction hash or ID to view independent verification data.",
+      "placeholder": "Enter Hash or ID...",
+      "button": "Verify Record",
+      "verifying": "Verifying...",
+      "notFound": "No record found for this identifier.",
+      "directVerification": "Direct Verification",
+      "recordFound": "Record Found",
+      "beneficiaries": "Beneficiaries",
+      "clear": "Clear",
+      "waiting": "Waiting for Verification Input",
+      "people": "People"
+    },
     "filters": {
+      "title": "Filters",
       "city": "City",
       "category": "Category",
       "status": "Status",
       "sortBy": "Sort by"
+    },
+    "drawer": {
+      "needDetails": "Need Details",
+      "location": "Location",
+      "verifiedBy": "Verified By",
+      "beneficiaries": "Beneficiaries",
+      "beneficiariesCount": "{count} people",
+      "description": "Description",
+      "fundingStatus": "Funding Status",
+      "donors": "Donors",
+      "timeRemaining": "Time Remaining",
+      "donateToThisNeed": "Donate to this Need"
+    },
+    "card": {
+      "verifiedBy": "Verified by:",
+      "donors": "{count} Donors",
+      "viewDetails": "View Details",
+      "donateNow": "Donate Now",
+      "endsTomorrow": "Ends tomorrow",
+      "endsInDays": "Ends in {days} days",
+      "endsOn": "Ends on {date}",
+      "expired": "Expired",
+      "unknown": "Unknown"
     }
   },
   "donor": {
@@ -225,6 +301,12 @@
     "activeNeeds": "Active Needs",
     "inProgress": "In Progress",
     "activeDonations": "Active Donations",
+    "yourDonation": "Your Donation",
+    "funding": "Funding",
+    "delivered": "Delivered",
+    "failed": "Failed",
+    "noDonationsFound": "No donations found matching your search.",
+    "defaultDisplayName": "Donor",
     "active": "active",
     "proofOfImpact": "Proof of Impact",
     "historyTitle": "Donation History",
@@ -350,6 +432,52 @@
     "map": {
       "title": "Impact Footprint",
       "subtitle": "Geographical distribution of confirmed deliveries."
+    }
+  },
+  "needsDetail": {
+    "backToCatalog": "Back to Catalog",
+    "share": "Share",
+    "taxInfo": {
+      "title": "Tax Information",
+      "description": "As a registered non-profit platform, your donations may be eligible for tax deductions. An automated receipt will be sent to your email after successful completion."
+    },
+    "loading": "Loading Need Details...",
+    "error": "Something went wrong",
+    "notFound": "Need not found.",
+    "donorsCount": "{count} donors supported this",
+    "fundedOf": "funded of",
+    "target": "target",
+    "completed": "Completed",
+    "fundingTitle": "Funding Progress",
+    "impactHeader": "Impact",
+    "families": "{count} Families",
+    "directImpactNote": "Directly benefiting from your support",
+    "storyHeader": "Story & Mission",
+    "verificationHeader": "Verification",
+    "validatorSub": "Field Validator",
+    "verificationNote": "This need was verified by a trusted local volunteer in person to ensure accuracy and legitimacy. Every detail has been cross-referenced with local records.",
+    "locationHeader": "Location Details",
+    "openInMaps": "Open in Maps",
+    "beneficiaries": "Beneficiaries",
+    "verifiedValidator": "Verified Validator",
+    "location": "Location",
+    "transparency": {
+      "title": "Radical Transparency",
+      "description": "Every Ouguiya (MRU) is tracked on our public ledger. We ensure that your support goes exactly where it's needed through continuous field verification.",
+      "badge": "Full Traceability",
+      "button": "Verify Ledger"
+    },
+    "donation": {
+      "title": "Make an Impact",
+      "description": "Your donation is processed instantly and recorded on the ledger for full traceability.",
+      "amountLabel": "Donation Amount (MRU)",
+      "customAmount": "Custom Amount",
+      "submit": "Donate Now",
+      "anonymous": "Donate Anonymously",
+      "processing": "Processing donation...",
+      "success": "Thank you for your donation!",
+      "verifiedNote": "Verified & Encrypted Transaction",
+      "beneficiaryNote": "100% of your donation goes directly to the beneficiary."
     }
   }
 }

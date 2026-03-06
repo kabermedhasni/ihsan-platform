@@ -178,7 +178,9 @@
     "location": "Emplacement",
     "helpType": "Type d'aide",
     "funded": "financé",
-    "clickToInteract": "Cliquer pour interagir"
+    "clickToInteract": "Cliquer pour interagir",
+    "done": "Terminé",
+    "viewDetails": "Voir les détails"
   },
   "catalog": {
     "title": "Besoins Disponibles",
@@ -192,8 +194,11 @@
     },
     "statuses": {
       "open": "Ouvert",
+      "active": "Actif",
       "inProgress": "En cours",
-      "completed": "Terminé"
+      "urgent": "Urgent",
+      "completed": "Terminé",
+      "unknown": "Inconnu"
     },
     "sort": {
       "newest": "Plus récents",
@@ -208,11 +213,82 @@
     "loadMore": "Charger plus",
     "interactiveMap": "Carte Interactive",
     "interactiveMapDesc": "Explorez les besoins dans différents endroits sur la carte interactive",
+    "trustNetwork": "Réseau de Confiance",
+    "map": {
+      "title": "Carte d'Impact",
+      "subtitle": "Vérification en temps réel des opérations de terrain",
+      "confirmed": "Confirmé",
+      "inProgress": "En cours",
+      "realTimeCoverage": "Couverture en temps réel",
+      "coverageDesc": "La carte montre les sites de livraison actifs. Cliquez sur les marqueurs pour voir les données de vérification sur place.",
+      "delivered": "Livré"
+    },
+    "ledger": {
+      "id": "ID",
+      "city": "Ville",
+      "category": "Catégorie",
+      "amount": "Montant",
+      "status": "Statut",
+      "time": "Heure",
+      "hash": "Hachage",
+      "networkStatus": "État du Réseau",
+      "synchronized": "Synchronisé",
+      "viewOlder": "Voir les anciens enregistrements"
+    },
+    "modal": {
+      "verified": "Transaction Vérifiée",
+      "impactDetails": "Détails de l'Impact",
+      "location": "Emplacement",
+      "dateVerified": "Date de Vérification",
+      "fieldValidator": "Validateur de Terrain",
+      "ledgerHash": "Hachage du Registre",
+      "viewProof": "Voir la Preuve Cryptographique",
+      "onSiteConfirmation": "Confirmation de Livraison sur Place",
+      "capturedBy": "Capturé par le Validateur"
+    },
+    "verify": {
+      "title": "Vérifier la Transaction",
+      "subtitle": "Entrez un hachage ou un ID de transaction pour voir les données de vérification indépendantes.",
+      "placeholder": "Entrez le hachage ou l'ID...",
+      "button": "Vérifier le Dossier",
+      "verifying": "Vérification...",
+      "notFound": "Aucun dossier trouvé pour cet identifiant.",
+      "directVerification": "Vérification Directe",
+      "recordFound": "Dossier Trouvé",
+      "beneficiaries": "Bénéficiaires",
+      "clear": "Effacer",
+      "waiting": "En attente d'entrée de vérification",
+      "people": "Personnes"
+    },
     "filters": {
+      "title": "Filtres",
       "city": "Ville",
       "category": "Catégorie",
       "status": "Statut",
       "sortBy": "Trier par"
+    },
+    "drawer": {
+      "needDetails": "Détails du Besoin",
+      "location": "Emplacement",
+      "verifiedBy": "Vérifié par",
+      "beneficiaries": "Bénéficiaires",
+      "beneficiariesCount": "{count} personnes",
+      "description": "Description",
+      "fundingStatus": "Statut du Financement",
+      "donors": "Donateurs",
+      "timeRemaining": "Temps restant",
+      "donateToThisNeed": "Donner à ce besoin"
+    },
+    "card": {
+      "verifiedBy": "Vérifié par :",
+      "donors": "{count} Donateurs",
+      "viewDetails": "Voir les détails",
+      "donateNow": "Donner maintenant",
+      "endsTomorrow": "Se termine demain",
+      "endsInDays": "Se termine dans {days} jours",
+      "endsOn": "Se termine le {date}",
+      "expired": "Expiré",
+      "unknown": "Inconnu"
     }
   },
   "donor": {
@@ -225,6 +301,12 @@
     "activeNeeds": "Besoins Actifs",
     "inProgress": "En cours",
     "activeDonations": "Dons Actifs",
+    "yourDonation": "Votre Don",
+    "funding": "Financement",
+    "delivered": "Livré",
+    "failed": "Échoué",
+    "noDonationsFound": "Aucun don trouvé correspondant à votre recherche.",
+    "defaultDisplayName": "Donateur",
     "active": "actif",
     "proofOfImpact": "Preuve d'Impact",
     "historyTitle": "Historique des dons",
@@ -350,6 +432,52 @@
     "map": {
       "title": "Empreinte d'Impact",
       "subtitle": "Distribution géographique des livraisons confirmées."
+    }
+  },
+  "needsDetail": {
+    "backToCatalog": "Retour au catalogue",
+    "share": "Partager",
+    "taxInfo": {
+      "title": "Informations Fiscales",
+      "description": "En tant que plateforme à but non lucratif enregistrée, vos dons peuvent être éligibles à des déductions fiscales. Un reçu automatique sera envoyé à votre e-mail après la finalisation."
+    },
+    "loading": "Chargement des détails...",
+    "error": "Une erreur est survenue",
+    "notFound": "Besoin non trouvé.",
+    "donorsCount": "{count} donateurs soutiennent ceci",
+    "fundedOf": "financé sur",
+    "target": "objectif",
+    "completed": "Terminé",
+    "fundingTitle": "Progression du Financement",
+    "impactHeader": "Impact",
+    "families": "{count} Familles",
+    "directImpactNote": "Bénéficiant directement de votre soutien",
+    "storyHeader": "Histoire & Mission",
+    "verificationHeader": "Vérification",
+    "validatorSub": "Validateur de terrain",
+    "verificationNote": "Ce besoin a été vérifié en personne par un bénévole local de confiance pour garantir son exactitude et sa légitimité. Chaque détail a été recoupé avec les dossiers locaux.",
+    "locationHeader": "Détails de l'Emplacement",
+    "openInMaps": "Ouvrir dans Maps",
+    "beneficiaries": "Bénéficiaires",
+    "verifiedValidator": "Validateur Vérifié",
+    "location": "Location",
+    "transparency": {
+      "title": "Transparence Radicale",
+      "description": "Chaque Ouguiya (MRU) est traçable sur notre registre public. Nous garantissons que votre soutien va exactement là où il est nécessaire grâce à une vérification continue sur le terrain.",
+      "badge": "Traçabilité Totale",
+      "button": "Vérifier le Registre"
+    },
+    "donation": {
+      "title": "Faites un Impact",
+      "description": "Votre don est traité instantanément et enregistré dans le registre pour une traçabilité totale.",
+      "amountLabel": "Montant du don (MRU)",
+      "customAmount": "Montant Personnalisé",
+      "submit": "Donner Maintenant",
+      "anonymous": "Faire un don anonyme",
+      "processing": "Traitement du don...",
+      "success": "Merci pour votre don !",
+      "verifiedNote": "Transaction Vérifiée & Chiffrée",
+      "beneficiaryNote": "100% de votre don va directement au bénéficiaire."
     }
   }
 }

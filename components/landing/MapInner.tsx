@@ -96,7 +96,7 @@ export default function MapInner({
                     href={`/catalog?need=${need.id}`}
                     className="text-[10px] font-bold text-primary hover:underline"
                   >
-                    View Details
+                    {t("viewDetails")}
                   </Link>
                 </div>
               </div>
