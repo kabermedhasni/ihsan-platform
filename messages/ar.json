@@ -656,5 +656,30 @@
     },
     "supporting": "دعم:",
     "loadingPlaceholder": "جارٍ التحميل..."
+  },
+  "verifyPage": {
+    "title": "التحقق من التبرع",
+    "subtitle": "تتبع مسار تبرعك والإثبات التشفيري الخاص به.",
+    "backToDonor": "العودة إلى لوحة التحكم",
+    "donationDetails": "تفاصيل التبرع",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "status": "الحالة",
+    "transactionHash": "بصمة المعاملة",
+    "needDetails": "تفاصيل الحالة",
+    "category": "الفئة",
+    "location": "الموقع",
+    "beneficiaries": "المستفيدين",
+    "validationProof": "إثبات التحقق",
+    "validationMessage": "الرسالة",
+    "validationDate": "تاريخ التأكيد",
+    "verifiedBy": "موثق بواسطة",
+    "noProofYet": "عملية التحقق قيد الانتظار. الفريق الميداني يعمل على ذلك حالياً.",
+    "notFound": "لم يتم العثور على التبرع.",
+    "loading": "جارٍ تحميل بيانات التحقق...",
+    "error": "فشل تحميل بيانات التحقق.",
+    "viewNeed": "عرض الحالة",
+    "proofImage": "صورة الإثبات",
+    "blockchainNote": "هذه المعاملة مؤمنة تشفيرياً."
   }
 }

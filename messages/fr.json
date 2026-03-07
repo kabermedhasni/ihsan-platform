@@ -656,5 +656,30 @@
     },
     "supporting": "Soutenir :",
     "loadingPlaceholder": "Chargement..."
+  },
+  "verifyPage": {
+    "title": "Vérification du Don",
+    "subtitle": "Suivez le parcours de votre don et sa preuve cryptographique.",
+    "backToDonor": "Retour au Tableau de bord",
+    "donationDetails": "Détails du Don",
+    "amount": "Montant",
+    "date": "Date",
+    "status": "Statut",
+    "transactionHash": "Hachage de Transaction",
+    "needDetails": "Détails du Besoin",
+    "category": "Catégorie",
+    "location": "Emplacement",
+    "beneficiaries": "Bénéficiaires",
+    "validationProof": "Preuve de Validation",
+    "validationMessage": "Message",
+    "validationDate": "Confirmé le",
+    "verifiedBy": "Vérifié Par",
+    "noProofYet": "Validation en attente. L'équipe de terrain y travaille actuellement.",
+    "notFound": "Don non trouvé.",
+    "loading": "Chargement des données de vérification...",
+    "error": "Échec du chargement des données de vérification.",
+    "viewNeed": "Voir le Besoin",
+    "proofImage": "Image de Preuve",
+    "blockchainNote": "Cette transaction est sécurisée cryptographiquement."
   }
 }

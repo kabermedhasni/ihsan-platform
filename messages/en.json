@@ -656,5 +656,30 @@
     },
     "supporting": "Supporting:",
     "loadingPlaceholder": "Loading..."
+  },
+  "verifyPage": {
+    "title": "Donation Verification",
+    "subtitle": "Track your donation's journey and cryptographic proof.",
+    "backToDonor": "Back to Dashboard",
+    "donationDetails": "Donation Details",
+    "amount": "Amount",
+    "date": "Date",
+    "status": "Status",
+    "transactionHash": "Transaction Hash",
+    "needDetails": "Need Details",
+    "category": "Category",
+    "location": "Location",
+    "beneficiaries": "Beneficiaries",
+    "validationProof": "Validation Proof",
+    "validationMessage": "Message",
+    "validationDate": "Confirmed On",
+    "verifiedBy": "Verified By",
+    "noProofYet": "Validation pending. The field team is currently working on it.",
+    "notFound": "Donation not found.",
+    "loading": "Loading Verification Data...",
+    "error": "Failed to load verification data.",
+    "viewNeed": "View Need",
+    "proofImage": "Proof Image",
+    "blockchainNote": "This transaction is cryptographically secured."
   }
 }
