@@ -56,20 +56,20 @@ interface DonorStats {
 // ─── STATUS CONFIG ─────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG: Record<DonationStatus, { labelKey: string; cls: string }> =
-  {
-    pending: {
-      labelKey: "funding",
-      cls: "bg-primary/15 text-primary border-primary/30",
-    },
-    completed: {
-      labelKey: "delivered",
-      cls: "bg-green-500/15 text-green-400 border-green-500/30",
-    },
-    failed: {
-      labelKey: "failed",
-      cls: "bg-destructive/15 text-destructive border-destructive/30",
-    },
-  };
+{
+  pending: {
+    labelKey: "funding",
+    cls: "bg-primary/15 text-primary border-primary/30",
+  },
+  completed: {
+    labelKey: "delivered",
+    cls: "bg-green-500/15 text-green-400 border-green-500/30",
+  },
+  failed: {
+    labelKey: "failed",
+    cls: "bg-destructive/15 text-destructive border-destructive/30",
+  },
+};
 
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
@@ -381,8 +381,8 @@ export default function DonorPage() {
         }
         setDisplayName(
           user.user_metadata?.display_name ||
-            user.email?.split("@")[0] ||
-            t("defaultDisplayName"),
+          user.email?.split("@")[0] ||
+          t("defaultDisplayName"),
         );
 
         // Read role from profiles table (authoritative source)
@@ -652,7 +652,7 @@ export default function DonorPage() {
                 variant="outline"
                 className="w-full py-6 h-auto rounded-xl font-black text-[10px] uppercase tracking-widest border-border"
               >
-                <Link href="/catalog?verify=1">
+                <Link href="/transparency#verify">
                   <Shield className="w-4 h-4 text-primary mr-2" />
                   {t("verifyTransaction")}
                 </Link>

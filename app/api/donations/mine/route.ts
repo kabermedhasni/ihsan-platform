@@ -97,15 +97,13 @@ export async function GET() {
     needs: needsMap[d.need_id] || null,
   }));
 
-  // Fetch confirmations
-  const donationIds = (donations ?? []).map((d: any) => d.id);
-  const confirmationByDonation: Record<string, any> = {};
+  const confirmationByNeed: Record<string, any> = {};
 
-  if (donationIds.length > 0) {
+  if (needIds.length > 0) {
     const { data: confirmations, error: confirmationsError } = await supabase
       .from("confirmations")
       .select("*")
-      .in("donation_id", donationIds);
+      .in("need_id", needIds);
 
     if (confirmationsError) {
       console.error("Error fetching confirmations:", confirmationsError);
@@ -116,7 +114,7 @@ export async function GET() {
     }
 
     (confirmations ?? []).forEach((c: any) => {
-      confirmationByDonation[c.donation_id] = c;
+      confirmationByNeed[c.need_id] = c;
     });
   }
 
@@ -125,7 +123,7 @@ export async function GET() {
     const need = d.needs;
     const needFunded = fundedByNeed[d.need_id] ?? 0;
     const needTarget = need ? Number(need.amount_required || 0) : 0;
-    const confirmation = confirmationByDonation[d.id];
+    const confirmation = confirmationByNeed[d.need_id];
 
     return {
       id: d.id,
