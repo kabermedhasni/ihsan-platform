@@ -5,7 +5,7 @@ import { ChevronDown, Map as MapIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import NeedCard from "@/components/catalog/NeedCard";
 import NeedDrawer from "@/components/catalog/NeedDrawer";
-import { Need } from "@/types/need";
+import { AppNeed as Need } from "@/types/need";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Select,

@@ -16,7 +16,7 @@ import { DonationPanel } from "@/components/needs/DonationPanel";
 import { Spinner } from "@/components/ui/spinner";
 
 // --- TYPES ---
-import { Need } from "@/types/need";
+import { AppNeed as Need } from "@/types/need";
 
 // --- PAGE ---
 

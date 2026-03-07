@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Need } from "@/types/need";
+import { AppNeed as Need } from "@/types/need";
 import Link from "next/link";
 
 // Fix for default marker icons in Leaflet + Next.js

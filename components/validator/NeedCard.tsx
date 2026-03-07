@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge, NeedStatus } from "./StatusBadge";
 import { ProgressBar } from "./ProgressBar";
 
-export interface Need {
+export interface ValidatorNeed {
   id: string;
   title: string;
   city: string;
@@ -24,8 +24,8 @@ export interface Need {
 }
 
 interface NeedCardProps {
-  n: Need;
-  onConfirm: (n: Need) => void;
+  n: ValidatorNeed;
+  onConfirm: (n: ValidatorNeed) => void;
 }
 
 export const NeedCard = ({ n, onConfirm }: NeedCardProps) => {

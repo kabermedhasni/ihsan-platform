@@ -8,7 +8,8 @@ export type NeedStatus =
   | "fullyFunded"
   | "completed"
   | "inDelivery"
-  | "confirmed";
+  | "confirmed"
+  | "delivered";
 
 export const STATUS_CONFIG: Record<
   NeedStatus,
@@ -37,6 +38,10 @@ export const STATUS_CONFIG: Record<
   confirmed: {
     labelKey: "confirmed",
     cls: "bg-primary/20 text-primary border-primary/30",
+  },
+  delivered: {
+    labelKey: "delivered",
+    cls: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
   },
 };
 

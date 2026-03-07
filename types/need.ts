@@ -1,4 +1,4 @@
-export interface Need {
+export interface AppNeed {
   id: string;
   title: string;
   city: string;

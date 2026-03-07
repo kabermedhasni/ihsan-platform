@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import StatusBadge from "./StatusBadge";
 import ProgressBar from "./ProgressBar";
 import CategoryIcon from "./CategoryIcon";
-import { Need } from "@/types/need";
+import { AppNeed as Need } from "@/types/need";
 
 const NeedDrawer = ({
   need,
