@@ -127,6 +127,7 @@ export async function GET() {
 
     return {
       id: d.id,
+      needId: d.need_id,
       amount: Number(d.amount || 0),
       status: d.status || "pending",
       hash: d.hash ?? "",
