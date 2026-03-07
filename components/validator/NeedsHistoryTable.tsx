@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "./StatusBadge";
-import { Need } from "./NeedCard";
+import { ValidatorNeed } from "./NeedCard";
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 
 interface NeedsHistoryTableProps {
-  needs: Need[];
+  needs: ValidatorNeed[];
 }
 
 export const NeedsHistoryTable = ({ needs }: NeedsHistoryTableProps) => {

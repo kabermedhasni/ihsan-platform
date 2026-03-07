@@ -6,10 +6,10 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "./StatusBadge";
-import { Need } from "./NeedCard";
+import { ValidatorNeed } from "./NeedCard";
 
 interface ConfirmationModalProps {
-  need: Need | null;
+  need: ValidatorNeed | null;
   isOpen: boolean;
   onClose: () => void;
 }

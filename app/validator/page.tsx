@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
 import { StatCard } from "@/components/validator/StatCard";
-import { NeedCard, Need } from "@/components/validator/NeedCard";
+import { NeedCard, ValidatorNeed } from "@/components/validator/NeedCard";
 import { CreateNeedForm } from "@/components/validator/CreateNeedForm";
 import { ConfirmationModal } from "@/components/validator/ConfirmationModal";
 import { NeedsHistoryTable } from "@/components/validator/NeedsHistoryTable";
@@ -39,7 +39,7 @@ export default function ValidatorDashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState("");
-  const [needs, setNeeds] = useState<Need[]>([]);
+  const [needs, setNeeds] = useState<ValidatorNeed[]>([]);
   const [pendingPayments, setPendingPayments] = useState<Transaction[]>([]);
   const [stats, setStats] = useState<ValidatorStats>({
     needsCreated: 0,
@@ -47,7 +47,7 @@ export default function ValidatorDashboard() {
     deliveriesConfirmed: 0,
     totalBeneficiaries: 0,
   });
-  const [selectedNeed, setSelectedNeed] = useState<Need | null>(null);
+  const [selectedNeed, setSelectedNeed] = useState<ValidatorNeed | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"manage" | "create" | "payments">(
     "manage",
@@ -157,7 +157,7 @@ export default function ValidatorDashboard() {
     }
   };
 
-  const handleConfirmDelivery = (need: Need) => {
+  const handleConfirmDelivery = (need: ValidatorNeed) => {
     setSelectedNeed(need);
     setIsConfirmModalOpen(true);
   };
