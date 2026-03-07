@@ -48,7 +48,14 @@ const NeedCard = ({
             {displayCategory}
           </span>
         </div>
-        <StatusBadge status={need.status} />
+        <StatusBadge
+          status={
+            need.total_donated >= need.amount_required ||
+            need.status === "completed"
+              ? "completed"
+              : need.status
+          }
+        />
       </div>
 
       {/* Card Body */}
@@ -67,9 +74,17 @@ const NeedCard = ({
           <div className="flex items-center text-sm text-muted-foreground gap-2">
             <User className="w-4 h-4 text-muted-foreground/60" />
             <span>
-              {t("card.verifiedBy")} {need.validator}
+              {t("card.verifiedBy")} {need.validator || "System"}
             </span>
           </div>
+          {need.created_at && (
+            <div className="flex items-center text-sm text-muted-foreground gap-2">
+              <Clock className="w-4 h-4 text-muted-foreground/60" />
+              <span>
+                Published: {new Date(need.created_at).toLocaleDateString()}
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="mt-auto">

@@ -25,7 +25,9 @@ export async function GET() {
       status,
       hash,
       created_at,
-      need_id
+      need_id,
+      donor_bank_number,
+      validator_bank_number
     `,
     )
     .eq("donor_id", user.id)
@@ -84,6 +86,7 @@ export async function GET() {
     }
 
     (allNeedDonations ?? []).forEach((d: any) => {
+      // Only include completed donations for officially recorded funding
       if (d.status === "completed") {
         fundedByNeed[d.need_id] =
           (fundedByNeed[d.need_id] ?? 0) + Number(d.amount);
@@ -145,6 +148,8 @@ export async function GET() {
       proofImage: confirmation?.proof_image ?? null,
       validatorMessage: confirmation?.message ?? null,
       confirmedAt: confirmation?.created_at ?? null,
+      donorBankNumber: d.donor_bank_number,
+      validatorBankNumber: d.validator_bank_number,
     };
   });
 

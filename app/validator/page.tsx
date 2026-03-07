@@ -122,12 +122,39 @@ export default function ValidatorDashboard() {
     init();
   }, [router]);
 
+  const [isVerifying, setIsVerifying] = useState(false);
+
   const handleVerifyPayment = async (
     id: string,
     status: "CONFIRMED" | "REJECTED",
   ) => {
-    // Simulate API call
-    setPendingPayments((prev) => prev.filter((p) => p.id !== id));
+    setIsVerifying(true);
+    try {
+      const response = await fetch("/api/validator/verify-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Verification failed");
+      }
+
+      setPendingPayments((prev) => prev.filter((p) => p.id !== id));
+      // Reload stats and needs after verification to reflect changes
+      const [statsRes, needsRes] = await Promise.all([
+        fetch("/api/validator/stats"),
+        fetch("/api/validator/needs"),
+      ]);
+      if (statsRes.ok) setStats(await statsRes.json());
+      if (needsRes.ok) setNeeds(await needsRes.json());
+    } catch (err: any) {
+      console.error("Verification error:", err);
+      alert(err.message || "Failed to process verification.");
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleConfirmDelivery = (need: Need) => {
@@ -269,10 +296,10 @@ export default function ValidatorDashboard() {
                         <FileText size={32} className="text-primary/40" />
                       </div>
                       <div className="text-center">
-                        <p className="text-xl font-black text-foreground tracking-tighter text-left rtl:text-right">
+                        <p className="text-xl font-black text-foreground text-center tracking-tighter">
                           {t("needs.noActive")}
                         </p>
-                        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mt-1 text-left rtl:text-right">
+                        <p className="text-sm font-bold text-muted-foreground uppercase tracking-widest mt-1 text-center">
                           {t("needs.noActiveDesc")}
                         </p>
                       </div>
@@ -311,7 +338,6 @@ export default function ValidatorDashboard() {
         </div>
       </main>
 
-      {/* MODALS */}
       {isConfirmModalOpen && (
         <ConfirmationModal
           need={selectedNeed}

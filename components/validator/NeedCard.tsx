@@ -17,6 +17,7 @@ export interface Need {
   fundedAmount: number;
   beneficiaries: number;
   status: NeedStatus;
+  partnerStatus?: string;
   createdAt: string;
   partner?: string;
   description: string;
@@ -38,6 +39,15 @@ export const NeedCard = ({ n, onConfirm }: NeedCardProps) => {
               {n.category}
             </span>
             <StatusBadge status={n.status} />
+          </div>
+          <div className="flex items-center gap-2 mb-2">
+            {(n.status === "fullyFunded" || n.status === "completed") &&
+              n.partnerStatus &&
+              n.partnerStatus.toLowerCase() !== "funded" && (
+                <span className="px-2 py-0.5 bg-accent/20 text-accent font-bold text-[10px] uppercase tracking-widest rounded-md border border-accent/20">
+                  Partner: {n.partnerStatus}
+                </span>
+              )}
           </div>
           <h3 className="font-black text-foreground text-lg leading-tight mb-1 truncate group-hover:text-primary transition-colors text-left rtl:text-right">
             {n.title}
@@ -68,15 +78,29 @@ export const NeedCard = ({ n, onConfirm }: NeedCardProps) => {
           </div>
 
           <div className="flex gap-2">
-            {n.status === "fullyFunded" && (
+            {(n.status === "fullyFunded" || n.status === "completed") && (
               <Button
                 onClick={() => onConfirm(n)}
                 size="sm"
+                disabled={n.partnerStatus?.toLowerCase() !== "delivered"}
                 className="rounded-xl font-black uppercase tracking-widest shadow-lg shadow-primary/20 h-auto py-2.5 px-4"
+                title={
+                  n.partnerStatus?.toLowerCase() !== "delivered"
+                    ? "Partner must set status to Delivered first"
+                    : ""
+                }
               >
                 <CheckCircle className="w-3.5 h-3.5 mr-2" />
                 {t("needs.confirmDelivery")}
               </Button>
+            )}
+            {n.status === "delivered" && (
+              <div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-500 px-4 py-2.5 rounded-xl border border-emerald-500/20">
+                <CheckCircle className="w-4 h-4" />
+                <span className="text-[11px] font-black uppercase tracking-widest">
+                  {t("deliveredSuccessNote")}
+                </span>
+              </div>
             )}
             <Button
               asChild

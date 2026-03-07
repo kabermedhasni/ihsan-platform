@@ -9,6 +9,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { DonationForm } from "@/components/payment/DonationForm";
 import { generateTransactionHash } from "@/lib/crypto";
 import { createClient } from "@/utils/supabase/client";
+import { toast } from "sonner";
 
 export default function DonatePage({
   params,
@@ -43,6 +44,16 @@ export default function DonatePage({
     donorBankNumber: string;
     proofFile: File | null;
   }) => {
+    // Check if amount exceeds remaining
+    const remaining =
+      Number(need?.targetAmount || 0) - Number(need?.fundedAmount || 0);
+    if (formData.amount > remaining) {
+      toast.error(
+        `The maximum amount you can donate is ${remaining.toLocaleString()} MRU`,
+      );
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const supabase = createClient();
@@ -55,49 +66,115 @@ export default function DonatePage({
         return;
       }
 
-      // 1. In a real app, upload proof file to storage
-      // 2. Fetch last confirmed hash for chaining
+      // 1. Fetch last confirmed hash for chaining
       const lastHashRes = await fetch("/api/transparency/last-hash");
-      const { lastHash } = await lastHashRes
+      const lastHashData = await lastHashRes
         .json()
         .catch(() => ({ lastHash: "0".repeat(64) }));
+      const lastHash = lastHashData.lastHash || "0".repeat(64);
 
       const txId = crypto.randomUUID();
       const timestamp = new Date().toISOString();
 
-      // 3. Generate SHA-256 Hash
+      // 2. Upload Proof Image if exists
+      let proofImageUrl = null;
+      if (formData.proofFile) {
+        const fileExt = formData.proofFile.name.split(".").pop();
+        const fileName = `${txId}.${fileExt}`;
+        const filePath = `donations/${fileName}`;
+
+        try {
+          const { error: uploadError } = await supabase.storage
+            .from("proof_images")
+            .upload(filePath, formData.proofFile);
+
+          if (uploadError) {
+            console.warn(
+              "Supabase Storage error, trying local fallback:",
+              uploadError.message,
+            );
+            // Fallback to local upload
+            const localFormData = new FormData();
+            localFormData.append("file", formData.proofFile);
+            localFormData.append("fileName", fileName);
+
+            const localRes = await fetch("/api/upload/local", {
+              method: "POST",
+              body: localFormData,
+            });
+
+            if (localRes.ok) {
+              const { publicUrl } = await localRes.json();
+              proofImageUrl = publicUrl;
+              console.log("Local upload successful:", proofImageUrl);
+            } else {
+              throw new Error("Local fallback also failed");
+            }
+          } else {
+            const { data: urlData } = supabase.storage
+              .from("proof_images")
+              .getPublicUrl(filePath);
+            proofImageUrl = urlData.publicUrl;
+          }
+        } catch (err: any) {
+          console.error("All upload methods failed:", err.message);
+        }
+      }
+
+      // 3. Generate Transaction Hash
       const hash = generateTransactionHash(
         {
           transaction_id: txId,
           need_id: resolvedParams.needId,
           donor_bank_number: formData.donorBankNumber,
-          validator_bank_number: "BANK-IHSAN-2026", // Global platform account
+          validator_bank_number: "BANK-IHSAN-2026",
           amount: formData.amount,
           timestamp: timestamp,
-        },
+          proof_image_url: proofImageUrl,
+        } as any,
         lastHash,
       );
 
-      // 4. Create Transaction Record in Database
-      const { error: insertError } = await supabase.from("donations").insert({
+      // 4. Create Records for both Donations (for donor history) and Transactions (for ledger)
+      const donationEntry = {
         id: txId,
         need_id: resolvedParams.needId,
         donor_id: user.id,
         amount: formData.amount,
         status: "pending",
+        donor_bank_number: formData.donorBankNumber,
+        validator_bank_number: "BANK-IHSAN-2026",
         hash: hash,
-      });
+        proof_image_url: proofImageUrl,
+      };
 
-      if (insertError) {
-        throw new Error(insertError.message);
-      }
+      const transactionEntry = {
+        id: txId,
+        need_id: resolvedParams.needId,
+        donor_id: user.id,
+        amount: formData.amount,
+        status: "PENDING_VALIDATION",
+        hash: hash,
+        proof_image_url: proofImageUrl,
+        donor_bank_number: formData.donorBankNumber,
+        validator_bank_number: "BANK-IHSAN-2026",
+      };
 
-      // Redirect to confirmation
+      const [donRes, txRes] = await Promise.all([
+        supabase.from("donations").insert(donationEntry),
+        supabase.from("transactions").insert(transactionEntry),
+      ]);
+
+      if (donRes.error) throw new Error(donRes.error.message);
+      if (txRes.error) throw new Error(txRes.error.message);
+
+      toast.success("Donation submitted for verification!");
       router.push(
         `/donation-confirmation/${txId}?amount=${formData.amount}&hash=${hash}&ts=${timestamp}`,
       );
-    } catch (err) {
+    } catch (err: any) {
       console.error("Donation failed:", err);
+      toast.error(err.message || "Failed to process donation.");
     } finally {
       setIsSubmitting(false);
     }

@@ -13,6 +13,11 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 
+
+
+ALTER SCHEMA "public" OWNER TO "postgres";
+
+
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
 
@@ -55,7 +60,11 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 CREATE TYPE "public"."need_status" AS ENUM (
     'active',
     'completed',
-    'urgent'
+    'urgent',
+    'funded',
+    'preparing',
+    'ready',
+    'delivered'
 );
 
 
@@ -111,6 +120,19 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 
+CREATE TABLE IF NOT EXISTS "public"."confirmations" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "need_id" "uuid" NOT NULL,
+    "validator_id" "uuid" NOT NULL,
+    "message" "text",
+    "proof_image" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL
+);
+
+
+ALTER TABLE "public"."confirmations" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."donations" (
     "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
     "donor_id" "uuid",
@@ -121,7 +143,8 @@ CREATE TABLE IF NOT EXISTS "public"."donations" (
     "previous_hash" "text",
     "donor_bank_number" "text",
     "validator_bank_number" "text",
-    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL
+    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
+    "proof_image_url" "text"
 );
 
 
@@ -147,7 +170,8 @@ CREATE TABLE IF NOT EXISTS "public"."needs" (
     "expires_at" timestamp with time zone,
     "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
     "updated_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()),
-    "partner_id" "uuid"
+    "partner_id" "uuid",
+    "partner_status" "text" DEFAULT 'funded'::"text"
 );
 
 
@@ -185,6 +209,11 @@ CREATE TABLE IF NOT EXISTS "public"."transactions" (
 ALTER TABLE "public"."transactions" OWNER TO "postgres";
 
 
+ALTER TABLE ONLY "public"."confirmations"
+    ADD CONSTRAINT "confirmations_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."donations"
     ADD CONSTRAINT "donations_hash_key" UNIQUE ("hash");
 
@@ -216,6 +245,16 @@ ALTER TABLE ONLY "public"."transactions"
 
 
 CREATE OR REPLACE TRIGGER "on_transaction_confirmed" AFTER UPDATE OF "status" ON "public"."transactions" FOR EACH ROW EXECUTE FUNCTION "public"."update_need_funding"();
+
+
+
+ALTER TABLE ONLY "public"."confirmations"
+    ADD CONSTRAINT "confirmations_need_id_fkey" FOREIGN KEY ("need_id") REFERENCES "public"."needs"("id") ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."confirmations"
+    ADD CONSTRAINT "confirmations_validator_id_fkey" FOREIGN KEY ("validator_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
 
 
@@ -256,7 +295,9 @@ ALTER TABLE ONLY "public"."transactions"
 
 CREATE POLICY "Authenticated users can insert donations" ON "public"."donations" FOR INSERT WITH CHECK (("auth"."uid"() IS NOT NULL));
 
-CREATE POLICY "Authenticated users can insert transactions" ON "public"."transactions" FOR INSERT WITH CHECK (("auth"."uid"() IS NOT NULL));
+
+
+CREATE POLICY "Authenticated users can insert donations" ON "public"."transactions" FOR INSERT WITH CHECK (("auth"."uid"() IS NOT NULL));
 
 
 
@@ -265,6 +306,16 @@ CREATE POLICY "Donors can view own donations" ON "public"."donations" FOR SELECT
 
 
 CREATE POLICY "Donors can view own transactions" ON "public"."transactions" FOR SELECT USING (("auth"."uid"() = "donor_id"));
+
+
+
+CREATE POLICY "Partners can update their assigned needs" ON "public"."needs" FOR UPDATE USING ((EXISTS ( SELECT 1
+   FROM "public"."profiles"
+  WHERE (("profiles"."id" = "auth"."uid"()) AND ("profiles"."role" = 'partner'::"text")))));
+
+
+
+CREATE POLICY "Public read access to confirmations" ON "public"."confirmations" FOR SELECT USING (true);
 
 
 
@@ -290,9 +341,27 @@ CREATE POLICY "Validators and Admins can update transactions" ON "public"."trans
 
 
 
+CREATE POLICY "Validators can insert confirmations" ON "public"."confirmations" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
+   FROM "public"."profiles"
+  WHERE (("profiles"."id" = "auth"."uid"()) AND ("profiles"."role" = 'validator'::"text")))));
+
+
+
 CREATE POLICY "Validators can manage needs" ON "public"."needs" USING ((EXISTS ( SELECT 1
    FROM "public"."profiles"
   WHERE (("profiles"."id" = "auth"."uid"()) AND ("profiles"."role" = 'validator'::"text")))));
+
+
+
+CREATE POLICY "Validators can update donations" ON "public"."donations" FOR UPDATE TO "authenticated" USING ((EXISTS ( SELECT 1
+   FROM "public"."profiles"
+  WHERE (("profiles"."id" = "auth"."uid"()) AND ("profiles"."role" = 'validator'::"text")))));
+
+
+
+CREATE POLICY "Validators can update their own needs" ON "public"."needs" FOR UPDATE USING ((EXISTS ( SELECT 1
+   FROM "public"."profiles"
+  WHERE (("profiles"."id" = "auth"."uid"()) AND ("profiles"."role" = ANY (ARRAY['validator'::"text", 'admin'::"text", 'super_admin'::"text"]))))));
 
 
 
@@ -300,6 +369,9 @@ CREATE POLICY "Validators can view all donations" ON "public"."donations" FOR SE
    FROM "public"."profiles"
   WHERE (("profiles"."id" = "auth"."uid"()) AND ("profiles"."role" = 'validator'::"text")))));
 
+
+
+ALTER TABLE "public"."confirmations" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."donations" ENABLE ROW LEVEL SECURITY;
@@ -319,7 +391,7 @@ ALTER TABLE "public"."transactions" ENABLE ROW LEVEL SECURITY;
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
-GRANT USAGE ON SCHEMA "public" TO "postgres";
+REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
 GRANT USAGE ON SCHEMA "public" TO "service_role";
@@ -503,6 +575,12 @@ GRANT ALL ON FUNCTION "public"."update_need_funding"() TO "service_role";
 
 
 
+GRANT ALL ON TABLE "public"."confirmations" TO "anon";
+GRANT ALL ON TABLE "public"."confirmations" TO "authenticated";
+GRANT ALL ON TABLE "public"."confirmations" TO "service_role";
+
+
+
 GRANT ALL ON TABLE "public"."donations" TO "anon";
 GRANT ALL ON TABLE "public"."donations" TO "authenticated";
 GRANT ALL ON TABLE "public"."donations" TO "service_role";
@@ -540,16 +618,10 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQ
 
 
 
-
-
-
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO "service_role";
-
-
-
 
 
 
@@ -558,37 +630,30 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
 
-CREATE TABLE IF NOT EXISTS "public"."confirmations" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "need_id" "uuid" NOT NULL,
-    "validator_id" "uuid" NOT NULL,
-    "message" "text",
-    "proof_image" "text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "timezone"('utc'::"text", "now"()) NOT NULL,
-    CONSTRAINT "confirmations_pkey" PRIMARY KEY ("id")
-);
 
-ALTER TABLE ONLY "public"."confirmations"
-    ADD CONSTRAINT "confirmations_need_id_fkey" FOREIGN KEY ("need_id") REFERENCES "public"."needs"("id") ON DELETE CASCADE;
 
-ALTER TABLE ONLY "public"."confirmations"
-    ADD CONSTRAINT "confirmations_validator_id_fkey" FOREIGN KEY ("validator_id") REFERENCES "public"."profiles"("id") ON DELETE CASCADE;
 
-ALTER TABLE "public"."confirmations" ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Public read access to confirmations" ON "public"."confirmations" FOR SELECT USING (true);
 
-CREATE POLICY "Validators can insert confirmations" ON "public"."confirmations" FOR INSERT WITH CHECK ((EXISTS ( SELECT 1
-   FROM "public"."profiles"
-  WHERE (("profiles"."id" = "auth"."uid"()) AND ("profiles"."role" = 'validator'::"text")))));
 
-GRANT ALL ON TABLE "public"."confirmations" TO "anon";
-GRANT ALL ON TABLE "public"."confirmations" TO "authenticated";
-GRANT ALL ON TABLE "public"."confirmations" TO "service_role";
 
--- Storage for proof images
-INSERT INTO storage.buckets (id, name, public) VALUES ('proof_images', 'proof_images', true) ON CONFLICT DO NOTHING;
-CREATE POLICY "Public Access proof_images" ON storage.objects FOR SELECT USING (bucket_id = 'proof_images');
-CREATE POLICY "Authenticated users can upload proof_images" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'proof_images' AND auth.role() = 'authenticated');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

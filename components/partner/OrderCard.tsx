@@ -1,6 +1,7 @@
 "use client";
 
-import { MapPin, Clock, ArrowRight, Info } from "lucide-react";
+import { MapPin, Clock, ArrowRight, Info, Loader2 } from "lucide-react";
+import { useState } from "react";
 import StatusBadge, { OrderStatus } from "./StatusBadge";
 import { useTranslations } from "next-intl";
 
@@ -21,7 +22,7 @@ interface Order {
 
 interface OrderCardProps {
   order: Order;
-  onUpdateStatus: (id: string, nextStatus: OrderStatus) => void;
+  onUpdateStatus: (id: string, nextStatus: OrderStatus) => Promise<void> | void;
   onViewDetails: (order: Order) => void;
 }
 
@@ -38,7 +39,18 @@ export default function OrderCard({
     return null;
   };
 
+  const [isUpdating, setIsUpdating] = useState(false);
   const nextStatus = getNextStatus(order.status);
+
+  const handleUpdate = async () => {
+    if (!nextStatus) return;
+    setIsUpdating(true);
+    try {
+      await onUpdateStatus(order.id, nextStatus);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   return (
     <div className="bg-secondary/20 backdrop-blur-sm p-6 rounded-3xl border border-white/5 flex flex-col gap-4 group hover:border-primary/20 transition-all hover:bg-secondary/30">
@@ -89,14 +101,21 @@ export default function OrderCard({
       <div className="flex gap-2 mt-2">
         {nextStatus && (
           <button
-            onClick={() => onUpdateStatus(order.id, nextStatus)}
-            className="flex-1 bg-primary text-primary-foreground py-3 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn"
+            onClick={handleUpdate}
+            disabled={isUpdating}
+            className="flex-1 bg-primary text-primary-foreground py-3 rounded-xl font-bold text-sm shadow-lg shadow-primary/20 hover:opacity-90 transition-all active:scale-95 flex items-center justify-center gap-2 group/btn disabled:opacity-50 disabled:pointer-events-none"
           >
-            {t("card.moveTo", { status: nextStatus })}
-            <ArrowRight
-              size={16}
-              className="group-hover/btn:translate-x-1 transition-transform"
-            />
+            {isUpdating ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <>
+                {t("card.moveTo", { status: nextStatus })}
+                <ArrowRight
+                  size={16}
+                  className="group-hover/btn:translate-x-1 transition-transform"
+                />
+              </>
+            )}
           </button>
         )}
       </div>

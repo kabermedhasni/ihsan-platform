@@ -218,6 +218,7 @@
       "inProgress": "قيد التنفيذ",
       "urgent": "عاجل",
       "completed": "مكتمل",
+      "pending": "قيد الانتظار",
       "unknown": "غير معروف"
     },
     "sort": {
@@ -324,6 +325,8 @@
     "yourDonation": "تبرعك",
     "funding": "تمويل",
     "delivered": "تم التسليم",
+    "pending": "قيد الانتظار",
+    "completed": "مكتمل",
     "failed": "فشل",
     "noDonationsFound": "لم يتم العثور على تبرعات تطابق بحثك.",
     "defaultDisplayName": "متبرع",
@@ -343,6 +346,12 @@
     "noDonationsDesc": "تصفح الاحتياجات المتاحة وقم بأول تبرع لك اليوم.",
     "viewDetails": "عرض التفاصيل",
     "viewTransaction": "عرض المعاملة",
+    "donorAccount": "حساب المتبرع / المعرف",
+    "amount": "المبلغ",
+    "targetAccount": "الحساب المستهدف",
+    "date": "التاريخ",
+    "validHash": "بصمة معتمدة",
+    "noImage": "لا توجد صورة",
     "table": {
       "id": "الرقم",
       "city": "المدينة",
@@ -362,6 +371,7 @@
     "role": "محقق ميداني",
     "logout": "تسجيل الخروج",
     "createBtn": "إنشاء حالة جديدة",
+    "deliveredSuccessNote": "تم التسليم بنجاح",
     "stats": {
       "needsCreated": "حالات تم إنشاؤها",
       "needsFunded": "حالات تم تمويلها",
@@ -374,7 +384,8 @@
       "noActive": "لا توجد احتياجات نشطة بعد",
       "noActiveDesc": "قم بإنشاء حالة للبدء في جمع التبرعات.",
       "beneficiaries": "المستفيدين",
-      "confirmDelivery": "تأكيد التسليم"
+      "confirmDelivery": "تأكيد التسليم",
+      "successfullyDelivered": "تم التسليم بنجاح"
     },
     "history": {
       "title": "سجل الحالات",

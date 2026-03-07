@@ -24,9 +24,8 @@ const createIcon = (color: string) =>
 
 // Primary yellow from globals.css is oklch(0.82 0.16 88)
 // Let's use a standard hex for simplicity in Leaflet or just use a CSS variable if possible
-const confirmedIcon = createIcon("#d1a000"); // Approximating the golden yellow
-const inProgressIcon = createIcon("#3b82f6"); // blue-500
-const otherIcon = createIcon("#94a3b8"); // slate-400 for unknown/other
+const confirmedIcon = createIcon("#F59E0B"); // amber/orange-yellow
+const inProgressIcon = createIcon("#3B82F6"); // bright blue
 
 interface MapInnerProps {
   needs?: Need[];
@@ -84,46 +83,58 @@ export default function MapInner({
       {!loading &&
         needs
           .filter((need) => need.lat != null && need.lng != null)
-          .map((need, idx) => (
-            <Marker
-              key={need.id || idx}
-              position={[need.lat, need.lng] as [number, number]}
-              icon={
-                need.status === "completed"
-                  ? confirmedIcon
-                  : ["active", "urgent", "inProgress"].includes(need.status)
-                    ? inProgressIcon
-                    : otherIcon
-              }
-            >
-              <Popup className="custom-popup">
-                <div className="p-2 text-left font-sans" dir="ltr">
-                  <h3 className="font-bold text-primary mb-1">{need.title}</h3>
-                  <p className="text-xs text-gray-700 mb-1">
-                    <span className="opacity-60">{t("location")}:</span>{" "}
-                    <span className="font-semibold">{need.district}</span>
-                  </p>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5 my-2">
-                    <div
-                      className="h-1.5 rounded-full bg-primary"
-                      style={{ width: `${need.funding_percentage}%` }}
-                    />
+          .map((need, idx) => {
+            const isCompleted =
+              need.status === "completed" ||
+              (need.funding_percentage && need.funding_percentage >= 100) ||
+              need.total_donated >= need.amount_required;
+
+            return (
+              <Marker
+                key={need.id || idx}
+                position={[need.lat, need.lng] as [number, number]}
+                icon={isCompleted ? confirmedIcon : inProgressIcon}
+              >
+                <Popup className="custom-popup">
+                  <div className="p-2 text-left font-sans" dir="ltr">
+                    <h3 className="font-bold text-primary mb-1">
+                      {need.title}
+                    </h3>
+                    <p className="text-xs text-gray-700 mb-1">
+                      <span className="opacity-60">{t("location")}:</span>{" "}
+                      <span className="font-semibold">{need.district}</span>
+                    </p>
+                    <p className="text-[10px] font-black uppercase tracking-widest mb-2">
+                      <span
+                        className={
+                          isCompleted ? "text-amber-500" : "text-blue-500"
+                        }
+                      >
+                        {isCompleted ? "Completed" : "Funding"}
+                      </span>
+                    </p>
+                    <div className="w-full bg-gray-200 rounded-full h-1.5 my-2">
+                      <div
+                        className="h-1.5 rounded-full bg-primary"
+                        style={{ width: `${need.funding_percentage}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between items-center gap-4 border-t pt-2">
+                      <span className="text-[10px] font-mono font-bold text-primary">
+                        {need.amount_required} MRU
+                      </span>
+                      <Link
+                        href={`/catalog?need=${need.id}`}
+                        className="text-[10px] font-bold text-primary hover:underline"
+                      >
+                        {t("viewDetails")}
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center gap-4 border-t pt-2">
-                    <span className="text-[10px] font-mono font-bold text-primary">
-                      {need.amount_required} MRU
-                    </span>
-                    <Link
-                      href={`/catalog?need=${need.id}`}
-                      className="text-[10px] font-bold text-primary hover:underline"
-                    >
-                      {t("viewDetails")}
-                    </Link>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          ))}
+                </Popup>
+              </Marker>
+            );
+          })}
     </MapContainer>
   );
 }

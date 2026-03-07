@@ -218,6 +218,7 @@
       "inProgress": "In Progress",
       "urgent": "Urgent",
       "completed": "Completed",
+      "pending": "Pending",
       "unknown": "Unknown"
     },
     "sort": {
@@ -324,6 +325,8 @@
     "yourDonation": "Your Donation",
     "funding": "Funding",
     "delivered": "Delivered",
+    "pending": "Pending",
+    "completed": "Completed",
     "failed": "Failed",
     "noDonationsFound": "No donations found matching your search.",
     "defaultDisplayName": "Donor",
@@ -343,6 +346,12 @@
     "noDonationsDesc": "Browse available needs and make your first donation today.",
     "viewDetails": "View Details",
     "viewTransaction": "View Transaction",
+    "donorAccount": "Donor Account / ID",
+    "amount": "Amount",
+    "targetAccount": "Target Account",
+    "date": "Date",
+    "validHash": "Valid Hash Chain",
+    "noImage": "No Image",
     "table": {
       "id": "ID",
       "city": "City",
@@ -362,6 +371,7 @@
     "role": "Field Validator",
     "logout": "Logout",
     "createBtn": "Create New Need",
+    "deliveredSuccessNote": "Successfully Delivered",
     "stats": {
       "needsCreated": "Needs Created",
       "needsFunded": "Needs Funded",
@@ -374,7 +384,8 @@
       "noActive": "No active needs yet",
       "noActiveDesc": "Create a need to start collecting donations.",
       "beneficiaries": "Beneficiaries",
-      "confirmDelivery": "Confirm Delivery"
+      "confirmDelivery": "Confirm Delivery",
+      "successfullyDelivered": "Successfully Delivered"
     },
     "history": {
       "title": "Needs History",
@@ -452,7 +463,7 @@
     "statuses": {
       "open": "Open",
       "partiallyFunded": "Partially Funded",
-      "fullyFunded": "Fully Funded",
+      "fullyFunded": "Completed",
       "inDelivery": "In Delivery",
       "confirmed": "Confirmed"
     },

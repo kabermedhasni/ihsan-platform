@@ -68,8 +68,9 @@ Lancez le serveur de développement :
 npm run dev
 ```
 
-Ouvrez votre navigateur et accédez à [http://localhost:3000](http://localhost:3000). 
+Ouvrez votre navigateur et accédez à [http://localhost:3000](http://localhost:3000).
 Vous pouvez vous inscrire via l'interface `/auth` en choisissant différents rôles pour tester l'application :
+
 - **Donateur (Donor)** : Pour explorer les besoins et faire un don.
 - **Partenaire** : Pour soumettre des cas et besoins.
 - **Validateur de terrain** : Pour confirmer la livraison et générer la preuve d'impact.

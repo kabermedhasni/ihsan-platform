@@ -218,6 +218,7 @@
       "inProgress": "En cours",
       "urgent": "Urgent",
       "completed": "Terminé",
+      "pending": "En attente",
       "unknown": "Inconnu"
     },
     "sort": {
@@ -324,6 +325,8 @@
     "yourDonation": "Votre Don",
     "funding": "Financement",
     "delivered": "Livré",
+    "pending": "En attente",
+    "completed": "Terminé",
     "failed": "Échoué",
     "noDonationsFound": "Aucun don trouvé correspondant à votre recherche.",
     "defaultDisplayName": "Donateur",
@@ -343,6 +346,12 @@
     "noDonationsDesc": "Parcourez les besoins disponibles et faites votre premier don aujourd'hui.",
     "viewDetails": "Voir les Détails",
     "viewTransaction": "Voir la Transaction",
+    "donorAccount": "Compte du donateur / ID",
+    "amount": "Montant",
+    "targetAccount": "Compte cible",
+    "date": "Date",
+    "validHash": "Chaîne de hachage valide",
+    "noImage": "Aucune image",
     "table": {
       "id": "ID",
       "city": "Ville",
@@ -362,6 +371,7 @@
     "role": "Validateur de terrain",
     "logout": "Déconnexion",
     "createBtn": "Créer un nouveau besoin",
+    "deliveredSuccessNote": "Livré avec succès",
     "stats": {
       "needsCreated": "Besoins créés",
       "needsFunded": "Besoins financés",
@@ -374,7 +384,8 @@
       "noActive": "Pas encore de besoins actifs",
       "noActiveDesc": "Créez un besoin pour commencer à collecter des dons.",
       "beneficiaries": "Bénéficiaires",
-      "confirmDelivery": "Confirmer la livraison"
+      "confirmDelivery": "Confirmer la livraison",
+      "successfullyDelivered": "Livré avec succès"
     },
     "history": {
       "title": "Historique des besoins",
